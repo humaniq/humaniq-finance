@@ -1,7 +1,7 @@
-import React from "react"
+import React from "react";
 
 export type HTextProps = {
-  text: string
-}
+  text: string;
+};
 
-export const HText = ({ text }: HTextProps) => {}
+export const HText = ({ text }: HTextProps) => {};

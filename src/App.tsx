@@ -4,13 +4,12 @@ import { Footer } from "./components/footer/footer";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.scss";
 import routes from "./utils/routes";
-import NotFound from "./screens/404/404";
-import { Home } from "./screens/home/home";
 import { ETHProvider } from "./stores/provider/providerStore";
 
 import b from "buffer";
 import { WalletNotConnected } from "./components/app/WalletNotConnected";
 import { ProviderNotFound } from "./components/app/ProviderNotFound";
+import { Main } from "./screens/main/Main";
 
 window.Buffer = b.Buffer;
 
@@ -33,8 +32,7 @@ function App() {
               {getProviderStore.currentAccount ? (
                 <Router>
                   <Routes>
-                    <Route path={routes.home.path} element={<Home />} />
-                    <Route path="*" element={<NotFound />} />
+                    <Route path={routes.home.path} element={<Main />} />
                   </Routes>
                 </Router>
               ) : (
