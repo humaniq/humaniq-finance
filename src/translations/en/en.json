@@ -1,5 +1,13 @@
 {
-  "appName": "dApp template",
+  "appName": "Humaniq finance",
   "connectWallet": "Connect your Wallet",
-  "notFound": "Not Found"
+  "notFound": "Not Found",
+  "main": {
+    "deposited": "Deposited",
+    "borrowed": "Borrowed",
+    "borrowLimit": "Borrow limit",
+    "walletBalance": "Your wallet balance",
+    "availableToBorrow": "Available to borrow",
+    "liquidity": "Liquidity"
+  }
 }

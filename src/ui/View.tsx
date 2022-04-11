@@ -1,29 +1,33 @@
 import React, { ReactNode } from "react";
 
-export enum SpaceDirections {
+export enum ViewDirections {
   ROW = "row",
   COLUMN = "column",
 }
 
-export interface SpaceProps {
-  direction?: SpaceDirections;
+export interface ViewProps {
+  direction?: ViewDirections;
   style?: any;
-  children: ReactNode;
+  className?: string;
+  children?: ReactNode;
 }
 
-export const Space = ({
-  direction = SpaceDirections.COLUMN,
+export const View = ({
+  direction = ViewDirections.COLUMN,
   children,
   style,
-}: SpaceProps) => {
+  className,
+  ...rest
+}: ViewProps) => {
   return (
     <div
       style={{
         display: "flex",
         flexDirection: direction,
-        alignItems: "flex-start",
         ...style,
       }}
+      className={className}
+      {...rest}
     >
       {children}
     </div>
