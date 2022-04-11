@@ -2,7 +2,7 @@ import React from "react";
 import { View, ViewDirections } from "../../ui/View";
 import { Text } from "../../ui/Text";
 import colors from "../../utils/colors";
-import btc from "../../assets/images/ic_btc.svg";
+import btcIcon from "../../assets/images/ic_btc.svg";
 import { Avatar } from "../../ui/Avatar";
 import { Divider } from "../../ui/Divider";
 import { Button } from "../../ui/Button";
@@ -36,7 +36,7 @@ export const TokenItem = ({
         direction={ViewDirections.ROW}
         style={{ alignItems: "flex-start", marginTop: 10, marginBottom: 10 }}
       >
-        <Avatar size={36} icon={btc} style={{ marginLeft: 10 }} />
+        <Avatar size={30} icon={btcIcon} style={{ marginLeft: 10 }} />
         <View style={{ flex: 1, marginLeft: 12 }}>
           <View
             direction={ViewDirections.ROW}
@@ -65,6 +65,7 @@ export const TokenItem = ({
           <Divider marginT={10} />
 
           <Button
+            className="token-button"
             onClick={onClick}
             color={colors.blueOrigin}
             textColor={colors.primary}

@@ -14,7 +14,7 @@ export const Avatar = ({ icon, size, style }: AvatarProps) => {
     <View
       style={{
         borderRadius: size * 2,
-        padding: 10,
+        padding: 8,
         backgroundColor: colors.greyLight,
         ...style,
       }}

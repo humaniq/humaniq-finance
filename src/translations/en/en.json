@@ -8,6 +8,13 @@
     "borrowLimit": "Borrow limit",
     "walletBalance": "Your wallet balance",
     "availableToBorrow": "Available to borrow",
-    "liquidity": "Liquidity"
+    "liquidity": "Liquidity",
+    "borrowHint": "To borrow you need to deposit any asset to be used as collateral"
+  },
+  "general": {
+    "ok": "Ok"
+  },
+  "hints": {
+    "first": "Borrow limit is the maximum sum you can borrow. It is calculated as 80% of your deposited funds. If you deposit 100$ you won’t be able to borrow more than 80$ which is 80% of 100$."
   }
 }

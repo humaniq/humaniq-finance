@@ -14,6 +14,7 @@ const colors = {
   greyHalf: "rgba(255, 255, 255, 0.5)",
   blueOrigin: "rgba(0, 102, 218, 0.1)",
   transparent: "transparent",
+  yellowStone: "#FCD354",
 };
 
 export default colors;

@@ -18,13 +18,13 @@ export const AddressView = ({
         borderStyle: "solid",
         borderColor: "#fff",
         color: "#fff",
-        borderRadius: 12,
+        borderRadius: 13,
         borderWidth: 1,
         paddingTop: 6,
         paddingBottom: 6,
-        paddingLeft: 14,
-        paddingRight: 14,
-        fontSize: 18,
+        paddingLeft: 15,
+        paddingRight: 15,
+        fontSize: 17,
         ...style,
       }}
       onClick={onClick}

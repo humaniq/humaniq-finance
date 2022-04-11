@@ -10,6 +10,8 @@ import { TokenItem } from "../../components/main/TokenItem";
 import { withStore } from "../../utils/hoc";
 import { MainViewModel } from "./MainViewModel";
 import { Button } from "../../ui/Button";
+import { HintMessage } from "../../ui/HintMessage";
+import { FloatingHintMessage } from "../../ui/FloatingHintMessage";
 
 export interface MainScreenInterface {
   store: MainViewModel;
@@ -128,6 +130,8 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           />
         </View>
 
+        <HintMessage message={t<string>("main.borrowHint")} />
+
         <View>
           {store.tokenList.map((item, index) => (
             <TokenItem
@@ -140,6 +144,8 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           ))}
         </View>
       </View>
+
+      <FloatingHintMessage message={t<string>("hints.first")} />
     </View>
   );
 };

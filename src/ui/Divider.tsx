@@ -10,7 +10,7 @@ export interface DividerProps {
 
 export const Divider = ({
   height = 0.5,
-  color = colors.greyLight,
+  color = colors.grey,
   marginT = 0,
   marginB = 0,
 }: DividerProps) => {
