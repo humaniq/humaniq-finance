@@ -17,7 +17,7 @@ export const Footer = () => {
       }}
     >
       <span>
-        {t("appName")} {dayjs().year()}
+        {t<string>("appName")} {dayjs().year()}
       </span>
     </div>
   );

@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { Header } from "./components/header/header";
-import { Footer } from "./components/footer/footer";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.scss";
 import routes from "./utils/routes";
@@ -24,7 +22,6 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
       {getProviderStore.initialized ? (
         <>
           {getProviderStore.hasProvider ? (
@@ -44,7 +41,6 @@ function App() {
           )}
         </>
       ) : null}
-      <Footer />
     </div>
   );
 }

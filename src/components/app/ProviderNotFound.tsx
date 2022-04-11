@@ -13,7 +13,7 @@ export const ProviderNotFound = () => {
         justifyContent: "center",
       }}
     >
-      <span>{t("notFound")}</span>
+      <span>{t<string>("notFound")}</span>
     </div>
   );
 };

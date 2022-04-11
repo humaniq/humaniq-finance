@@ -3,42 +3,42 @@ import { Logger } from "../../utils/logger";
 
 export class ProviderStore {
   initialized = false;
-  currentAccount: any = null;
-  hasProvider = false;
+  currentAccount: any = "test";
+  hasProvider = true;
 
   constructor() {
     makeAutoObservable(this, undefined, { autoBind: true });
   }
 
   init = async () => {
-    if (window.ethereum) {
-      this.hasProvider = true;
-
-      window.ethereum.on("accountsChanged", (accounts: any) => {
-        this.currentAccount = accounts[0];
-      });
-
-      window.ethereum.on("disconnect", () => {
-        this.currentAccount = null;
-      });
-
-      window.ethereum.on("connect", (accounts: any) => {
-        this.currentAccount = accounts[0];
-      });
-
-      window.ethereum.on("message", (payload: any) => {
-        Logger.info("message", payload);
-      });
-
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        this.currentAccount = accounts[0];
-      } catch (e) {
-        Logger.info("ERROR", e);
-      }
-    }
+    // if (window.ethereum) {
+    //   this.hasProvider = true;
+    //
+    //   window.ethereum.on("accountsChanged", (accounts: any) => {
+    //     this.currentAccount = accounts[0];
+    //   });
+    //
+    //   window.ethereum.on("disconnect", () => {
+    //     this.currentAccount = null;
+    //   });
+    //
+    //   window.ethereum.on("connect", (accounts: any) => {
+    //     this.currentAccount = accounts[0];
+    //   });
+    //
+    //   window.ethereum.on("message", (payload: any) => {
+    //     Logger.info("message", payload);
+    //   });
+    //
+    //   try {
+    //     const accounts = await window.ethereum.request({
+    //       method: "eth_requestAccounts",
+    //     });
+    //     this.currentAccount = accounts[0];
+    //   } catch (e) {
+    //     Logger.info("ERROR", e);
+    //   }
+    // }
     this.initialized = true;
   };
 

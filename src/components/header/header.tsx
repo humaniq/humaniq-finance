@@ -15,7 +15,7 @@ export const Header = () => {
         justifyContent: "center",
       }}
     >
-      <span>{t("appName")}</span>
+      <span>{t<string>("appName")}</span>
     </div>
   );
 };

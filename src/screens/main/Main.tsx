@@ -5,5 +5,5 @@ import { useTranslation } from "react-i18next";
 export const Main = observer(() => {
   const { t } = useTranslation();
 
-  return <div className="main" />;
+  return <div className="main"></div>;
 });
