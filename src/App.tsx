@@ -22,25 +22,11 @@ function App() {
 
   return (
     <div className="App">
-      {getProviderStore.initialized ? (
-        <>
-          {getProviderStore.hasProvider ? (
-            <>
-              {getProviderStore.currentAccount ? (
-                <Router>
-                  <Routes>
-                    <Route path={routes.home.path} element={<Main />} />
-                  </Routes>
-                </Router>
-              ) : (
-                <WalletNotConnected />
-              )}
-            </>
-          ) : (
-            <ProviderNotFound />
-          )}
-        </>
-      ) : null}
+      <Router>
+        <Routes>
+          <Route path={routes.home.path} element={<Main />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
