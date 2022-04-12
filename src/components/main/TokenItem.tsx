@@ -1,11 +1,11 @@
 import React from "react";
-import { View, ViewDirections } from "../../ui/View";
-import { Text } from "../../ui/Text";
+import { View, ViewDirections } from "../ui/View";
+import { Text } from "../ui/Text";
 import colors from "../../utils/colors";
 import btcIcon from "../../assets/images/ic_btc.svg";
-import { Avatar } from "../../ui/Avatar";
-import { Divider } from "../../ui/Divider";
-import { Button } from "../../ui/Button";
+import { Avatar } from "../ui/Avatar";
+import { Divider } from "../ui/Divider";
+import { Button } from "../ui/Button";
 
 export interface TokenItemProps {
   title: string;
@@ -25,6 +25,7 @@ export const TokenItem = ({
 }: TokenItemProps) => {
   return (
     <View
+      direction={ViewDirections.COLUMN}
       style={{
         backgroundColor: colors.white,
         borderRadius: 12,
@@ -33,13 +34,14 @@ export const TokenItem = ({
       {...rest}
     >
       <View
-        direction={ViewDirections.ROW}
         style={{ alignItems: "flex-start", marginTop: 10, marginBottom: 10 }}
       >
         <Avatar size={30} icon={btcIcon} style={{ marginLeft: 10 }} />
-        <View style={{ flex: 1, marginLeft: 12 }}>
+        <View
+          style={{ flex: 1, marginLeft: 12 }}
+          direction={ViewDirections.COLUMN}
+        >
           <View
-            direction={ViewDirections.ROW}
             style={{
               justifyContent: "space-between",
               marginBottom: 5,
@@ -51,7 +53,6 @@ export const TokenItem = ({
           </View>
 
           <View
-            direction={ViewDirections.ROW}
             style={{
               justifyContent: "space-between",
               marginTop: 5,

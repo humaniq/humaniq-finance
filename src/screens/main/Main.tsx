@@ -2,17 +2,17 @@ import React from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { MainInfoHeader } from "../../components/main/MainInfoHeader";
-import { View, ViewDirections } from "../../ui/View";
-import { Text } from "../../ui/Text";
+import { View, ViewDirections } from "../../components/ui/View";
+import { Text } from "../../components/ui/Text";
 import { AddressView } from "../../components/main/AddressView";
 import colors from "../../utils/colors";
 import { TokenItem } from "../../components/main/TokenItem";
 import { withStore } from "../../utils/hoc";
 import { MainViewModel } from "./MainViewModel";
-import { Button } from "../../ui/Button";
-import { HintMessage } from "../../ui/HintMessage";
-import { FloatingHintMessage } from "../../ui/FloatingHintMessage";
+import { Button } from "../../components/ui/Button";
+import { HintMessage } from "../../components/ui/HintMessage";
 import "./Main.sass";
+import { InfoButton, PLACEMENT } from "../../components/info-button/InfoButton";
 
 export interface MainScreenInterface {
   store: MainViewModel;
@@ -22,31 +22,27 @@ const MainImpl = ({ store }: MainScreenInterface) => {
   const { t } = useTranslation();
 
   return (
-    <View className="main">
+    <View className="main" direction={ViewDirections.COLUMN}>
       <MainInfoHeader style={{ padding: 16 }}>
-        <View
-          direction={ViewDirections.ROW}
-          style={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            flex: 1,
-          }}
-        >
-          <Text
-            style={{ fontWeight: 800 }}
-            size={20}
-            text={t<string>("appName")}
-          />
+        <View className={"row"}>
+          <View>
+            <span className={"logoText"}>{t<string>("appName")} </span>
+            <InfoButton
+              message={"this is logo brand"}
+              placement={PLACEMENT.BOTTOM}
+            />
+          </View>
+
           <AddressView title="0x41...0b65" onClick={() => {}} />
         </View>
 
-        <View direction={ViewDirections.ROW} style={{ marginTop: 16 }}>
+        <View style={{ marginTop: 16 }}>
           <View className="circle">
             <Text className="circle-label" text="123123" />
           </View>
 
-          <View className="deposit-balance">
-            <View style={{ marginBottom: 8 }}>
+          <View className="deposit-balance" direction={ViewDirections.COLUMN}>
+            <View style={{ marginBottom: 8 }} direction={ViewDirections.COLUMN}>
               <Text
                 size={16}
                 color={"#0066DA"}
@@ -56,7 +52,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
               <Text size={24} className="balance" text="$0" />
             </View>
 
-            <View style={{ marginTop: 8 }}>
+            <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
               <Text
                 size={16}
                 color={"#895EF2"}
@@ -68,8 +64,8 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           </View>
         </View>
 
-        <View className="borrow-limit">
-          <View direction={ViewDirections.ROW}>
+        <View className="borrow-limit" direction={ViewDirections.COLUMN}>
+          <View>
             <Text
               size={15}
               color={colors.greyHalf}
@@ -78,17 +74,14 @@ const MainImpl = ({ store }: MainScreenInterface) => {
             />
           </View>
 
-          <View
-            direction={ViewDirections.ROW}
-            style={{ marginTop: 10, alignItems: "center" }}
-          >
+          <View style={{ marginTop: 10, alignItems: "center" }}>
             <Text
               color={colors.white}
               className="left-progress"
               size={14}
               text="0%"
             />
-            <View className="progress" />
+            <View className="progress" direction={ViewDirections.COLUMN} />
             <Text
               color={colors.greyHalf}
               className="right-progress"
@@ -99,7 +92,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
         </View>
       </MainInfoHeader>
 
-      <View className="content">
+      <View className="content" direction={ViewDirections.COLUMN}>
         <Text
           size={16}
           className="label"
@@ -107,7 +100,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           text={t<string>("main.walletBalance")}
         />
 
-        <View>
+        <View direction={ViewDirections.COLUMN}>
           {store.tokenList.map((item, index) => (
             <TokenItem
               key={`token_item_${item.id}_${index}`}
@@ -119,7 +112,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           ))}
         </View>
 
-        <View className="borrow-available" direction={ViewDirections.ROW}>
+        <View className="borrow-available">
           <Text
             size={16}
             text={t<string>("main.availableToBorrow")}
@@ -133,7 +126,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
 
         <HintMessage message={t<string>("main.borrowHint")} />
 
-        <View>
+        <View direction={ViewDirections.COLUMN}>
           {store.tokenList.map((item, index) => (
             <TokenItem
               key={`borrow_item_${item.id}_${index}`}
@@ -146,7 +139,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
         </View>
       </View>
 
-      <FloatingHintMessage message={t<string>("hints.first")} />
+      {/*<FloatingHintMessage message={t<string>("hints.first")} />*/}
     </View>
   );
 };

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { View } from "./View";
-import colors from "../utils/colors";
+import colors from "../../utils/colors";
 
 export interface AvatarProps {
   size: number;

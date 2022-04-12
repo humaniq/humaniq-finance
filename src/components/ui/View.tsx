@@ -13,7 +13,7 @@ export interface ViewProps {
 }
 
 export const View = ({
-  direction = ViewDirections.COLUMN,
+  direction = ViewDirections.ROW,
   children,
   style,
   className,
