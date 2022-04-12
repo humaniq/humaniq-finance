@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "./View";
 import { Text } from "./Text";
-import colors from "../utils/colors";
+import colors from "../../utils/colors";
 import { Button } from "./Button";
 import { useTranslation } from "react-i18next";
 

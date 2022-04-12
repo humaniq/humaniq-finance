@@ -1,8 +1,8 @@
 import React from "react";
 import { View, ViewDirections } from "./View";
-import lamp from "../assets/images/ic_lamp.svg";
+import lamp from "../../assets/images/ic_lamp.svg";
 import { Text } from "./Text";
-import colors from "../utils/colors";
+import colors from "../../utils/colors";
 
 export interface HintMessageProps {
   message: string;
