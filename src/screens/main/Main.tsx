@@ -12,6 +12,7 @@ import { MainViewModel } from "./MainViewModel";
 import { Button } from "../../ui/Button";
 import { HintMessage } from "../../ui/HintMessage";
 import { FloatingHintMessage } from "../../ui/FloatingHintMessage";
+import "./Main.sass";
 
 export interface MainScreenInterface {
   store: MainViewModel;
