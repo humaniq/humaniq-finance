@@ -26,7 +26,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
       <MainInfoHeader className="header">
         <View className={"row"}>
           <View>
-            <span className={"logoText"}>{t<string>("appName")}</span>
+            <Text className={"logoText"} text={t("appName")} />
             <InfoButton
               message={t("hints.first")}
               placement={PLACEMENT.BOTTOM}
