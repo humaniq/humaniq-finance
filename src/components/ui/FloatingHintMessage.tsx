@@ -1,23 +1,26 @@
-import React from "react";
-import { View } from "./View";
-import { Text } from "./Text";
+import React, { FC } from "react";
+import { View } from "./view/View";
+import { Text } from "./text/Text";
 import colors from "../../utils/colors";
-import { Button } from "./Button";
+import { Button } from "./button/Button";
 import { useTranslation } from "react-i18next";
 
 export interface FloatingHintMessageProps {
   message: string;
   backgroundColor?: string;
+  className?: string;
 }
 
-export const FloatingHintMessage = ({
+export const FloatingHintMessage: FC<FloatingHintMessageProps> = ({
   message,
   backgroundColor = colors.primary,
-}: FloatingHintMessageProps) => {
+  className,
+}) => {
   const { t } = useTranslation();
 
   return (
     <View
+      className={`${className}`}
       style={{
         width: 250,
         position: "absolute",
@@ -37,8 +40,7 @@ export const FloatingHintMessage = ({
         style={{ textAlign: "start", marginLeft: 4 }}
       />
       <Button
-        textColor={colors.white}
-        text={t<string>("general.ok")}
+        text={t("general.ok")}
         style={{ alignSelf: "flex-end", marginTop: 20, marginBottom: 16 }}
       />
     </View>

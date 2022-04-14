@@ -1,18 +1,25 @@
-import React from "react";
-import { View, ViewDirections } from "./View";
-import lamp from "../../assets/images/ic_lamp.svg";
-import { Text } from "./Text";
-import colors from "../../utils/colors";
+import React, { FC } from "react";
+import { View, ViewDirections } from "../view/View";
+import lamp from "../../../assets/images/ic_lamp.svg";
+import { Text } from "../text/Text";
+import colors from "../../../utils/colors";
 
 export interface HintMessageProps {
   message: string;
   backgroundColor?: string;
 }
 
-export const HintMessage = ({
+/**
+ * Hint message component
+ *
+ * @param message
+ * @param backgroundColor
+ * @constructor
+ */
+export const HintMessage: FC<HintMessageProps> = ({
   message,
   backgroundColor = colors.white,
-}: HintMessageProps) => {
+}) => {
   return (
     <View
       direction={ViewDirections.ROW}
