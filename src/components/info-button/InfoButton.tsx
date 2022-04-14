@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import { ReactComponent as InfoIcon } from "../../assets/icons/info.svg";
 import "./styles.sass";
 import Tooltip from "rc-tooltip";
 import "./tolltip.sass";
-import { View, ViewDirections } from "../ui/View";
+import { View, ViewDirections } from "../ui/view/View";
 import { t } from "i18next";
 
 export enum PLACEMENT {
@@ -18,7 +18,14 @@ export interface InfoButtonProps {
   placement?: PLACEMENT;
 }
 
-export const InfoButton: React.FC<InfoButtonProps> = ({
+/**
+ * Info button component
+ *
+ * @param message
+ * @param placement
+ * @constructor
+ */
+export const InfoButton: FC<InfoButtonProps> = ({
   message = "",
   placement = PLACEMENT.RIGHT,
 }) => {

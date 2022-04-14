@@ -1,4 +1,5 @@
-import React from "react";
+import React, { FC } from "react";
+import "./Text.style.sass";
 
 export interface TextProps {
   text: string;
@@ -8,23 +9,33 @@ export interface TextProps {
   className?: string;
 }
 
-export const Text = ({
+/**
+ * Text component
+ *
+ * @param text
+ * @param size
+ * @param color
+ * @param style
+ * @param className
+ * @param rest
+ * @constructor
+ */
+export const Text: FC<TextProps> = ({
   text,
   size = 14,
   color = "#fff",
   style = {},
   className,
   ...rest
-}: TextProps) => {
+}) => {
   return (
     <span
       style={{
-        display: "flex",
         fontSize: size,
         color,
         ...style,
       }}
-      className={className}
+      className={`txt-container ${className}`}
       {...rest}
     >
       {text}
