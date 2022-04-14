@@ -26,9 +26,9 @@ const MainImpl = ({ store }: MainScreenInterface) => {
       <MainInfoHeader className="header">
         <View className={"row"}>
           <View>
-            <span className={"logoText"}>{t<string>("appName")} </span>
+            <span className={"logoText"}>{t<string>("appName")}</span>
             <InfoButton
-              message={t<string>("hints.first")}
+              message={t("hints.first")}
               placement={PLACEMENT.BOTTOM}
             />
           </View>
@@ -47,7 +47,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
                 size={16}
                 color={"#0066DA"}
                 className="label"
-                text={t<string>("main.deposited")}
+                text={t("main.deposited")}
               />
               <Text size={24} className="balance" text="$0" />
             </View>
@@ -57,7 +57,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
                 size={16}
                 color={"#895EF2"}
                 className="label"
-                text={t<string>("main.borrowed")}
+                text={t("main.borrowed")}
               />
               <Text size={24} className="balance" text="$0" />
             </View>
@@ -70,7 +70,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
               size={15}
               color={colors.greyHalf}
               className="label"
-              text={t<string>("main.borrowLimit")}
+              text={t("main.borrowLimit")}
             />
           </View>
 
@@ -97,7 +97,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           size={16}
           className="label"
           color={colors.blackText}
-          text={t<string>("main.walletBalance")}
+          text={t("main.walletBalance")}
         />
 
         <View direction={ViewDirections.COLUMN}>
@@ -115,13 +115,13 @@ const MainImpl = ({ store }: MainScreenInterface) => {
         <View className="borrow-available">
           <Text
             size={16}
-            text={t<string>("main.availableToBorrow")}
+            text={t("main.availableToBorrow")}
             color={colors.blackText}
           />
-          <Button text={t<string>("main.liquidity")} />
+          <Button text={t("main.liquidity")} />
         </View>
 
-        <HintMessage message={t<string>("main.borrowHint")} />
+        <HintMessage message={t("main.borrowHint")} />
 
         <View direction={ViewDirections.COLUMN}>
           {store.tokenList.map((item, index) => (

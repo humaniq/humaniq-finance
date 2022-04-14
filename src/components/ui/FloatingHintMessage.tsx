@@ -40,7 +40,7 @@ export const FloatingHintMessage: FC<FloatingHintMessageProps> = ({
         style={{ textAlign: "start", marginLeft: 4 }}
       />
       <Button
-        text={t<string>("general.ok")}
+        text={t("general.ok")}
         style={{ alignSelf: "flex-end", marginTop: 20, marginBottom: 16 }}
       />
     </View>
