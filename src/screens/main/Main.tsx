@@ -1,16 +1,16 @@
 import React from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-import { MainInfoHeader } from "../../components/main/MainInfoHeader";
-import { View, ViewDirections } from "../../components/ui/View";
-import { Text } from "../../components/ui/Text";
-import { AddressView } from "../../components/main/AddressView";
+import { MainInfoHeader } from "../../components/main/header/MainInfoHeader";
+import { View, ViewDirections } from "../../components/ui/view/View";
+import { Text } from "../../components/ui/text/Text";
+import { AddressView } from "../../components/main/address/AddressView";
 import colors from "../../utils/colors";
-import { TokenItem } from "../../components/main/TokenItem";
+import { TokenItem } from "../../components/main/token/TokenItem";
 import { withStore } from "../../utils/hoc";
 import { MainViewModel } from "./MainViewModel";
-import { Button } from "../../components/ui/Button";
-import { HintMessage } from "../../components/ui/HintMessage";
+import { Button } from "../../components/ui/button/Button";
+import { HintMessage } from "../../components/ui/hint/HintMessage";
 import "./Main.sass";
 import { InfoButton, PLACEMENT } from "../../components/info-button/InfoButton";
 
@@ -23,12 +23,12 @@ const MainImpl = ({ store }: MainScreenInterface) => {
 
   return (
     <View className="main" direction={ViewDirections.COLUMN}>
-      <MainInfoHeader style={{ padding: 16 }}>
+      <MainInfoHeader className="header">
         <View className={"row"}>
           <View>
             <span className={"logoText"}>{t<string>("appName")} </span>
             <InfoButton
-              message={"this is logo brand"}
+              message={t<string>("hints.first")}
               placement={PLACEMENT.BOTTOM}
             />
           </View>
@@ -118,10 +118,7 @@ const MainImpl = ({ store }: MainScreenInterface) => {
             text={t<string>("main.availableToBorrow")}
             color={colors.blackText}
           />
-          <Button
-            text={t<string>("main.liquidity")}
-            textColor={colors.primary}
-          />
+          <Button text={t<string>("main.liquidity")} />
         </View>
 
         <HintMessage message={t<string>("main.borrowHint")} />
@@ -138,8 +135,6 @@ const MainImpl = ({ store }: MainScreenInterface) => {
           ))}
         </View>
       </View>
-
-      {/*<FloatingHintMessage message={t<string>("hints.first")} />*/}
     </View>
   );
 };
