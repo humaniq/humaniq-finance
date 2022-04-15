@@ -34,12 +34,12 @@ export const TokenItem: React.FC<TokenItemProps> = ({
         <Avatar className="avatar" size={30} icon={btcIcon} />
         <View className="right" direction={ViewDirections.COLUMN}>
           <View className="row">
-            <Text color={colors.blackText} text={title} />
-            <Text size={17} color={colors.blackText} text={amount} />
+            <Text className="title" text={title} />
+            <Text className="title" text={amount} />
           </View>
           <View className="row-2">
-            <Text color={colors.textGrey} text={subTitle} />
-            <Text size={15} color={colors.textGrey} text={subAmount} />
+            <Text className="title" text={subTitle} />
+            <Text className="title" text={subAmount} />
           </View>
           <Divider marginT={10} />
           <Button

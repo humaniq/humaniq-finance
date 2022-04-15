@@ -12,10 +12,12 @@ import { MainViewModel } from "./MainViewModel";
 import { Button } from "../../components/ui/button/Button";
 import { HintMessage } from "../../components/ui/hint/HintMessage";
 import { InfoButton, PLACEMENT } from "../../components/info-button/InfoButton";
-import { CircularProgressbar } from "react-circular-progressbar";
+import { CircularProgressbarWithChildren } from "react-circular-progressbar";
+import { ReactComponent as Ellipse } from "../../assets/images/ellipse.svg";
 
 import "../../styles/circular.sass";
 import "./Main.sass";
+import { LinearProgress } from "../../components/ui/progress/LinearProgress";
 
 export interface MainScreenInterface {
   view: MainViewModel;
@@ -32,12 +34,16 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
           <AddressView title={view.getFormattedAddress} onClick={() => {}} />
         </View>
         <View style={{ marginTop: 16 }}>
-          <CircularProgressbar
+          <CircularProgressbarWithChildren
+            background={true}
             strokeWidth={4}
             className="circle"
             value={90}
-            text={`${90}%`}
-          />
+          >
+            <Ellipse width="100%" height="100%" className="ellipse" />
+            <span className="circle-title">% per year</span>
+            <span className="circle-amount">2.70</span>
+          </CircularProgressbarWithChildren>
           <View className="deposit-balance" direction={ViewDirections.COLUMN}>
             <View style={{ marginBottom: 8 }} direction={ViewDirections.COLUMN}>
               <Text
@@ -46,7 +52,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 className="label"
                 text={t("main.deposited")}
               />
-              <Text size={24} className="balance" text="$0" />
+              <Text size={24} className="balance" color={"#fff"} text="$0" />
             </View>
             <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
               <Text
@@ -55,7 +61,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 className="label"
                 text={t("main.borrowed")}
               />
-              <Text size={24} className="balance" text="$0" />
+              <Text size={24} className="balance" color={"#fff"} text="$0" />
             </View>
           </View>
         </View>
@@ -72,7 +78,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
               placement={PLACEMENT.BOTTOM}
             />
           </View>
-          {/*<LinearProgress/>*/}
+          <LinearProgress progress={0} amount="102.34$" />
         </View>
       </MainInfoHeader>
       <View className="content" direction={ViewDirections.COLUMN}>
@@ -114,7 +120,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
               color={colors.blackText}
             />
           </View>
-          <Button text={t("main.liquidity")} />
+          <Button className="liquidity-btn" text={t("main.liquidity")} />
         </View>
         <HintMessage message={t("main.borrowHint")} />
         <View direction={ViewDirections.COLUMN}>

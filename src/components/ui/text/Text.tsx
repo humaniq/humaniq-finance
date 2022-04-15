@@ -22,8 +22,8 @@ export interface TextProps {
  */
 export const Text: React.FC<TextProps> = ({
   text,
-  size = 14,
-  color = "#fff",
+  size,
+  color,
   style = {},
   className,
   ...rest

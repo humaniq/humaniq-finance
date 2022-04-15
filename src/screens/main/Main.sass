@@ -26,7 +26,26 @@
   filter: drop-shadow(0px 5px 15px rgba(129, 212, 254, 0.4))
   align-items: center
   justify-content: center
+  overflow: hidden
 
+.ellipse
+  position: absolute
+  width: 124px
+  height: 124px
+  margin-top: 6px
+
+.circle-title
+  color: rgba(255, 255, 255, 0.4)
+  font-weight: 400
+  font-style: normal
+  font-size: 12px
+
+.circle-amount
+  color: $white
+  font-weight: 500
+  font-style: normal
+  font-size: 20px
+  margin-top: 4px
 
 .circle-label
   font-style: normal
@@ -50,15 +69,13 @@
     align-items: center
     letter-spacing: 0.5px
 
-
   .balance
     font-style: normal
     font-weight: 700
     line-height: 26px
     align-items: center
     letter-spacing: 0.5px
-    margin-top: 4px
-
+    margin-top: 5px
 
 .borrow-limit
   margin-top: 18px
@@ -102,3 +119,10 @@
     align-items: center
     letter-spacing: 0.5px
     margin-right: 6px
+
+  .liquidity-btn
+    font-size: 14px
+    font-weight: 500
+    font-style: normal
+    letter-spacing: 0.5px
+    color: $primary
