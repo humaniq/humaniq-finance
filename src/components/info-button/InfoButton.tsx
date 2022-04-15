@@ -1,4 +1,4 @@
-import React, { useState, FC } from "react";
+import React, { useState } from "react";
 import { ReactComponent as InfoIcon } from "../../assets/icons/info.svg";
 import "./styles.sass";
 import Tooltip from "rc-tooltip";
@@ -16,6 +16,7 @@ export enum PLACEMENT {
 export interface InfoButtonProps {
   message: string | React.ReactElement;
   placement?: PLACEMENT;
+  color?: string;
 }
 
 /**
@@ -23,11 +24,13 @@ export interface InfoButtonProps {
  *
  * @param message
  * @param placement
+ * @param color
  * @constructor
  */
-export const InfoButton: FC<InfoButtonProps> = ({
+export const InfoButton: React.FC<InfoButtonProps> = ({
   message = "",
   placement = PLACEMENT.RIGHT,
+  color = "white",
 }) => {
   const [visible, setVisible] = useState(false);
 
@@ -62,7 +65,7 @@ export const InfoButton: FC<InfoButtonProps> = ({
         <InfoIcon
           width={14}
           height={14}
-          color={"white"}
+          color={color}
           style={{ opacity: 0.5 }}
         />
       </Tooltip>

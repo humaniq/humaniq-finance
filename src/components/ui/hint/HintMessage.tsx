@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import { View, ViewDirections } from "../view/View";
 import lamp from "../../../assets/images/ic_lamp.svg";
 import { Text } from "../text/Text";
@@ -16,7 +16,7 @@ export interface HintMessageProps {
  * @param backgroundColor
  * @constructor
  */
-export const HintMessage: FC<HintMessageProps> = ({
+export const HintMessage: React.FC<HintMessageProps> = ({
   message,
   backgroundColor = colors.white,
 }) => {

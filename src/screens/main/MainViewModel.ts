@@ -1,3 +1,7 @@
+import { makeAutoObservable, makeObservable } from "mobx";
+import { renderShortAddress } from "../../utils/address";
+import { t } from "i18next";
+
 export class MainViewModel {
   tokenList = [
     {
@@ -60,4 +64,14 @@ export class MainViewModel {
       amountCOIN: "100",
     },
   ];
+
+  constructor() {
+    makeAutoObservable(this);
+  }
+
+  currentAddress?: string = "0xCA112f9Dec9790EAAd4F678901196BeEaaEB4C60";
+
+  get getFormattedAddress() {
+    return renderShortAddress(this.currentAddress) || t("wallet.notConnected");
+  }
 }

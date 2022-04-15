@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from "react";
+import React, { ReactNode } from "react";
 import "./View.style.sass";
 
 export enum ViewDirections {
@@ -23,7 +23,7 @@ export interface ViewProps {
  * @param rest
  * @constructor
  */
-export const View: FC<ViewProps> = ({
+export const View: React.FC<ViewProps> = ({
   direction = ViewDirections.ROW,
   children,
   style,

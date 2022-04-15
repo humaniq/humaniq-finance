@@ -11,36 +11,33 @@ import { withStore } from "../../utils/hoc";
 import { MainViewModel } from "./MainViewModel";
 import { Button } from "../../components/ui/button/Button";
 import { HintMessage } from "../../components/ui/hint/HintMessage";
-import "./Main.sass";
 import { InfoButton, PLACEMENT } from "../../components/info-button/InfoButton";
+import { CircularProgressbar } from "react-circular-progressbar";
+
+import "../../styles/circular.sass";
+import "./Main.sass";
 
 export interface MainScreenInterface {
-  store: MainViewModel;
+  view: MainViewModel;
 }
 
-const MainImpl = ({ store }: MainScreenInterface) => {
+const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
   const { t } = useTranslation();
 
   return (
     <View className="main" direction={ViewDirections.COLUMN}>
       <MainInfoHeader className="header">
         <View className={"row"}>
-          <View>
-            <Text className={"logoText"} text={t("appName")} />
-            <InfoButton
-              message={t("hints.first")}
-              placement={PLACEMENT.BOTTOM}
-            />
-          </View>
-
-          <AddressView title="0x41...0b65" onClick={() => {}} />
+          <Text size={24} className={"logoText"} text={t("appName")} />
+          <AddressView title={view.getFormattedAddress} onClick={() => {}} />
         </View>
-
         <View style={{ marginTop: 16 }}>
-          <View className="circle">
-            <Text className="circle-label" text="123123" />
-          </View>
-
+          <CircularProgressbar
+            strokeWidth={4}
+            className="circle"
+            value={90}
+            text={`${90}%`}
+          />
           <View className="deposit-balance" direction={ViewDirections.COLUMN}>
             <View style={{ marginBottom: 8 }} direction={ViewDirections.COLUMN}>
               <Text
@@ -51,7 +48,6 @@ const MainImpl = ({ store }: MainScreenInterface) => {
               />
               <Text size={24} className="balance" text="$0" />
             </View>
-
             <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
               <Text
                 size={16}
@@ -63,45 +59,38 @@ const MainImpl = ({ store }: MainScreenInterface) => {
             </View>
           </View>
         </View>
-
         <View className="borrow-limit" direction={ViewDirections.COLUMN}>
-          <View>
+          <View className="alignH">
             <Text
               size={15}
               color={colors.greyHalf}
               className="label"
               text={t("main.borrowLimit")}
             />
-          </View>
-
-          <View style={{ marginTop: 10, alignItems: "center" }}>
-            <Text
-              color={colors.white}
-              className="left-progress"
-              size={14}
-              text="0%"
-            />
-            <View className="progress" direction={ViewDirections.COLUMN} />
-            <Text
-              color={colors.greyHalf}
-              className="right-progress"
-              size={14}
-              text="$0.00"
+            <InfoButton
+              message={t("hints.borrowLimit")}
+              placement={PLACEMENT.BOTTOM}
             />
           </View>
+          {/*<LinearProgress/>*/}
         </View>
       </MainInfoHeader>
-
       <View className="content" direction={ViewDirections.COLUMN}>
-        <Text
-          size={16}
-          className="label"
-          color={colors.blackText}
-          text={t("main.walletBalance")}
-        />
-
+        <View className="alignH">
+          <Text
+            size={16}
+            className="label"
+            color={colors.blackText}
+            text={t("main.walletBalance")}
+          />
+          <InfoButton
+            message={t("hints.balance")}
+            placement={PLACEMENT.BOTTOM}
+            color={colors.blackText}
+          />
+        </View>
         <View direction={ViewDirections.COLUMN}>
-          {store.tokenList.map((item, index) => (
+          {view.tokenList.map((item, index) => (
             <TokenItem
               key={`token_item_${item.id}_${index}`}
               title={item.title}
@@ -111,26 +100,32 @@ const MainImpl = ({ store }: MainScreenInterface) => {
             />
           ))}
         </View>
-
         <View className="borrow-available">
-          <Text
-            size={16}
-            text={t("main.availableToBorrow")}
-            color={colors.blackText}
-          />
+          <View className="alignH">
+            <Text
+              className="label"
+              size={16}
+              text={t("main.availableToBorrow")}
+              color={colors.blackText}
+            />
+            <InfoButton
+              message={t("hints.borrowAvailable")}
+              placement={PLACEMENT.BOTTOM}
+              color={colors.blackText}
+            />
+          </View>
           <Button text={t("main.liquidity")} />
         </View>
-
         <HintMessage message={t("main.borrowHint")} />
-
         <View direction={ViewDirections.COLUMN}>
-          {store.tokenList.map((item, index) => (
+          {view.tokenList.map((item, index) => (
             <TokenItem
               key={`borrow_item_${item.id}_${index}`}
               title={item.title}
               subTitle={item.coin}
               amount={item.amountUSD}
               subAmount={item.amountCOIN}
+              disabled={index % 2 === 0}
             />
           ))}
         </View>

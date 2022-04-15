@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import "./Text.style.sass";
 
 export interface TextProps {
@@ -20,7 +20,7 @@ export interface TextProps {
  * @param rest
  * @constructor
  */
-export const Text: FC<TextProps> = ({
+export const Text: React.FC<TextProps> = ({
   text,
   size = 14,
   color = "#fff",

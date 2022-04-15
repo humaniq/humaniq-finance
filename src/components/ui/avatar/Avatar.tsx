@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from "react";
+import React, { ReactNode } from "react";
 import { View } from "../view/View";
 import "./Avatar.style.sass";
 
@@ -19,7 +19,12 @@ export interface AvatarProps {
  * @param className
  * @constructor
  */
-export const Avatar: FC<AvatarProps> = ({ icon, size, style, className }) => {
+export const Avatar: React.FC<AvatarProps> = ({
+  icon,
+  size,
+  style,
+  className,
+}) => {
   return (
     <View
       className={`avatar-container br-50 ${className}`}

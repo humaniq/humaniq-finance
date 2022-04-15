@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import { View } from "./view/View";
 import { Text } from "./text/Text";
 import colors from "../../utils/colors";
@@ -11,7 +11,7 @@ export interface FloatingHintMessageProps {
   className?: string;
 }
 
-export const FloatingHintMessage: FC<FloatingHintMessageProps> = ({
+export const FloatingHintMessage: React.FC<FloatingHintMessageProps> = ({
   message,
   backgroundColor = colors.primary,
   className,
