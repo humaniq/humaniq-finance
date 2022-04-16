@@ -1,19 +1,22 @@
 @import "../../../styles/colors"
 
-.tkn-container
+.liquidity-tkn-container
   flex-direction: column
   margin-bottom: 8px
   .content
+    display: flex
+    flex-direction: row
     background-color: $white
     border-radius: 12px
-    align-items: flex-start
-    flex-direction: row
+    align-items: center
+    justify-content: center
     margin-top: 10px
-    .right
-      flex: 1
-      margin-left: 12px
     .row
+      display: flex
+      flex: 1
+      flex-direction: row
       justify-content: space-between
+      margin-left: 12px
       margin-bottom: 5px
       margin-right: 10px
       .title
@@ -22,18 +25,8 @@
         font-size: 17px
         letter-spacing: 0.5px
         color: $textBlack
-    .row-2
-      justify-content: space-between
-      margin-top: 5px
-      margin-right: 10px
-      .title
-        font-style: normal
-        font-weight: 400
-        font-size: 15px
-        letter-spacing: 0.5px
-        color: $grey-text
   .avatar
-    margin-left: 10px
+    margin-left: 2px
   .button
     margin-top: 11px
     margin-right: 8px

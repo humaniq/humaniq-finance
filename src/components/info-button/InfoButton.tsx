@@ -66,6 +66,7 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
         placement={placement}
       >
         <InfoIcon
+          className="info-icon"
           width={size}
           height={size}
           color={color}

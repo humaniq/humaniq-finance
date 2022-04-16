@@ -1,7 +1,6 @@
 import React from "react";
 import { View, ViewDirections } from "../../ui/view/View";
 import { Text } from "../../ui/text/Text";
-import colors from "../../../utils/colors";
 import btcIcon from "../../../assets/images/ic_btc.svg";
 import { Avatar } from "../../ui/avatar/Avatar";
 import { Divider } from "../../ui/divider/Divider";

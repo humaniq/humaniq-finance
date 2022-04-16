@@ -1,4 +1,4 @@
-import { makeAutoObservable, makeObservable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { renderShortAddress } from "../../utils/address";
 import { t } from "i18next";
 
