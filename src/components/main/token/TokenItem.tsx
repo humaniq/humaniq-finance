@@ -29,7 +29,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
 }) => {
   return (
     <div className={`tkn-container ${className}`} {...rest}>
-      <View className="content">
+      <View className="tkn-container-content">
         <Avatar className="avatar" size={30} icon={btcIcon} />
         <View className="right" direction={ViewDirections.COLUMN}>
           <View className="row">
@@ -43,7 +43,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
           <Divider marginT={10} />
           <Button
             disabled={disabled}
-            className="button"
+            className="token-button"
             onClick={onClick}
             text="Deposit 4.06%"
           />
