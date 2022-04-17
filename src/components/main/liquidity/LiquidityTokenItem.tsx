@@ -25,8 +25,8 @@ export const LiquidityTokenItem: React.FC<LiquidityTokenItemProps> = ({
   ...rest
 }) => {
   return (
-    <div className={`liquidity-tkn-container ${className}`} {...rest}>
-      <div className="content">
+    <div className={`liquidity-tkn-container`} {...rest}>
+      <div className="liquidity-tkn-content">
         <Avatar className="avatar" size={30} icon={btcIcon} />
         <div className="row">
           <Text className="title" text={title} />

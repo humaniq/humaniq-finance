@@ -10,9 +10,13 @@ import { TokenItem } from "../main/token/TokenItem";
 
 export interface AvailableBorrowProps {
   list: any[];
+  onPress?: () => void;
 }
 
-export const AvailableBorrow: React.FC<AvailableBorrowProps> = ({ list }) => {
+export const AvailableBorrow: React.FC<AvailableBorrowProps> = ({
+  list,
+  onPress,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -31,7 +35,11 @@ export const AvailableBorrow: React.FC<AvailableBorrowProps> = ({ list }) => {
             color={colors.blackText}
           />
         </div>
-        <Button className="liquidity-btn" text={t("main.liquidity")} />
+        <Button
+          onClick={onPress}
+          className="liquidity-btn"
+          text={t("main.liquidity")}
+        />
       </div>
       <HintMessage message={t("main.borrowHint")} />
       <div className="list">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { MainInfoHeader } from "../../components/main/header/MainInfoHeader";
@@ -26,6 +26,7 @@ export interface MainScreenInterface {
 }
 
 const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
+  const [visible, setVisible] = useState(false);
   const { t } = useTranslation();
 
   return (
@@ -100,10 +101,15 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
         <View className="content" direction={ViewDirections.COLUMN}>
           <Deposits list={view.tokenList} />
           <WalletBalance list={view.tokenList} />
-          <AvailableBorrow list={view.tokenList} />
+          <AvailableBorrow
+            list={view.tokenList}
+            onPress={() => setVisible(true)}
+          />
         </View>
       </View>
       <LiquidityBottomSheet
+        visible={visible}
+        setVisible={() => setVisible(false)}
         list={view.tokenList.filter((item) => item.id === 0)}
       />
     </>

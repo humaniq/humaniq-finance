@@ -2,22 +2,30 @@ import React from "react";
 import { BottomSheet } from "react-spring-bottom-sheet";
 import { Text } from "../ui/text/Text";
 import colors from "../../utils/colors";
-import { TokenItem } from "../main/token/TokenItem";
 import { useTranslation } from "react-i18next";
-import "./LiquidityBottomSheet.style.sass";
 import { LiquidityTokenItem } from "../main/liquidity/LiquidityTokenItem";
+
+import "./LiquidityBottomSheet.style.sass";
 
 export interface LiquidityBottomSheetProps {
   list: any[];
+  visible: boolean;
+  setVisible: () => void;
 }
 
 export const LiquidityBottomSheet: React.FC<LiquidityBottomSheetProps> = ({
   list = [],
+  visible,
+  setVisible,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <BottomSheet open={true} header={<div></div>}>
+    <BottomSheet
+      open={visible}
+      className="liquidity-sheet-container"
+      onDismiss={setVisible}
+    >
       <div className="liquidity-sheet-content">
         <Text
           size={16}
