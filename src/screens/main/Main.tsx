@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { MainInfoHeader } from "../../components/main/header/MainInfoHeader";
@@ -6,136 +6,113 @@ import { View, ViewDirections } from "../../components/ui/view/View";
 import { Text } from "../../components/ui/text/Text";
 import { AddressView } from "../../components/main/address/AddressView";
 import colors from "../../utils/colors";
-import { TokenItem } from "../../components/main/token/TokenItem";
 import { withStore } from "../../utils/hoc";
 import { MainViewModel } from "./MainViewModel";
-import { Button } from "../../components/ui/button/Button";
-import { HintMessage } from "../../components/ui/hint/HintMessage";
-import "./Main.sass";
 import { InfoButton, PLACEMENT } from "../../components/info-button/InfoButton";
+import { CircularProgressbarWithChildren } from "react-circular-progressbar";
+import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg";
+import { LinearProgress } from "../../components/ui/progress/LinearProgress";
+import { LiquidityBottomSheet } from "../../components/bottom-sheet/LiquidityBottomSheet";
+import { WalletBalance } from "../../components/wallet/WalletBalance";
+import { AvailableBorrow } from "../../components/borrow/AvailableBorrow";
+import { Deposits } from "../../components/deposit/Deposits";
+
+import "react-spring-bottom-sheet/dist/style.css";
+import "../../styles/circular.sass";
+import "./Main.sass";
 
 export interface MainScreenInterface {
-  store: MainViewModel;
+  view: MainViewModel;
 }
 
-const MainImpl = ({ store }: MainScreenInterface) => {
+const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
+  const [visible, setVisible] = useState(false);
   const { t } = useTranslation();
 
   return (
-    <View className="main" direction={ViewDirections.COLUMN}>
-      <MainInfoHeader className="header">
-        <View className={"row"}>
-          <View>
+    <>
+      <View className="main" direction={ViewDirections.COLUMN}>
+        <MainInfoHeader className="header">
+          <View className={"row"}>
             <Text className={"logoText"} text={t("appName")} />
-            <InfoButton
-              message={t("hints.first")}
-              placement={PLACEMENT.BOTTOM}
-            />
+            <AddressView title={view.getFormattedAddress} onClick={undefined} />
           </View>
-
-          <AddressView title="0x41...0b65" onClick={() => {}} />
-        </View>
-
-        <View style={{ marginTop: 16 }}>
-          <View className="circle">
-            <Text className="circle-label" text="123123" />
-          </View>
-
-          <View className="deposit-balance" direction={ViewDirections.COLUMN}>
-            <View style={{ marginBottom: 8 }} direction={ViewDirections.COLUMN}>
-              <Text
-                size={16}
-                color={"#0066DA"}
-                className="label"
-                text={t("main.deposited")}
-              />
-              <Text size={24} className="balance" text="$0" />
+          <View style={{ marginTop: 16 }}>
+            <CircularProgressbarWithChildren
+              background={true}
+              strokeWidth={4}
+              className="circle"
+              value={90}
+            >
+              <EllipseIcon width="100%" height="100%" className="ellipse" />
+              <span className="circle-title">% per year</span>
+              <span className="circle-amount">2.70</span>
+            </CircularProgressbarWithChildren>
+            <View className="deposit-balance" direction={ViewDirections.COLUMN}>
+              <View
+                style={{ marginBottom: 8 }}
+                direction={ViewDirections.COLUMN}
+              >
+                <Text
+                  size={16}
+                  color={"#0066DA"}
+                  className="label"
+                  text={t("main.deposited")}
+                />
+                <Text
+                  size={24}
+                  className="balance"
+                  color={"#fff"}
+                  text="$100.00"
+                />
+              </View>
+              <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
+                <Text
+                  size={16}
+                  color={"#895EF2"}
+                  className="label"
+                  text={t("main.borrowed")}
+                />
+                <Text
+                  size={24}
+                  className="balance"
+                  color={"#fff"}
+                  text="$40.00"
+                />
+              </View>
             </View>
-
-            <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
+          </View>
+          <View className="borrow-limit" direction={ViewDirections.COLUMN}>
+            <View className="alignH">
               <Text
-                size={16}
-                color={"#895EF2"}
+                size={15}
+                color={colors.greyHalf}
                 className="label"
-                text={t("main.borrowed")}
+                text={t("main.borrowLimit")}
               />
-              <Text size={24} className="balance" text="$0" />
+              <InfoButton
+                message={t("hints.borrowLimit")}
+                placement={PLACEMENT.BOTTOM}
+              />
             </View>
+            <LinearProgress progress={40} amount="102.34$" />
           </View>
-        </View>
-
-        <View className="borrow-limit" direction={ViewDirections.COLUMN}>
-          <View>
-            <Text
-              size={15}
-              color={colors.greyHalf}
-              className="label"
-              text={t("main.borrowLimit")}
-            />
-          </View>
-
-          <View style={{ marginTop: 10, alignItems: "center" }}>
-            <Text
-              color={colors.white}
-              className="left-progress"
-              size={14}
-              text="0%"
-            />
-            <View className="progress" direction={ViewDirections.COLUMN} />
-            <Text
-              color={colors.greyHalf}
-              className="right-progress"
-              size={14}
-              text="$0.00"
-            />
-          </View>
-        </View>
-      </MainInfoHeader>
-
-      <View className="content" direction={ViewDirections.COLUMN}>
-        <Text
-          size={16}
-          className="label"
-          color={colors.blackText}
-          text={t("main.walletBalance")}
-        />
-
-        <View direction={ViewDirections.COLUMN}>
-          {store.tokenList.map((item, index) => (
-            <TokenItem
-              key={`token_item_${item.id}_${index}`}
-              title={item.title}
-              subTitle={item.coin}
-              amount={item.amountUSD}
-              subAmount={item.amountCOIN}
-            />
-          ))}
-        </View>
-
-        <View className="borrow-available">
-          <Text
-            size={16}
-            text={t("main.availableToBorrow")}
-            color={colors.blackText}
+        </MainInfoHeader>
+        <View className="content" direction={ViewDirections.COLUMN}>
+          <Deposits list={view.tokenList} />
+          <WalletBalance list={view.tokenList} />
+          <AvailableBorrow
+            list={view.tokenList}
+            onPress={() => setVisible(true)}
           />
-          <Button text={t("main.liquidity")} />
-        </View>
-
-        <HintMessage message={t("main.borrowHint")} />
-
-        <View direction={ViewDirections.COLUMN}>
-          {store.tokenList.map((item, index) => (
-            <TokenItem
-              key={`borrow_item_${item.id}_${index}`}
-              title={item.title}
-              subTitle={item.coin}
-              amount={item.amountUSD}
-              subAmount={item.amountCOIN}
-            />
-          ))}
         </View>
       </View>
-    </View>
+      <LiquidityBottomSheet
+        visible={visible}
+        setVisible={() => setVisible(false)}
+        list={view.tokenList.filter((item) => item.id === 0)}
+      />
+    </>
   );
 };
 

@@ -7,5 +7,5 @@ export const withStore =
       return new Store();
     }, []);
 
-    return <Component store={store} {...props} />;
+    return <Component view={store} {...props} />;
   };

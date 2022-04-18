@@ -1,5 +1,5 @@
-import React, { useState, FC } from "react";
-import { ReactComponent as InfoIcon } from "../../assets/icons/info.svg";
+import React, { useState } from "react";
+import { ReactComponent as InfoIcon } from "../../assets/icons/question.svg";
 import "./styles.sass";
 import Tooltip from "rc-tooltip";
 import "./tolltip.sass";
@@ -16,6 +16,8 @@ export enum PLACEMENT {
 export interface InfoButtonProps {
   message: string | React.ReactElement;
   placement?: PLACEMENT;
+  color?: string;
+  size?: number;
 }
 
 /**
@@ -23,11 +25,15 @@ export interface InfoButtonProps {
  *
  * @param message
  * @param placement
+ * @param color
+ * @param size
  * @constructor
  */
-export const InfoButton: FC<InfoButtonProps> = ({
+export const InfoButton: React.FC<InfoButtonProps> = ({
   message = "",
   placement = PLACEMENT.RIGHT,
+  color = "white",
+  size = 15,
 }) => {
   const [visible, setVisible] = useState(false);
 
@@ -37,14 +43,14 @@ export const InfoButton: FC<InfoButtonProps> = ({
     <div className={"infoBtn"}>
       <Tooltip
         visible={visible}
-        onVisibleChange={(val) => setVisible(val)}
+        onVisibleChange={setVisible}
         overlay={
           ifString ? (
             <View
               direction={ViewDirections.COLUMN}
               className={"messageContainer"}
             >
-              <View className={"message"}>{message}</View>
+              <span className={"message"}>{message}</span>
               <View className={"right"}>
                 <span onClick={() => setVisible(false)} className="okBtn">
                   {t<string>("general.ok")}
@@ -55,14 +61,15 @@ export const InfoButton: FC<InfoButtonProps> = ({
             message
           )
         }
-        trigger={"click"}
+        trigger="click"
         animation="zoom"
         placement={placement}
       >
         <InfoIcon
-          width={14}
-          height={14}
-          color={"white"}
+          className="info-icon"
+          width={size}
+          height={size}
+          color={color}
           style={{ opacity: 0.5 }}
         />
       </Tooltip>

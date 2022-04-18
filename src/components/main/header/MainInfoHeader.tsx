@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from "react";
+import React, { ReactNode } from "react";
 import "./MainInfoHeader.style.sass";
 
 export interface MainInfoHeaderProps {
@@ -16,7 +16,7 @@ export interface MainInfoHeaderProps {
  * @param className
  * @constructor
  */
-export const MainInfoHeader: FC<MainInfoHeaderProps> = ({
+export const MainInfoHeader: React.FC<MainInfoHeaderProps> = ({
   children,
   style = {},
   className,

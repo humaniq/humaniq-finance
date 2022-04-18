@@ -1,14 +1,14 @@
-import React, { FC } from "react";
+import React from "react";
 import "./AddressView.style.sass";
 
 export interface AddressViewProps {
-  title: string;
+  title?: string;
   onClick?: () => void;
   style?: any;
   className?: string;
 }
 
-export const AddressView: FC<AddressViewProps> = ({
+export const AddressView: React.FC<AddressViewProps> = ({
   title,
   onClick,
   style = {},

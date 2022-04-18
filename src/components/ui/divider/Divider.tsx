@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import colors from "../../../utils/colors";
 
 export interface DividerProps {
@@ -19,7 +19,7 @@ export interface DividerProps {
  * @param className
  * @constructor
  */
-export const Divider: FC<DividerProps> = ({
+export const Divider: React.FC<DividerProps> = ({
   height = 0.5,
   color = colors.grey,
   marginT = 0,

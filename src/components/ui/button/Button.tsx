@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import "./Button.style.sass";
 
 export interface ButtonProps {
@@ -20,7 +20,7 @@ export interface ButtonProps {
  * @param props
  * @constructor
  */
-export const Button: FC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
   text,
   onClick,
   className,
