@@ -5,6 +5,8 @@ import btcIcon from "../../../assets/images/ic_btc.svg";
 import { Avatar } from "../../ui/avatar/Avatar";
 import { Divider } from "../../ui/divider/Divider";
 import { Button } from "../../ui/button/Button";
+import { useTranslation } from "react-i18next";
+
 import "./TokenItem.style.sass";
 
 export interface TokenItemProps {
@@ -15,6 +17,8 @@ export interface TokenItemProps {
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
+  showButton?: boolean;
+  insufficientBalance?: boolean;
 }
 
 export const TokenItem: React.FC<TokenItemProps> = ({
@@ -25,8 +29,12 @@ export const TokenItem: React.FC<TokenItemProps> = ({
   onClick,
   className,
   disabled,
+  showButton = true,
+  insufficientBalance = false,
   ...rest
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className={`tkn-container ${className}`} {...rest}>
       <View className="tkn-container-content">
@@ -40,13 +48,25 @@ export const TokenItem: React.FC<TokenItemProps> = ({
             <Text className="title" text={subTitle} />
             <Text className="title" text={subAmount} />
           </View>
-          <Divider marginT={10} />
-          <Button
-            disabled={disabled}
-            className="token-button"
-            onClick={onClick}
-            text="Deposit 4.06%"
-          />
+          {showButton && (
+            <>
+              <Divider marginT={10} />
+              <Button
+                disabled={disabled}
+                className="token-button"
+                onClick={onClick}
+                text="Deposit 4.06%"
+              />
+            </>
+          )}
+          {insufficientBalance && (
+            <>
+              <Divider marginT={10} />
+              <span className="insufficient">
+                {t<string>("insufficientBalance")}
+              </span>
+            </>
+          )}
         </View>
       </View>
     </div>
