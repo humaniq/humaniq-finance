@@ -23,8 +23,8 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          {/*<Route path={routes.home.path} element={<Main/>}/>*/}
-          <Route path={routes.home.path} element={<Calc />} />
+          <Route path={routes.home.path} element={<Main />} />
+          <Route path={routes.calc.path} element={<Calc />} />
         </Routes>
       </Router>
     </div>

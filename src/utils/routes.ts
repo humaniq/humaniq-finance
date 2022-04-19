@@ -2,7 +2,7 @@ const routes = {
   home: {
     path: "/",
   },
-  details: {
+  calc: {
     path: "/details",
   },
 };
