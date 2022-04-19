@@ -35,7 +35,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
         <MainInfoHeader className="header">
           <View className={"row"}>
             <Text className={"logoText"} text={t("appName")} />
-            <AddressView title={view.getFormattedAddress} onClick={undefined} />
+            <AddressView title={view.getFormattedAddress} />
           </View>
           <View style={{ marginTop: 16 }}>
             <CircularProgressbarWithChildren

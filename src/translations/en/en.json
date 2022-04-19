@@ -2,6 +2,7 @@
   "appName": "Humaniq finance",
   "connectWallet": "Connect your Wallet",
   "notFound": "Not Found",
+  "insufficientBalance": "Insufficient balance",
   "main": {
     "deposited": "Deposited",
     "borrowed": "Borrowed",

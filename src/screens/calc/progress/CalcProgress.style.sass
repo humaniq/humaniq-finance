@@ -1,0 +1,45 @@
+@import "../../../styles/colors"
+
+.calc-progress-container
+  display: flex
+  flex-direction: column
+  margin-top: 10px
+  background-color: $white
+  padding-bottom: 16px
+  border-radius: 12px
+  .calc-progress-row
+    display: flex
+    flex-direction: row
+    align-items: center
+    padding: 1.3em 1em
+    border-radius: 12px
+    justify-content: space-between
+    .title
+      font-style: normal
+      font-weight: 400
+      font-size: 1.3em
+      letter-spacing: 0.5px
+      color: $grey-text
+    .value
+      font-style: normal
+      font-weight: 400
+      font-size: 1.3em
+      letter-spacing: 0.5px
+      color: $textBlack
+  .progress
+    border-radius: 40px
+    background-color: $grey-divider
+    height: 6px
+    margin-left: 10px
+    margin-right: 10px
+    .child
+     height: 100%
+     background-color: $orange-warning
+     border-radius: 40px
+    .text
+      color: $white
+      font-weight: 400
+      font-style: normal
+      font-size: 12px
+      letter-spacing: 0.5px
+      background-color: $blue-origin
