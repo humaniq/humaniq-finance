@@ -16,7 +16,6 @@ import { LiquidityBottomSheet } from "../../components/bottom-sheet/LiquidityBot
 import { WalletBalance } from "../../components/wallet/WalletBalance";
 import { AvailableBorrow } from "../../components/borrow/AvailableBorrow";
 import { Deposits } from "../../components/deposit/Deposits";
-
 import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
 import "./Main.sass";

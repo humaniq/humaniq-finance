@@ -6,7 +6,6 @@ import { Avatar } from "../../ui/avatar/Avatar";
 import { Divider } from "../../ui/divider/Divider";
 import { Button } from "../../ui/button/Button";
 import { useTranslation } from "react-i18next";
-
 import "./TokenItem.style.sass";
 
 export interface TokenItemProps {
@@ -15,6 +14,7 @@ export interface TokenItemProps {
   amount: string;
   subAmount: string;
   onClick?: () => void;
+  onButtonClick?: () => void;
   className?: string;
   disabled?: boolean;
   showButton?: boolean;
@@ -27,6 +27,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
   amount,
   subAmount,
   onClick,
+  onButtonClick,
   className,
   disabled,
   showButton = true,
@@ -36,8 +37,8 @@ export const TokenItem: React.FC<TokenItemProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`tkn-container ${className}`} {...rest}>
-      <View className="tkn-container-content">
+    <div onClick={onClick} className={`tkn-container ${className}`} {...rest}>
+      <div className="tkn-container-content">
         <Avatar className="avatar" size={30} icon={btcIcon} />
         <View className="right" direction={ViewDirections.COLUMN}>
           <View className="row">
@@ -54,7 +55,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
               <Button
                 disabled={disabled}
                 className="token-button"
-                onClick={onClick}
+                onClick={onButtonClick}
                 text="Deposit 4.06%"
               />
             </>
@@ -68,7 +69,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
             </>
           )}
         </View>
-      </View>
+      </div>
     </div>
   );
 };

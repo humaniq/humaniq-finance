@@ -1,6 +1,5 @@
 import React from "react";
 import { ReactComponent as CloseIcon } from "../../assets/icons/ic_close.svg";
-
 import "./Header.style.sass";
 
 export interface HeaderProps {

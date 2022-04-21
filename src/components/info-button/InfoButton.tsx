@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { ReactComponent as InfoIcon } from "../../assets/icons/question.svg";
+import { ReactComponent as InfoIcon } from "../../assets/icons/ic_question.svg";
 import "./styles.sass";
 import Tooltip from "rc-tooltip";
-import "./tolltip.sass";
 import { View, ViewDirections } from "../ui/view/View";
 import { t } from "i18next";
+import "./tolltip.sass";
 
 export enum PLACEMENT {
   TOP = "top",
@@ -53,7 +53,7 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
               <span className={"message"}>{message}</span>
               <View className={"right"}>
                 <span onClick={() => setVisible(false)} className="okBtn">
-                  {t<string>("general.ok")}
+                  {t<string>("general.clear")}
                 </span>
               </View>
             </View>

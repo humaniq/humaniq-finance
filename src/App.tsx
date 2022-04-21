@@ -6,7 +6,7 @@ import { ETHProvider } from "./stores/provider/providerStore";
 
 import b from "buffer";
 import { Main } from "./screens/main/Main";
-import { Calc } from "./screens/calc/Calc";
+import { Valuation } from "./screens/valuation/Valuation";
 
 window.Buffer = b.Buffer;
 
@@ -24,7 +24,7 @@ function App() {
       <Router>
         <Routes>
           <Route path={routes.home.path} element={<Main />} />
-          <Route path={routes.calc.path} element={<Calc />} />
+          <Route path={routes.valuation.path} element={<Valuation />} />
         </Routes>
       </Router>
     </div>

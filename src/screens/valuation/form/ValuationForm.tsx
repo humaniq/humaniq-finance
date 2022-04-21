@@ -1,14 +1,14 @@
 import React from "react";
 import { ReactComponent as MaxIcon } from "../../../assets/icons/ic_max.svg";
 import { ReactComponent as ChangeIcon } from "../../../assets/icons/ic_change.svg";
-
-import "./CalcForm.style.sass";
 import { Button } from "../../../components/ui/button/Button";
 import { CalcProgress } from "../progress/CalcProgress";
+import "./ValuationForm.style.sass";
+import { ReactComponent as ArrowRightIcon } from "../../../assets/icons/ic_arrow_right.svg";
 
 export interface CalcFormProps {}
 
-export const CalcForm: React.FC<CalcFormProps> = ({}) => {
+export const ValuationForm: React.FC<CalcFormProps> = ({}) => {
   return (
     <div className="calc-form">
       <span className="title">USD</span>
@@ -35,6 +35,15 @@ export const CalcForm: React.FC<CalcFormProps> = ({}) => {
       </div>
 
       <CalcProgress />
+
+      <div className="calc-row">
+        <span className="title">Borrow limit</span>
+        <div className="right-row">
+          <span className="value">$10.00</span>
+          <ArrowRightIcon width={20} height={20} className="arrow-icon" />
+          <span className="value">$120.00</span>
+        </div>
+      </div>
 
       <Button className="calc-btn" text="Deposit $0.00" />
     </div>
