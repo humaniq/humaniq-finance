@@ -5,8 +5,8 @@ import btcIcon from "../../../assets/images/ic_btc.svg";
 import { Avatar } from "../../ui/avatar/Avatar";
 import { Divider } from "../../ui/divider/Divider";
 import { Button } from "../../ui/button/Button";
-import { useTranslation } from "react-i18next";
 import "./TokenItem.style.sass";
+import { t } from "../../../translations/translate";
 
 export interface TokenItemProps {
   title: string;
@@ -34,8 +34,6 @@ export const TokenItem: React.FC<TokenItemProps> = ({
   insufficientBalance = false,
   ...rest
 }) => {
-  const { t } = useTranslation();
-
   return (
     <div onClick={onClick} className={`tkn-container ${className}`} {...rest}>
       <div className="tkn-container-content">
@@ -63,9 +61,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
           {insufficientBalance && (
             <>
               <Divider marginT={10} />
-              <span className="insufficient">
-                {t<string>("insufficientBalance")}
-              </span>
+              <span className="insufficient">{t("insufficientBalance")}</span>
             </>
           )}
         </View>
