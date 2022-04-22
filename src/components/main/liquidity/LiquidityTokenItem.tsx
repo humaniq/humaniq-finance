@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "../../ui/text/Text";
-import btcIcon from "../../../assets/images/ic_btc.svg";
+import BTCIcon from "../../../assets/images/ic_btc.svg";
 import { Avatar } from "../../ui/avatar/Avatar";
 import "./LiquidityTokenItem.style.sass";
 
@@ -27,7 +27,7 @@ export const LiquidityTokenItem: React.FC<LiquidityTokenItemProps> = ({
   return (
     <div className={`liquidity-tkn-container`} {...rest}>
       <div className="liquidity-tkn-content">
-        <Avatar className="avatar" size={30} icon={btcIcon} />
+        <Avatar className="avatar" size={30} icon={BTCIcon} />
         <div className="row">
           <Text className="title" text={title} />
           <Text className="title" text={amount} />

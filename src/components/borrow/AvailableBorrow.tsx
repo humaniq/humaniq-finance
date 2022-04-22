@@ -4,9 +4,9 @@ import colors from "../../utils/colors";
 import { InfoButton, PLACEMENT } from "../info-button/InfoButton";
 import { Button } from "../ui/button/Button";
 import { HintMessage } from "../ui/hint/HintMessage";
-import "./AvailableBorrow.style.sass";
 import { useTranslation } from "react-i18next";
 import { TokenItem } from "../main/token/TokenItem";
+import "./AvailableBorrow.style.sass";
 
 export interface AvailableBorrowProps {
   list: any[];

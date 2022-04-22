@@ -2,7 +2,7 @@ const routes = {
   home: {
     path: "/",
   },
-  calc: {
+  valuation: {
     path: "/details",
   },
 };

@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { View } from "../view/View";
 import "./Avatar.style.sass";
 
 export interface AvatarProps {
@@ -26,13 +25,13 @@ export const Avatar: React.FC<AvatarProps> = ({
   className,
 }) => {
   return (
-    <View
+    <div
       className={`avatar-container br-50 ${className}`}
       style={{
         ...style,
       }}
     >
       <img alt="" src={icon} style={{ width: size, height: size }} />
-    </View>
+    </div>
   );
 };

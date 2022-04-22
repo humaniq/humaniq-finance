@@ -4,7 +4,6 @@ import { Text } from "../ui/text/Text";
 import colors from "../../utils/colors";
 import { useTranslation } from "react-i18next";
 import { LiquidityTokenItem } from "../main/liquidity/LiquidityTokenItem";
-
 import "./LiquidityBottomSheet.style.sass";
 
 export interface LiquidityBottomSheetProps {

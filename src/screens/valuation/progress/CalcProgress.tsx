@@ -24,8 +24,11 @@ export const CalcProgress: React.FC<CalcProgressProps> = ({
         <span className="value">0%</span>
       </div>
 
-      <div className="progress">
-        <div className="child" style={{ width: `${progress}%` }} />
+      <div className="calc-progress">
+        <div
+          className="calc-progress-child"
+          style={{ width: `${progress}%` }}
+        />
       </div>
     </div>
   );
