@@ -9,3 +9,5 @@ export const toLowerCase = (str?: string) =>
 
 export const isEmpty = (str?: string) =>
   typeof str === "string" ? str.trim() === "" : true;
+
+export const hexToDecimal = (str: string) => parseInt(str, 16);

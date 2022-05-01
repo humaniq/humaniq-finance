@@ -27,6 +27,9 @@
     "deposits": "Here is your crypto that you have deposited. You can use them as collateral to borrow funds."
   },
   "wallet": {
-    "notConnected": "Not connected"
+    "notConnected": "Not connected",
+    "disconnect": "Disconnect",
+    "connect": "Connect",
+    "connectDescription": "Connect your wallet to proceed"
   }
 }

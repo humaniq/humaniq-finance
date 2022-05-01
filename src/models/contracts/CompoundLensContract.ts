@@ -434,6 +434,4 @@ const abi: AbiItem[] | AbiItem = [
   },
 ];
 
-export default (address?: string) => {
-  return new window.web3.eth.Contract(abi, address);
-};
+export default (address?: string) => new window.web3.eth.Contract(abi, address);

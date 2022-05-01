@@ -36,7 +36,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
     })();
 
     return () => view.unMounted();
-  }, []);
+  }, [view]);
 
   if (view.isRefreshing) return <Loader />;
 
@@ -46,7 +46,10 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
         <MainInfoHeader className="header">
           <View className={"row"}>
             <Text className={"logoText"} text={t("appName")} />
-            <AddressView title={view.getAccount} />
+            <AddressView
+              title={view.getAccount}
+              onClick={getProviderStore.disconnect}
+            />
           </View>
           <View style={{ marginTop: 16 }}>
             <CircularProgressbarWithChildren

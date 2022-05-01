@@ -1,7 +1,6 @@
-/* eslint-disable */
-import web3 from "./web3";
+import { AbiItem } from "web3-utils";
 
-const abi = [
+const abi: AbiItem | AbiItem[] = [
   {
     inputs: [
       {
@@ -920,7 +919,4 @@ const abi = [
   },
 ];
 
-// Here is just only abi because we haven't created auction yet.
-export default (address: string) => {
-  return new window.web3.eth.Contract(abi, address);
-};
+export default (address: string) => new window.web3.eth.Contract(abi, address);

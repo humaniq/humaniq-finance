@@ -17,8 +17,10 @@ export const getProviderStore = ETHProvider;
 export const App = observer(() => {
   useEffect(() => {
     (async () => {
-      await getProviderStore.start();
+      await getProviderStore.init();
     })();
+
+    return () => getProviderStore.removeListeners();
   }, []);
 
   return (

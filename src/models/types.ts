@@ -1,5 +1,3 @@
-export const types = {};
-
 export type BorrowSupplyItem = {
   cToken: string;
   exchangeRateCurrent: string;

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { BASE_URL } from "../../constants/api";
-import { formatRoute } from "../../utils/network";
+import { BASE_URL } from "constants/api";
+import { formatRoute } from "utils/network";
 
 export interface ApiServiceResponse<T> extends AxiosResponse<T> {
   isOk: boolean;

@@ -4,7 +4,7 @@ import "./Loader.style.sass";
 import colors from "utils/colors";
 import { t } from "translations/translate";
 
-export const Loader: React.FC = ({}) => {
+export const Loader = () => {
   return (
     <div className="loader-container">
       <TailSpin

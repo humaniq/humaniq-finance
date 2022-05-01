@@ -1,4 +1,4 @@
-import { action, makeAutoObservable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { getTotalEarned, URLS } from "constants/api";
 import { Comptroller } from "models/Comptroller";
 import { CompoundLens } from "models/CompoundLens";
@@ -44,6 +44,7 @@ export class HomeViewModel {
   ersdlBalance = 0;
   comptroller: any = null;
   cTokenAddressList: string[] = [];
+  ethAccount?: string | null = null;
   market = [];
   isRefreshing = true;
   networkId = 4;
@@ -55,13 +56,12 @@ export class HomeViewModel {
   liquidity = 0;
   netApy = 0;
   tokensGeneratingRewards: any;
-  ethAccount?: string | null;
 
   constructor() {
     makeAutoObservable(this, undefined, { autoBind: true });
+    this.networkId = getProviderStore.networkId;
+    this.chainId = getProviderStore.chainId;
     this.ethAccount = getProviderStore.currentAccount;
-    // this.networkId = getProviderStore.networkId
-    // this.chainId = getProviderStore.chainId
   }
 
   get getAccount() {
@@ -79,14 +79,6 @@ export class HomeViewModel {
   get getSupplyBalance() {
     return `$${this.totalSupply.toFixed(2)}`;
   }
-
-  // ethAccount(newValue: any) {
-  //   if (newValue) {
-  //     this.comptroller = new Comptroller(newValue)
-  //     this.cl = new CompoundLens(newValue)
-  //     this.init()
-  //   }
-  // }
 
   get isConnectionSupport() {
     return (

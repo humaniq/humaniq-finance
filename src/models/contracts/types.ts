@@ -7,3 +7,12 @@ export type tCompoundLensContract = {
 export type tAccountLiquidity = {
   [key: number]: string;
 };
+
+export type ProviderMessage = {
+  type: string;
+  message: unknown;
+};
+
+export type ConnectInfo = {
+  chainId: string;
+};

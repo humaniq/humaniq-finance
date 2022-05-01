@@ -1,10 +1,10 @@
 import React from "react";
-import { ReactComponent as MaxIcon } from "../../../assets/icons/ic_max.svg";
-import { ReactComponent as ChangeIcon } from "../../../assets/icons/ic_change.svg";
-import { Button } from "../../../components/ui/button/Button";
+import { ReactComponent as MaxIcon } from "assets/icons/ic_max.svg";
+import { ReactComponent as ChangeIcon } from "assets/icons/ic_change.svg";
+import { Button } from "components/ui/button/Button";
 import { CalcProgress } from "../progress/CalcProgress";
 import "./ValuationForm.style.sass";
-import { ReactComponent as ArrowRightIcon } from "../../../assets/icons/ic_arrow_right.svg";
+import { ReactComponent as ArrowRightIcon } from "assets/icons/ic_arrow_right.svg";
 
 export interface CalcFormProps {}
 

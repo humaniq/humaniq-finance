@@ -178,7 +178,4 @@ const abi: AbiItem[] | AbiItem = [
   },
 ];
 
-// Here is just only abi because we haven't created auction yet.
-export default (address?: string) => {
-  return new window.web3.eth.Contract(abi, address);
-};
+export default (address?: string) => new window.web3.eth.Contract(abi, address);
