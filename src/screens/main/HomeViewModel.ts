@@ -9,6 +9,7 @@ import Big from "big.js";
 import { getProviderStore } from "App";
 import { renderShortAddress } from "utils/address";
 import { t } from "i18next";
+import { BorrowSupplyItem } from "models/types";
 
 export class HomeViewModel {
   tokenList = [
@@ -31,10 +32,10 @@ export class HomeViewModel {
     },
   ];
 
-  supplyMarket = [];
-  userSuppliedMarket = [];
-  borrowMarket = [];
-  userBorrowedMarket = [];
+  supplyMarket: BorrowSupplyItem[] = [];
+  userSuppliedMarket: BorrowSupplyItem[] = [];
+  borrowMarket: BorrowSupplyItem[] = [];
+  userBorrowedMarket: BorrowSupplyItem[] = [];
   cl: any = null;
   ethMantissa = 1e18;
   blocksPerDay = 4 * 60 * 24;
@@ -44,7 +45,7 @@ export class HomeViewModel {
   comptroller: any = null;
   cTokenAddressList: string[] = [];
   market = [];
-  isRefreshing = false;
+  isRefreshing = true;
   networkId = 4;
   chainId = 4;
   ersdlPrice = 0;
@@ -88,8 +89,6 @@ export class HomeViewModel {
   // }
 
   get isConnectionSupport() {
-    console.log(URLS.NETWORK_ID);
-    console.log(this.networkId);
     return (
       +URLS.NETWORK_ID === this.networkId && +URLS.CHAIN_ID === this.chainId
     );
@@ -111,6 +110,10 @@ export class HomeViewModel {
         "<a href='https://github.com/UnFederalReserve/unfederalreserve.com/discussions/43' target='_blank'>send us a message </a> " +
         "and we will find some eth for you"
       : "";
+  }
+
+  get getBorrowLimit() {
+    return `${this.borrowLimit.toFixed(2)}$`;
   }
 
   calculateAPY = (ratePerBlock: any) => {
@@ -158,8 +161,6 @@ export class HomeViewModel {
         ? 0
         : ((totalEarning - totalSpending) * 100) / totalSupply;
     netApy = Math.round((netApy + Number.EPSILON) * 100) / 100;
-
-    console.log("exxx", totalBorrow);
 
     this.totalBorrow = totalBorrow;
     this.totalSupply = totalSupply;
@@ -389,6 +390,7 @@ export class HomeViewModel {
           (market.borrowBalance > 0 && market.borrowDistributionApy > 0)
       )
       .map((market: any) => market.cToken);
+
     this.setLoader(false);
   };
 

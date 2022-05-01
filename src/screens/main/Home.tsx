@@ -106,7 +106,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 placement={PLACEMENT.BOTTOM}
               />
             </View>
-            <LinearProgress progress={40} amount="102.34$" />
+            <LinearProgress progress={40} amount={view.getBorrowLimit} />
           </View>
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
