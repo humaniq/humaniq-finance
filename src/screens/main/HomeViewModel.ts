@@ -213,8 +213,8 @@ export class HomeViewModel {
       cTokenData.borrowBalance = balance.borrowBalanceCurrent;
       cTokenData.supplyBalance = balance.balanceOfUnderlying;
       cTokenData.balanceOf = balance.balanceOf;
-      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400;
-      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400;
+      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400; // TODO 0 default
+      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400; // TODO 0 default
 
       return cTokenData;
     });
@@ -371,6 +371,8 @@ export class HomeViewModel {
       (market: any) => market.borrowAllowed && market.borrowBalance == 0
     );
 
+    console.log("teat", JSON.stringify(this.borrowMarket));
+
     this.userBorrowedMarket = market.filter(
       (market: any) => market.borrowBalance > 0
     );
@@ -398,18 +400,6 @@ export class HomeViewModel {
       await this.init();
       this.setLoader(false);
     }
-    //
-    // eventBus.$on("market:refresh", () => {
-    //   this.isRefreshing = true;
-    //   this.init();
-    // });
-
-    // eventBus.$on("balance:refresh", this.setRewardsInfo);
-
-    // setInterval(() => {
-    //   this.isRefreshing = true
-    //   this.init()
-    // }, 1000 * 60)
   };
 
   unMounted = () => {};

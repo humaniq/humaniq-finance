@@ -14,13 +14,13 @@ import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg";
 import { LinearProgress } from "components/ui/progress/LinearProgress";
 import { LiquidityBottomSheet } from "components/bottom-sheet/LiquidityBottomSheet";
 import { WalletBalance } from "components/wallet/WalletBalance";
-import { AvailableBorrow } from "components/borrow/AvailableBorrow";
+import { Borrows } from "components/borrow/Borrows";
 import { Deposits } from "components/deposit/Deposits";
+import { getProviderStore } from "App";
+import { Loader } from "components/loader/Loader";
 import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
 import "screens/main/Home.sass";
-import { getProviderStore } from "App";
-import { Loader } from "components/loader/Loader";
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -59,7 +59,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
               value={view.getNetApy}
             >
               <EllipseIcon width="100%" height="100%" className="ellipse" />
-              <span className="circle-title">% per year</span>
+              <Text className="circle-title" text={t("main.netApy")} />
               <span className="circle-amount">{view.getNetApy}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
@@ -113,12 +113,9 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
           </View>
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits list={view.tokenList} />
+          <Deposits list={view.supplyMarket} />
           <WalletBalance list={view.tokenList} />
-          <AvailableBorrow
-            list={view.tokenList}
-            onPress={() => setVisible(true)}
-          />
+          <Borrows list={view.borrowMarket} onPress={() => setVisible(true)} />
         </View>
       </View>
       <LiquidityBottomSheet

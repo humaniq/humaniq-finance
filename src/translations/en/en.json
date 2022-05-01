@@ -10,7 +10,8 @@
     "walletBalance": "Your wallet balance",
     "availableToBorrow": "Available to borrow",
     "liquidity": "Liquidity",
-    "borrowHint": "To borrow you need to deposit any asset to be used as collateral"
+    "borrowHint": "To borrow you need to deposit any asset to be used as collateral",
+    "netApy": "% per year"
   },
   "deposits": {
     "title": "Deposits"

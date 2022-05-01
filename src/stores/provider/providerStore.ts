@@ -37,6 +37,7 @@ export class ProviderStore {
   };
 
   addListeners = () => {
+    if (!window.ethereum) return;
     window.ethereum.on("accountsChanged", this.handleAccountsChanged);
     window.ethereum.on("disconnect", this.handleDisconnect);
     window.ethereum.on("message", this.handleMessage);
@@ -45,6 +46,7 @@ export class ProviderStore {
   };
 
   removeListeners = () => {
+    if (!window.ethereum) return;
     window.ethereum.removeListener(
       "accountsChanged",
       this.handleAccountsChanged

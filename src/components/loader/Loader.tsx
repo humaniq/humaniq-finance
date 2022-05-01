@@ -1,8 +1,8 @@
 import React from "react";
 import { TailSpin } from "react-loader-spinner";
-import "./Loader.style.sass";
 import colors from "utils/colors";
 import { t } from "translations/translate";
+import "./Loader.style.sass";
 
 export const Loader = () => {
   return (

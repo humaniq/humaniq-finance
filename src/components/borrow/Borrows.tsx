@@ -5,18 +5,16 @@ import { InfoButton, PLACEMENT } from "../info-button/InfoButton";
 import { Button } from "../ui/button/Button";
 import { HintMessage } from "../ui/hint/HintMessage";
 import { useTranslation } from "react-i18next";
-import { TokenItem } from "../main/token/TokenItem";
-import "./AvailableBorrow.style.sass";
+import { BorrowItem } from "components/main/borrow/BorrowItem";
+import { BorrowSupplyItem } from "models/types";
+import "./Borrows.style.sass";
 
-export interface AvailableBorrowProps {
-  list: any[];
+export interface BorrowsProps {
+  list: BorrowSupplyItem[];
   onPress?: () => void;
 }
 
-export const AvailableBorrow: React.FC<AvailableBorrowProps> = ({
-  list,
-  onPress,
-}) => {
+export const Borrows: React.FC<BorrowsProps> = ({ list, onPress }) => {
   const { t } = useTranslation();
 
   return (
@@ -44,14 +42,7 @@ export const AvailableBorrow: React.FC<AvailableBorrowProps> = ({
       <HintMessage message={t("main.borrowHint")} />
       <div className="list">
         {list.map((item, index) => (
-          <TokenItem
-            key={`borrow_item_${item.id}_${index}`}
-            title={item.title}
-            subTitle={item.coin}
-            amount={item.amountUSD}
-            subAmount={item.amountCOIN}
-            disabled={index % 2 === 0}
-          />
+          <BorrowItem key={`borrow_item_${item.symbol}_${index}`} item={item} />
         ))}
       </div>
     </div>
