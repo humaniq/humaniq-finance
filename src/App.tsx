@@ -2,33 +2,43 @@ import React, { useEffect } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.sass";
 import routes from "./utils/routes";
-import { ETHProvider } from "./stores/provider/providerStore";
+import { ETHProvider } from "stores/provider/providerStore";
 
 import b from "buffer";
-import { Main } from "./screens/main/Main";
-import { Valuation } from "./screens/valuation/Valuation";
+import { Home } from "screens/main/Home";
+import { Valuation } from "screens/valuation/Valuation";
+import { ConnectWallet } from "components/modals/ConnectWallet";
+import { observer } from "mobx-react";
 
 window.Buffer = b.Buffer;
 
 export const getProviderStore = ETHProvider;
 
-function App() {
+export const App = observer(() => {
   useEffect(() => {
     (async () => {
-      await getProviderStore.init();
+      await getProviderStore.start();
     })();
   }, []);
 
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          <Route path={routes.home.path} element={<Main />} />
-          <Route path={routes.valuation.path} element={<Valuation />} />
-        </Routes>
-      </Router>
+      {getProviderStore.initialized ? (
+        <>
+          {getProviderStore.currentAccount ? (
+            <Router>
+              <Routes>
+                <Route path={routes.home.path} element={<Home />} />
+                <Route path={routes.valuation.path} element={<Valuation />} />
+              </Routes>
+            </Router>
+          ) : (
+            <ConnectWallet />
+          )}
+        </>
+      ) : null}
     </div>
   );
-}
+});
 
 export default App;

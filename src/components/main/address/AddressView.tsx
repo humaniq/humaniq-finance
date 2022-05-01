@@ -2,7 +2,7 @@ import React from "react";
 import "./AddressView.style.sass";
 
 export interface AddressViewProps {
-  title?: string;
+  title?: string | null;
   onClick?: () => void;
   style?: any;
   className?: string;

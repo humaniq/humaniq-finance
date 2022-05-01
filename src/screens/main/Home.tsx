@@ -1,32 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-import { MainInfoHeader } from "../../components/main/header/MainInfoHeader";
-import { View, ViewDirections } from "../../components/ui/view/View";
-import { Text } from "../../components/ui/text/Text";
-import { AddressView } from "../../components/main/address/AddressView";
+import { MainInfoHeader } from "components/main/header/MainInfoHeader";
+import { View, ViewDirections } from "components/ui/view/View";
+import { Text } from "components/ui/text/Text";
+import { AddressView } from "components/main/address/AddressView";
 import colors from "../../utils/colors";
-import { withStore } from "../../utils/hoc";
-import { MainViewModel } from "./MainViewModel";
-import { InfoButton, PLACEMENT } from "../../components/info-button/InfoButton";
+import { withStore } from "utils/hoc";
+import { HomeViewModel } from "screens/main/HomeViewModel";
+import { InfoButton, PLACEMENT } from "components/info-button/InfoButton";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg";
-import { LinearProgress } from "../../components/ui/progress/LinearProgress";
-import { LiquidityBottomSheet } from "../../components/bottom-sheet/LiquidityBottomSheet";
-import { WalletBalance } from "../../components/wallet/WalletBalance";
-import { AvailableBorrow } from "../../components/borrow/AvailableBorrow";
-import { Deposits } from "../../components/deposit/Deposits";
+import { LinearProgress } from "components/ui/progress/LinearProgress";
+import { LiquidityBottomSheet } from "components/bottom-sheet/LiquidityBottomSheet";
+import { WalletBalance } from "components/wallet/WalletBalance";
+import { AvailableBorrow } from "components/borrow/AvailableBorrow";
+import { Deposits } from "components/deposit/Deposits";
 import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
-import "./Main.sass";
+import "screens/main/Home.sass";
+import { getProviderStore } from "App";
 
 export interface MainScreenInterface {
-  view: MainViewModel;
+  view: HomeViewModel;
 }
 
-const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
+const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
   const [visible, setVisible] = useState(false);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    (async () => {
+      await view.mounted();
+    })();
+  }, []);
 
   return (
     <>
@@ -34,18 +41,18 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
         <MainInfoHeader className="header">
           <View className={"row"}>
             <Text className={"logoText"} text={t("appName")} />
-            <AddressView title={view.getFormattedAddress} />
+            <AddressView title={view.getAccount} />
           </View>
           <View style={{ marginTop: 16 }}>
             <CircularProgressbarWithChildren
               background={true}
               strokeWidth={4}
               className="circle"
-              value={90}
+              value={view.getNetApy}
             >
               <EllipseIcon width="100%" height="100%" className="ellipse" />
               <span className="circle-title">% per year</span>
-              <span className="circle-amount">2.70</span>
+              <span className="circle-amount">{view.getNetApy}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
               <View
@@ -62,7 +69,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   size={24}
                   className="balance"
                   color={"#fff"}
-                  text="$100.00"
+                  text={view.getSupplyBalance}
                 />
               </View>
               <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
@@ -76,7 +83,7 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   size={24}
                   className="balance"
                   color={"#fff"}
-                  text="$40.00"
+                  text={view.getBorrowBalance}
                 />
               </View>
             </View>
@@ -115,4 +122,4 @@ const MainImpl: React.FC<MainScreenInterface> = ({ view }) => {
   );
 };
 
-export const Main = withStore(MainViewModel, observer(MainImpl));
+export const Home = withStore(HomeViewModel, observer(HomeImpl));
