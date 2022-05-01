@@ -20,6 +20,7 @@ import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
 import "screens/main/Home.sass";
 import { getProviderStore } from "App";
+import { Loader } from "components/loader/Loader";
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -33,7 +34,11 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
     (async () => {
       await view.mounted();
     })();
+
+    return () => view.unMounted();
   }, []);
+
+  if (view.isRefreshing) return <Loader />;
 
   return (
     <>

@@ -347,8 +347,6 @@ export class HomeViewModel {
     );
 
     market = await Promise.all(market);
-    console.log("cacacac");
-
     market.forEach(this.convertValues);
 
     this.market = market;
@@ -419,4 +417,6 @@ export class HomeViewModel {
     //   this.init()
     // }, 1000 * 60)
   };
+
+  unMounted = () => {};
 }
