@@ -86,24 +86,6 @@ export class HomeViewModel {
     );
   }
 
-  get noConnectionTittle() {
-    return !this.ethAccount
-      ? "Please connect a wallet"
-      : !this.isConnectionSupport
-      ? "We are still in beta."
-      : "";
-  }
-
-  get noConnectionDescription() {
-    return !this.ethAccount
-      ? "We are unable to show you any data until you connect your wallet"
-      : !this.isConnectionSupport
-      ? "Please switch your wallet to rinkenby network. You can get an eth <a href='https://faucet.rinkeby.io/' target='_blank'>here</a> or " +
-        "<a href='https://github.com/UnFederalReserve/unfederalreserve.com/discussions/43' target='_blank'>send us a message </a> " +
-        "and we will find some eth for you"
-      : "";
-  }
-
   get getBorrowLimit() {
     return `${this.borrowLimit.toFixed(2)}$`;
   }

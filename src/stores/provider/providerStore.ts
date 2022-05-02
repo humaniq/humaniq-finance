@@ -1,7 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Logger } from "utils/logger";
-import { renderShortAddress } from "utils/address";
-import { t } from "i18next";
 import Web3 from "web3";
 import { hexToDecimal } from "utils/textUtils";
 import { ConnectInfo, ProviderMessage } from "models/contracts/types";
@@ -17,14 +15,6 @@ export class ProviderStore {
 
   constructor() {
     makeAutoObservable(this, undefined, { autoBind: true });
-  }
-
-  get walletConnected() {
-    return this.currentAccount;
-  }
-
-  get getAccount() {
-    return renderShortAddress(this.currentAccount) || t("wallet.notConnected");
   }
 
   init = async () => {
