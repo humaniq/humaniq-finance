@@ -1,50 +1,42 @@
 import { URLS } from "constants/api";
-import { providers } from "ethers";
 import { tAccountLiquidity } from "models/contracts/types";
-import ComptrollerContract from "models/contracts/ComptrollerContract";
+import { ComptrollerContract } from "models/contracts/ComptrollerContract";
+import { getProviderStore } from "App";
 
 export class Comptroller {
   account: string;
-  methods: any;
-  ethers: any;
+  contract: any;
 
   constructor(account: string) {
     this.account = account;
-    this.methods = ComptrollerContract(URLS.COMPTROLLER_ADDRESS).methods;
-
-    window.web3.eth.net.getNetworkType().then((n: string) => {
-      const networkName = n.includes("main") ? "mainnet" : n;
-      this.ethers = new providers.Web3Provider(
-        window.web3.currentProvider,
-        networkName
-      );
-    });
+    this.contract = ComptrollerContract(
+      URLS.COMPTROLLER_ADDRESS,
+      getProviderStore.provider
+    );
   }
 
   waitForTransaction = (transactionHash: string) => {
-    return this.ethers.waitForTransaction(transactionHash);
+    return getProviderStore.provider.waitForTransaction(transactionHash);
   };
 
   getAllMarkets = async (): Promise<string[]> => {
-    return this.methods.getAllMarkets().call();
+    return this.contract.getAllMarkets();
   };
 
   enterMarkets = (params: any) => {
-    return this.methods.enterMarkets(params).send({ from: this.account });
+    return this.contract.enterMarkets(params);
   };
 
   exitMarket = (cToken: any) => {
-    return this.methods.exitMarket(cToken).send({ from: this.account });
+    return this.contract.exitMarket(cToken);
   };
 
   checkMembership = (cToken: any) => {
-    return this.methods
-      .checkMembership(this.account, cToken)
-      .call({ from: this.account });
+    return this.contract.checkMembership(this.account, cToken);
   };
 
   getAccountLiquidity = async (): Promise<tAccountLiquidity> => {
-    return this.methods.getAccountLiquidity(this.account).call();
+    return this.contract.getAccountLiquidity(this.account);
   };
 
   getHypotheticalAccountLiquidity = (
@@ -52,23 +44,27 @@ export class Comptroller {
     redeemTokens: any,
     borrowAmount: any
   ) => {
-    return this.methods
-      .getHypotheticalAccountLiquidity(
-        this.account,
-        cToken,
-        redeemTokens,
-        borrowAmount
-      )
-      .call();
+    return this.contract.getHypotheticalAccountLiquidity(
+      this.account,
+      cToken,
+      redeemTokens,
+      borrowAmount
+    );
   };
 
   claimRewards = (tokens: any) => {
-    return this.methods
-      .claimRewards(this.account, tokens)
-      .send({ from: this.account });
+    return this.contract.claimRewards(this.account, tokens);
   };
 
   getCompSpeeds = (cToken: any) => {
-    return this.methods.compSpeeds(cToken).call();
+    return this.contract.compSpeeds(cToken);
+  };
+
+  mintGuardianPaused = (data: any) => {
+    return this.contract.mintGuardianPaused(data.cToken);
+  };
+
+  borrowGuardianPaused = (data: any) => {
+    return this.contract.borrowGuardianPaused(data.cToken);
   };
 }

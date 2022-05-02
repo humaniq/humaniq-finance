@@ -1,6 +1,6 @@
-import { AbiItem } from "web3-utils";
+import { ContractInterface, ethers } from "ethers";
 
-const abi: AbiItem | AbiItem[] = [
+const abi: ContractInterface = [
   {
     anonymous: false,
     inputs: [
@@ -1387,4 +1387,5 @@ const abi: AbiItem | AbiItem[] = [
   },
 ];
 
-export default (address: string) => new window.web3.eth.Contract(abi, address);
+export const CErc20Contract = (address: string, provider: any) =>
+  new ethers.Contract(address, abi, provider);
