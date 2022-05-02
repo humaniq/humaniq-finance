@@ -3,7 +3,6 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.sass";
 import routes from "./utils/routes";
 import { ETHProvider } from "stores/provider/providerStore";
-
 import b from "buffer";
 import { Home } from "screens/main/Home";
 import { Valuation } from "screens/valuation/Valuation";
@@ -27,16 +26,23 @@ export const App = observer(() => {
     <div className="App">
       {getProviderStore.initialized ? (
         <>
-          {getProviderStore.currentAccount ? (
-            <Router>
-              <Routes>
-                <Route path={routes.home.path} element={<Home />} />
-                <Route path={routes.valuation.path} element={<Valuation />} />
-              </Routes>
-            </Router>
-          ) : (
-            <ConnectWallet />
-          )}
+          {getProviderStore.hasProvider ? (
+            <>
+              {getProviderStore.currentAccount ? (
+                <Router>
+                  <Routes>
+                    <Route path={routes.home.path} element={<Home />} />
+                    <Route
+                      path={routes.valuation.path}
+                      element={<Valuation />}
+                    />
+                  </Routes>
+                </Router>
+              ) : (
+                <ConnectWallet />
+              )}
+            </>
+          ) : null}
         </>
       ) : null}
     </div>
