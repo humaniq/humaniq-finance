@@ -6,7 +6,7 @@ import { Avatar } from "../../ui/avatar/Avatar";
 import { Divider } from "../../ui/divider/Divider";
 import { Button } from "../../ui/button/Button";
 import "./TokenItem.style.sass";
-import { t } from "../../../translations/translate";
+import { t } from "translations/translate";
 
 export interface TokenItemProps {
   title: string;

@@ -2,15 +2,16 @@ import React from "react";
 import { Text } from "../ui/text/Text";
 import colors from "../../utils/colors";
 import { InfoButton, PLACEMENT } from "../info-button/InfoButton";
-import { TokenItem } from "../main/token/TokenItem";
 import { useTranslation } from "react-i18next";
 import "./Deposits.style.sass";
+import { SupplyItem } from "components/main/supply/SupplyItem";
+import { BorrowSupplyItem } from "models/types";
 
 export interface DepositsProps {
-  list: any[];
+  list: BorrowSupplyItem[];
 }
 
-export const Deposits: React.FC<DepositsProps> = ({ list }) => {
+export const Deposits: React.FC<DepositsProps> = ({ list = [] }) => {
   const { t } = useTranslation();
 
   return (
@@ -28,15 +29,9 @@ export const Deposits: React.FC<DepositsProps> = ({ list }) => {
           color={colors.blackText}
         />
       </div>
-      <div className="list">
+      <div className="deposits--list">
         {list.map((item, index) => (
-          <TokenItem
-            key={`deposit_item_${item.id}_${index}`}
-            title={item.title}
-            subTitle={item.coin}
-            amount={item.amountUSD}
-            subAmount={item.amountCOIN}
-          />
+          <SupplyItem key={`supply_item_${item.symbol}_${index}`} item={item} />
         ))}
       </div>
     </div>

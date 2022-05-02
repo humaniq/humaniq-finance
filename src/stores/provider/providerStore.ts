@@ -1,46 +1,69 @@
-import { makeAutoObservable } from "mobx";
-import { Logger } from "../../utils/logger";
+import { makeAutoObservable, runInAction } from "mobx";
+import { Logger } from "utils/logger";
+import Web3 from "web3";
+import { hexToDecimal } from "utils/textUtils";
+import { ConnectInfo, ProviderMessage } from "models/contracts/types";
 
 export class ProviderStore {
   initialized = false;
-  currentAccount: any = "test";
-  hasProvider = true;
+  currentAccount?: string | null = null;
+  hasProvider = false;
+
+  chainId: any;
+  networkId: any;
+  accounts: any;
 
   constructor() {
     makeAutoObservable(this, undefined, { autoBind: true });
   }
 
   init = async () => {
-    // if (window.ethereum) {
-    //   this.hasProvider = true;
-    //
-    //   window.ethereum.on("accountsChanged", (accounts: any) => {
-    //     this.currentAccount = accounts[0];
-    //   });
-    //
-    //   window.ethereum.on("disconnect", () => {
-    //     this.currentAccount = null;
-    //   });
-    //
-    //   window.ethereum.on("connect", (accounts: any) => {
-    //     this.currentAccount = accounts[0];
-    //   });
-    //
-    //   window.ethereum.on("message", (payload: any) => {
-    //     Logger.info("message", payload);
-    //   });
-    //
-    //   try {
-    //     const accounts = await window.ethereum.request({
-    //       method: "eth_requestAccounts",
-    //     });
-    //     this.currentAccount = accounts[0];
-    //   } catch (e) {
-    //     Logger.info("ERROR", e);
-    //   }
-    // }
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      this.hasProvider = true;
+      this.addListeners();
+    }
     this.initialized = true;
   };
+
+  addListeners = () => {
+    if (!window.ethereum) return;
+    window.ethereum.on("accountsChanged", this.handleAccountsChanged);
+    window.ethereum.on("disconnect", this.handleDisconnect);
+    window.ethereum.on("message", this.handleMessage);
+    window.ethereum.on("chainChanged", this.handleChainChange);
+    window.ethereum.on("connect", this.handleChainChange);
+  };
+
+  removeListeners = () => {
+    if (!window.ethereum) return;
+    window.ethereum.removeListener(
+      "accountsChanged",
+      this.handleAccountsChanged
+    );
+    window.ethereum.removeListener("disconnect", this.handleDisconnect);
+    window.ethereum.removeListener("message", this.handleMessage);
+    window.ethereum.removeListener("chainChanged", this.handleChainChange);
+    window.ethereum.removeListener("connect", this.handleChainChange);
+  };
+
+  handleAccountsChanged = (accounts: string[]) => {
+    if (accounts[0] !== this.currentAccount) {
+      this.currentAccount = accounts[0];
+    }
+  };
+
+  handleDisconnect = () => {
+    this.currentAccount = null;
+  };
+
+  handleMessage = (message: ProviderMessage) => {
+    // handle message
+  };
+
+  handleChainChange = (chainId: string) => {};
+
+  handleConnect = (connectInfo: ConnectInfo) => {};
 
   personalMessageRequest = (message: any): any => {
     if (!window.ethereum) return null;
@@ -55,13 +78,28 @@ export class ProviderStore {
   };
 
   connect = async () => {
-    if (!window.ethereum || window.ethereum?.currentAccount) return;
+    if (!window.ethereum) return;
 
     try {
+      this.chainId = hexToDecimal(
+        await window.ethereum.request({
+          method: "eth_chainId",
+        })
+      );
+
+      this.networkId = hexToDecimal(
+        await window.ethereum.request({
+          method: "net_version",
+        })
+      );
+
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-      this.currentAccount = accounts[0];
+
+      runInAction(() => {
+        this.currentAccount = accounts[0];
+      });
     } catch (e) {
       Logger.info("ERROR", e);
     }

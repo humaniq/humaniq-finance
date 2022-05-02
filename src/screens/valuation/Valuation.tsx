@@ -20,7 +20,7 @@ const ValuationImpl: React.FC<CalcScreenProps> = ({ view }) => {
   }, [navigate]);
 
   return (
-    <div className="calc-screen-container">
+    <div className="calc-screen">
       <Header title="Deposit WBTC" onClose={onClose} />
       <div className="calc-screen-content">
         <TokenItem
