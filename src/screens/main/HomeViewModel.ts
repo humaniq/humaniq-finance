@@ -136,6 +136,8 @@ export class HomeViewModel {
         : ((totalEarning - totalSpending) * 100) / totalSupply;
     netApy = Math.round((netApy + Number.EPSILON) * 100) / 100;
 
+    console.log("okaaay", totalBorrow)
+
     this.totalBorrow = totalBorrow;
     this.totalSupply = totalSupply;
     this.netApy = netApy;
@@ -168,6 +170,7 @@ export class HomeViewModel {
         cTokenData.name = "ETH";
       }
 
+
       cTokenData.cName = await cTokenContract.getName();
       cTokenData.totalBorrows = await cTokenContract.getTotalBorrows();
       cTokenData.totalSupply = await cTokenContract.getTotalSupply();
@@ -178,12 +181,13 @@ export class HomeViewModel {
       cTokenData.isEnteredTheMarket = await this.comptroller.checkMembership(
         data.cToken
       );
-      cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
-        data.cToken
-      ));
-      cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
-        data.cToken
-      ));
+
+      // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
+      //   data.cToken
+      // ));// TODO check
+      // cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
+      //   data.cToken
+      // )); // TODO check
       cTokenData.underlyingPrice = price.underlyingPrice;
       cTokenData.tokenBalance = balance.tokenBalance;
       cTokenData.tokenAllowance = balance.tokenAllowance;
@@ -192,6 +196,7 @@ export class HomeViewModel {
       cTokenData.balanceOf = balance.balanceOf;
       cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400; // TODO 0 default
       cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400; // TODO 0 default
+
 
       return cTokenData;
     });
@@ -202,7 +207,11 @@ export class HomeViewModel {
   };
 
   convertValues = (item: any) => {
+    console.log("....", item)
+
     const decimalValue = Big(10).pow(+item.underlyingDecimals);
+
+    console.log("axaxa23", item.supplyBalance)
 
     item.balance = this.convertFrom(item.tokenBalance, decimalValue);
     item.supply = this.convertFrom(item.supplyBalance, decimalValue);
@@ -211,34 +220,35 @@ export class HomeViewModel {
     item.supplyApy = this.calculateAPY(item.supplyRatePerBlock);
     item.borrowApy = this.calculateAPY(item.borrowRatePerBlock);
 
-    item.liquidity = this.convertToUSD(
-      item.liquidity,
-      item.underlyingPrice,
-      item.underlyingDecimals
-    );
-    item.tokenUsdValue = this.convertToUSD(
-      Math.pow(10, item.underlyingDecimals),
-      item.underlyingPrice,
-      item.underlyingDecimals
-    );
 
-    item.fiatSupply =
-      item.underlyingPrice == 0
-        ? 0
-        : this.convertToUSD(
-            item.supplyBalance,
-            item.underlyingPrice,
-            item.underlyingDecimals
-          );
-
-    item.fiatBorrow =
-      item.underlyingPrice == 0
-        ? 0
-        : this.convertToUSD(
-            item.borrowBalance,
-            item.underlyingPrice,
-            item.underlyingDecimals
-          );
+    // item.liquidity = this.convertToUSD(
+    //   item.liquidity,
+    //   item.underlyingPrice,
+    //   item.underlyingDecimals
+    // );
+    // item.tokenUsdValue = this.convertToUSD(
+    //   Math.pow(10, item.underlyingDecimals),
+    //   item.underlyingPrice,
+    //   item.underlyingDecimals
+    // );
+    //
+    // item.fiatSupply =
+    //   item.underlyingPrice == 0
+    //     ? 0
+    //     : this.convertToUSD(
+    //         item.supplyBalance,
+    //         item.underlyingPrice,
+    //         item.underlyingDecimals
+    //       );
+    //
+    // item.fiatBorrow =
+    //   item.underlyingPrice == 0
+    //     ? 0
+    //     : this.convertToUSD(
+    //         item.borrowBalance,
+    //         item.underlyingPrice,
+    //         item.underlyingDecimals
+    //       );
   };
 
   convertToUSD = (value: any, underlyingPrice: any, tokenDecimals: any) => {
@@ -264,6 +274,8 @@ export class HomeViewModel {
       (token: any) => token.symbol === "eRSDL"
     );
     const balance = await this.cl.getCompoundBalance(ersdl.token);
+
+    console.log("test", balance)
 
     this.ersdlPrice = ersdl.underlyingPrice;
     this.unclaimedRewards = balance.allocated / this.ethMantissa;
@@ -347,8 +359,6 @@ export class HomeViewModel {
     this.borrowMarket = market.filter(
       (market: any) => market.borrowAllowed && market.borrowBalance == 0
     );
-
-    console.log("teat", JSON.stringify(this.borrowMarket));
 
     this.userBorrowedMarket = market.filter(
       (market: any) => market.borrowBalance > 0

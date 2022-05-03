@@ -19,11 +19,7 @@ export class CompoundLens {
   };
 
   getcTokenData = (cToken: any) => {
-    const contract = CompoundLensContract(
-      URLS.COMPOUNDLENS_ADDRESS,
-      getProviderStore.signer
-    );
-    return contract.cTokenMetadata(cToken).then((data: any) => {
+    return this.contract.cTokenMetadata(cToken).then((data: any) => {
       // remove unnecessary keys from response
       const result: any = {};
       const dataObject = Object.assign({}, data); // convert array to object
@@ -34,7 +30,7 @@ export class CompoundLens {
   };
 
   getUnderlyingPriceAll(cTokens: any[]) {
-    return this.contract.cTokenUnderlyingPriceAll(cTokens);
+      return this.contract.cTokenUnderlyingPriceAll(cTokens);
   }
 
   getCompoundBalance(ersdlToken: any) {

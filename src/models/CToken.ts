@@ -13,20 +13,20 @@ export class Ctoken {
     this.account = account;
     this.isEther = isEth;
     this.contract = isEth
-      ? CEtherContract(cToken, getProviderStore.signer)
-      : CErc20Contract(cToken, getProviderStore.signer);
+      ? CEtherContract(cToken, getProviderStore.provider)
+      : CErc20Contract(cToken, getProviderStore.provider);
   }
 
   supply = (value: any, gas: any) => {
     const params: any = { from: this.account };
+    const contractSig = this.contract.connect(getProviderStore.signer)
     if (this.isEther) {
       params.value = value;
       params.gas = gas;
 
-      return this.contract.mint().send(params);
+      return contractSig.mint(params);
     }
-
-    return this.contract.mint(value).send(params);
+    return contractSig.mint(value, params);
   };
 
   getEstimateGas = (method: any, value: any) => {
@@ -34,97 +34,68 @@ export class Ctoken {
   };
 
   borrow = (value: any) => {
-    return this.contract.borrow(value).send({ from: this.account });
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.borrow(value).send({ from: this.account });
   };
 
   repayBorrow = (value: any) => {
+    const contractSig = this.contract.connect(getProviderStore.signer)
+
     if (this.isEther) {
       return this.contract.repayBorrow().send({
         from: this.account,
         value,
       });
     }
-    return this.contract.repayBorrow(value).send({ from: this.account });
+    return contractSig.repayBorrow(value).send({ from: this.account });
   };
 
   withdraw = (value: any) => {
-    return this.contract.redeemUnderlying(value).send({ from: this.account });
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.redeemUnderlying(value).send({ from: this.account });
   };
 
   supplyRatePerBlock = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.supplyRatePerBlock();
+    return this.contract.supplyRatePerBlock();
   };
 
   borrowRatePerBlock = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.borrowRatePerBlock();
+    return this.contract.borrowRatePerBlock();
   };
 
   getDecimals = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.decimals();
+    return this.contract.decimals();
   };
 
   balanceOfUnderlying = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.balanceOfUnderlying(this.account);
+    return this.contract.balanceOfUnderlying(this.account);
   };
 
   borrowBalanceCurrent = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.borrowBalanceCurrent(this.account);
+    return this.contract.borrowBalanceCurrent(this.account);
   };
 
   getExchangeRate = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.exchangeRateStored();
+    return this.contract.exchangeRateStored();
   };
 
   getCash = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.getCash();
+    return this.contract.getCash();
   };
 
   getName = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.name();
+    return this.contract.name();
   };
 
   getTotalBorrows = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.totalBorrows();
+    return this.contract.totalBorrows();
   };
 
   getTotalSupply = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.totalSupply();
+    return this.contract.totalSupply();
   };
 
   getExchangeRateStored = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.cToken, getProviderStore.provider)
-      : CErc20Contract(this.cToken, getProviderStore.provider);
-    return contract.exchangeRateStored();
+    return this.contract.exchangeRateStored();
   };
 }

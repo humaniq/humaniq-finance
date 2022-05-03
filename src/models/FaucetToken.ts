@@ -13,12 +13,13 @@ export class FaucetToken {
     this.cToken = cToken;
     this.account = account;
     this.contract = isNonStandart
-      ? FaucetNonStandardToken(this.token, getProviderStore.signer)
-      : FaucetContract(this.token, getProviderStore.signer);
+      ? FaucetNonStandardToken(this.token, getProviderStore.provider)
+      : FaucetContract(this.token, getProviderStore.provider);
   }
 
   allocateTo = (value: any) => {
-    return this.contract
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig
       .allocateTo(this.account, value)
       .send({ from: this.account });
   };

@@ -21,10 +21,8 @@ export class Token {
   }
 
   approve = () => {
-    const contract = this.isEther
-      ? CEtherContract(this.token, getProviderStore.signer)
-      : CErc20Contract(this.token, getProviderStore.signer);
-    return contract
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig
       .approve(this.cToken, MAX_UINT_256)
       .send({ from: this.account });
   };

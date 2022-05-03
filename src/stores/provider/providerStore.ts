@@ -84,17 +84,17 @@ export class ProviderStore {
     if (!window.ethereum) return;
 
     try {
-      this.chainId = hexToDecimal(
+      const [chainId, networkId] = await Promise.all<string>([
         await window.ethereum.request({
           method: "eth_chainId",
-        })
-      );
-
-      this.networkId = hexToDecimal(
+        }),
         await window.ethereum.request({
           method: "net_version",
         })
-      );
+      ])
+
+      this.chainId = hexToDecimal(chainId)
+      this.networkId = hexToDecimal(networkId)
 
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
