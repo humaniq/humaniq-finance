@@ -114,6 +114,8 @@ export class HomeViewModel {
       0
     );
 
+    console.log("market", market)
+
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
         current.supplyBalance == 0
@@ -182,6 +184,11 @@ export class HomeViewModel {
         data.cToken
       );
 
+      // console.log("mdaaa", cTokenData.isEnteredTheMarket)
+
+      cTokenData.supplyAllowed = false
+      cTokenData.borrowAllowed = false
+
       // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
       //   data.cToken
       // ));// TODO check
@@ -216,6 +223,8 @@ export class HomeViewModel {
     item.balance = this.convertFrom(item.tokenBalance, decimalValue);
     item.supply = this.convertFrom(item.supplyBalance, decimalValue);
     item.borrow = this.convertFrom(item.borrowBalance, decimalValue);
+
+    console.log("xxxxx", item.supply)
 
     item.supplyApy = this.calculateAPY(item.supplyRatePerBlock);
     item.borrowApy = this.calculateAPY(item.borrowRatePerBlock);
