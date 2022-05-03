@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { getTotalEarned, URLS } from "constants/api";
+import { URLS } from "constants/api";
 import { Comptroller } from "models/Comptroller";
 import { CompoundLens } from "models/CompoundLens";
 import { Ctoken } from "models/CToken";
@@ -114,8 +114,6 @@ export class HomeViewModel {
       0
     );
 
-    console.log("market", market)
-
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
         current.supplyBalance == 0
@@ -137,8 +135,6 @@ export class HomeViewModel {
         ? 0
         : ((totalEarning - totalSpending) * 100) / totalSupply;
     netApy = Math.round((netApy + Number.EPSILON) * 100) / 100;
-
-    console.log("okaaay", totalBorrow)
 
     this.totalBorrow = totalBorrow;
     this.totalSupply = totalSupply;
@@ -172,7 +168,6 @@ export class HomeViewModel {
         cTokenData.name = "ETH";
       }
 
-
       cTokenData.cName = await cTokenContract.getName();
       cTokenData.totalBorrows = await cTokenContract.getTotalBorrows();
       cTokenData.totalSupply = await cTokenContract.getTotalSupply();
@@ -184,17 +179,16 @@ export class HomeViewModel {
         data.cToken
       );
 
-      // console.log("mdaaa", cTokenData.isEnteredTheMarket)
-
-      cTokenData.supplyAllowed = false
-      cTokenData.borrowAllowed = false
+      cTokenData.supplyAllowed = true
+      cTokenData.borrowAllowed = true
 
       // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
       //   data.cToken
-      // ));// TODO check
+      // ));// TODO check what's the problem
       // cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
       //   data.cToken
-      // )); // TODO check
+      // )); // TODO check what's the problem
+
       cTokenData.underlyingPrice = price.underlyingPrice;
       cTokenData.tokenBalance = balance.tokenBalance;
       cTokenData.tokenAllowance = balance.tokenAllowance;
@@ -203,7 +197,6 @@ export class HomeViewModel {
       cTokenData.balanceOf = balance.balanceOf;
       cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400; // TODO 0 default
       cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400; // TODO 0 default
-
 
       return cTokenData;
     });
@@ -214,50 +207,43 @@ export class HomeViewModel {
   };
 
   convertValues = (item: any) => {
-    console.log("....", item)
-
     const decimalValue = Big(10).pow(+item.underlyingDecimals);
-
-    console.log("axaxa23", item.supplyBalance)
 
     item.balance = this.convertFrom(item.tokenBalance, decimalValue);
     item.supply = this.convertFrom(item.supplyBalance, decimalValue);
     item.borrow = this.convertFrom(item.borrowBalance, decimalValue);
 
-    console.log("xxxxx", item.supply)
-
     item.supplyApy = this.calculateAPY(item.supplyRatePerBlock);
     item.borrowApy = this.calculateAPY(item.borrowRatePerBlock);
 
+    item.liquidity = this.convertToUSD(
+      item.liquidity,
+      item.underlyingPrice,
+      item.underlyingDecimals
+    );
+    item.tokenUsdValue = this.convertToUSD(
+      Math.pow(10, item.underlyingDecimals),
+      item.underlyingPrice,
+      item.underlyingDecimals
+    );
 
-    // item.liquidity = this.convertToUSD(
-    //   item.liquidity,
-    //   item.underlyingPrice,
-    //   item.underlyingDecimals
-    // );
-    // item.tokenUsdValue = this.convertToUSD(
-    //   Math.pow(10, item.underlyingDecimals),
-    //   item.underlyingPrice,
-    //   item.underlyingDecimals
-    // );
-    //
-    // item.fiatSupply =
-    //   item.underlyingPrice == 0
-    //     ? 0
-    //     : this.convertToUSD(
-    //         item.supplyBalance,
-    //         item.underlyingPrice,
-    //         item.underlyingDecimals
-    //       );
-    //
-    // item.fiatBorrow =
-    //   item.underlyingPrice == 0
-    //     ? 0
-    //     : this.convertToUSD(
-    //         item.borrowBalance,
-    //         item.underlyingPrice,
-    //         item.underlyingDecimals
-    //       );
+    item.fiatSupply =
+      item.underlyingPrice == 0
+        ? 0
+        : this.convertToUSD(
+            item.supplyBalance,
+            item.underlyingPrice,
+            item.underlyingDecimals
+          );
+
+    item.fiatBorrow =
+      item.underlyingPrice == 0
+        ? 0
+        : this.convertToUSD(
+            item.borrowBalance,
+            item.underlyingPrice,
+            item.underlyingDecimals
+          );
   };
 
   convertToUSD = (value: any, underlyingPrice: any, tokenDecimals: any) => {
@@ -283,8 +269,6 @@ export class HomeViewModel {
       (token: any) => token.symbol === "eRSDL"
     );
     const balance = await this.cl.getCompoundBalance(ersdl.token);
-
-    console.log("test", balance)
 
     this.ersdlPrice = ersdl.underlyingPrice;
     this.unclaimedRewards = balance.allocated / this.ethMantissa;
@@ -325,8 +309,7 @@ export class HomeViewModel {
     const underlyingPrices = await this.cl.getUnderlyingPriceAll(
       this.cTokenAddressList
     );
-    // const totalEarned = await getTotalEarned(this.ethAccount)
-    const totalEarned = 400;
+    // const totalEarned = await getTotalEarned(this.ethAccount) // TODO error from backend
     const cTokensDataTasks = this.cTokenAddressList.map(this.getTokenData);
     const cTokensDataResults = await Promise.all(cTokensDataTasks);
 
