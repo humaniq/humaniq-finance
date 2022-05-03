@@ -1,8 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Logger } from "utils/logger";
-import Web3 from "web3";
 import { hexToDecimal } from "utils/textUtils";
 import { ConnectInfo, ProviderMessage } from "models/contracts/types";
+import { ethers } from "ethers";
 
 export class ProviderStore {
   initialized = false;
@@ -12,6 +12,8 @@ export class ProviderStore {
   chainId: any;
   networkId: any;
   accounts: any;
+  signer: any;
+  provider: any;
 
   constructor() {
     makeAutoObservable(this, undefined, { autoBind: true });
@@ -19,7 +21,8 @@ export class ProviderStore {
 
   init = async () => {
     if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
+      this.provider = new ethers.providers.Web3Provider(window.ethereum);
+      this.signer = this.provider.getSigner();
       this.hasProvider = true;
       this.addListeners();
     }
@@ -28,7 +31,7 @@ export class ProviderStore {
 
   addListeners = () => {
     if (!window.ethereum) return;
-    window.ethereum.on("accountsChanged", this.handleAccountsChanged);
+    window.ethereum.on("accountsChanged", this.handleAccountsChange);
     window.ethereum.on("disconnect", this.handleDisconnect);
     window.ethereum.on("message", this.handleMessage);
     window.ethereum.on("chainChanged", this.handleChainChange);
@@ -39,7 +42,7 @@ export class ProviderStore {
     if (!window.ethereum) return;
     window.ethereum.removeListener(
       "accountsChanged",
-      this.handleAccountsChanged
+      this.handleAccountsChange
     );
     window.ethereum.removeListener("disconnect", this.handleDisconnect);
     window.ethereum.removeListener("message", this.handleMessage);
@@ -47,7 +50,7 @@ export class ProviderStore {
     window.ethereum.removeListener("connect", this.handleChainChange);
   };
 
-  handleAccountsChanged = (accounts: string[]) => {
+  handleAccountsChange = (accounts: string[]) => {
     if (accounts[0] !== this.currentAccount) {
       this.currentAccount = accounts[0];
     }
@@ -81,17 +84,17 @@ export class ProviderStore {
     if (!window.ethereum) return;
 
     try {
-      this.chainId = hexToDecimal(
+      const [chainId, networkId] = await Promise.all<string>([
         await window.ethereum.request({
           method: "eth_chainId",
-        })
-      );
-
-      this.networkId = hexToDecimal(
+        }),
         await window.ethereum.request({
           method: "net_version",
         })
-      );
+      ])
+
+      this.chainId = hexToDecimal(chainId)
+      this.networkId = hexToDecimal(networkId)
 
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",

@@ -1,9 +1,13 @@
-import CEtherContract from "models/contracts/CEtherContract";
+import { CEtherContract } from "models/contracts/CEtherContract";
+import { getProviderStore } from "App";
 
 const ethTokenSymbol = "unETH";
 
 export const isEther = async (token: any) => {
-  const symbol = await CEtherContract(token).methods.symbol().call();
+  const symbol = await CEtherContract(
+    token,
+    getProviderStore.provider
+  ).symbol();
 
   return symbol === ethTokenSymbol;
 };

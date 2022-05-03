@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { getTotalEarned, URLS } from "constants/api";
+import { URLS } from "constants/api";
 import { Comptroller } from "models/Comptroller";
 import { CompoundLens } from "models/CompoundLens";
 import { Ctoken } from "models/CToken";
@@ -154,13 +154,13 @@ export class HomeViewModel {
       const cTokenContract = new Ctoken(data.cToken, this.ethAccount, isEth);
       const cTokenData = Object.assign({}, data);
 
-      let token = null;
+      let token: any = null;
 
       if (!isEth) {
         cTokenData.token = data.underlyingAssetAddress;
         token = new Token(cTokenData.token);
-        cTokenData.symbol = await token.methods.symbol().call();
-        cTokenData.name = await token.methods.name().call();
+        cTokenData.symbol = await token.getSymbol();
+        cTokenData.name = await token.getName();
       } else {
         // For eth cToken = tokenun
         cTokenData.token = data.cToken;
@@ -168,27 +168,27 @@ export class HomeViewModel {
         cTokenData.name = "ETH";
       }
 
-      cTokenData.cName = await cTokenContract.methods.name().call();
-      cTokenData.totalBorrows = await cTokenContract.methods
-        .totalBorrows()
-        .call();
-      cTokenData.totalSupply = await cTokenContract.methods
-        .totalSupply()
-        .call();
-      cTokenData.exchangeRateStored = await cTokenContract.methods
-        .exchangeRateStored()
-        .call();
+      cTokenData.cName = await cTokenContract.getName();
+      cTokenData.totalBorrows = await cTokenContract.getTotalBorrows();
+      cTokenData.totalSupply = await cTokenContract.getTotalSupply();
+      cTokenData.exchangeRateStored =
+        await cTokenContract.getExchangeRateStored();
       cTokenData.liquidity = await cTokenContract.getCash();
 
       cTokenData.isEnteredTheMarket = await this.comptroller.checkMembership(
         data.cToken
       );
-      cTokenData.supplyAllowed = !(await this.comptroller.methods
-        .mintGuardianPaused(data.cToken)
-        .call());
-      cTokenData.borrowAllowed = !(await this.comptroller.methods
-        .borrowGuardianPaused(data.cToken)
-        .call());
+
+      cTokenData.supplyAllowed = true
+      cTokenData.borrowAllowed = true
+
+      // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
+      //   data.cToken
+      // ));// TODO check what's the problem
+      // cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
+      //   data.cToken
+      // )); // TODO check what's the problem
+
       cTokenData.underlyingPrice = price.underlyingPrice;
       cTokenData.tokenBalance = balance.tokenBalance;
       cTokenData.tokenAllowance = balance.tokenAllowance;
@@ -309,8 +309,7 @@ export class HomeViewModel {
     const underlyingPrices = await this.cl.getUnderlyingPriceAll(
       this.cTokenAddressList
     );
-    // const totalEarned = await getTotalEarned(this.ethAccount)
-    const totalEarned = 400;
+    // const totalEarned = await getTotalEarned(this.ethAccount) // TODO error from backend
     const cTokensDataTasks = this.cTokenAddressList.map(this.getTokenData);
     const cTokensDataResults = await Promise.all(cTokensDataTasks);
 
@@ -352,8 +351,6 @@ export class HomeViewModel {
     this.borrowMarket = market.filter(
       (market: any) => market.borrowAllowed && market.borrowBalance == 0
     );
-
-    console.log("teat", JSON.stringify(this.borrowMarket));
 
     this.userBorrowedMarket = market.filter(
       (market: any) => market.borrowBalance > 0

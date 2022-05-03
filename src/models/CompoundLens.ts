@@ -1,41 +1,43 @@
 import { URLS } from "constants/api";
-import CompoundLensContract from "models/contracts/CompoundLensContract";
+import { CompoundLensContract } from "models/contracts/CompoundLensContract";
+import { getProviderStore } from "App";
 
 export class CompoundLens {
   account: string;
-  methods: any;
+  contract: any;
 
   constructor(account: string) {
     this.account = account;
-    this.methods = CompoundLensContract(URLS.COMPOUNDLENS_ADDRESS).methods;
+    this.contract = CompoundLensContract(
+      URLS.COMPOUNDLENS_ADDRESS,
+      getProviderStore.provider
+    );
   }
 
   getBalanceAll = (cTokens: any) => {
-    return this.methods.cTokenBalancesAll(cTokens, this.account).call();
+    return this.contract.cTokenBalancesAll(cTokens, this.account);
   };
 
   getcTokenData = (cToken: any) => {
-    return this.methods
-      .cTokenMetadata(cToken)
-      .call()
-      .then((data: any) => {
-        // remove unnecessary keys from response
-        const result: any = {};
-        const dataObject = Object.assign({}, data); // convert array to object
-        const neededKeys = Object.keys(dataObject).slice(data.length); // remove first half of keys
-        neededKeys.forEach((key) => (result[key] = data[key]));
-
-        return result;
-      });
+    return this.contract.cTokenMetadata(cToken).then((data: any) => {
+      // remove unnecessary keys from response
+      const result: any = {};
+      const dataObject = Object.assign({}, data); // convert array to object
+      const neededKeys = Object.keys(dataObject).slice(data.length); // remove first half of keys
+      neededKeys.forEach((key) => (result[key] = data[key]));
+      return result;
+    });
   };
 
   getUnderlyingPriceAll(cTokens: any[]) {
-    return this.methods.cTokenUnderlyingPriceAll(cTokens).call();
+      return this.contract.cTokenUnderlyingPriceAll(cTokens);
   }
 
   getCompoundBalance(ersdlToken: any) {
-    return this.methods
-      .getCompBalance(ersdlToken, URLS.COMPTROLLER_ADDRESS, this.account)
-      .call();
+    return this.contract.getCompBalance(
+      ersdlToken,
+      URLS.COMPTROLLER_ADDRESS,
+      this.account
+    );
   }
 }

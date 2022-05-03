@@ -1,80 +1,101 @@
-import CEtherContract from "models/contracts/CEtherContract";
-import CErc20Contract from "models/contracts/CErc20Contract";
+import { CEtherContract } from "models/contracts/CEtherContract";
+import { CErc20Contract } from "models/contracts/CErc20Contract";
+import { getProviderStore } from "App";
 
 export class Ctoken {
   cToken: any;
   account: any;
   isEther: boolean;
-  methods: any;
+  contract: any;
 
   constructor(cToken: any, account: any, isEth: boolean) {
     this.cToken = cToken;
     this.account = account;
     this.isEther = isEth;
-    this.methods = isEth
-      ? CEtherContract(cToken).methods
-      : CErc20Contract(cToken).methods;
+    this.contract = isEth
+      ? CEtherContract(cToken, getProviderStore.provider)
+      : CErc20Contract(cToken, getProviderStore.provider);
   }
 
   supply = (value: any, gas: any) => {
     const params: any = { from: this.account };
+    const contractSig = this.contract.connect(getProviderStore.signer)
     if (this.isEther) {
       params.value = value;
       params.gas = gas;
 
-      return this.methods.mint().send(params);
+      return contractSig.mint(params);
     }
-
-    return this.methods.mint(value).send(params);
+    return contractSig.mint(value, params);
   };
 
   getEstimateGas = (method: any, value: any) => {
-    return this.methods[method]().estimateGas({ from: this.account, value });
+    return this.contract[method]().estimateGas({ from: this.account, value });
   };
 
   borrow = (value: any) => {
-    return this.methods.borrow(value).send({ from: this.account });
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.borrow(value).send({ from: this.account });
   };
 
   repayBorrow = (value: any) => {
+    const contractSig = this.contract.connect(getProviderStore.signer)
+
     if (this.isEther) {
-      return this.methods.repayBorrow().send({
+      return this.contract.repayBorrow().send({
         from: this.account,
         value,
       });
     }
-    return this.methods.repayBorrow(value).send({ from: this.account });
+    return contractSig.repayBorrow(value).send({ from: this.account });
   };
 
   withdraw = (value: any) => {
-    return this.methods.redeemUnderlying(value).send({ from: this.account });
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.redeemUnderlying(value).send({ from: this.account });
   };
 
   supplyRatePerBlock = () => {
-    return this.methods.supplyRatePerBlock().call();
+    return this.contract.supplyRatePerBlock();
   };
 
   borrowRatePerBlock = () => {
-    return this.methods.borrowRatePerBlock().call();
+    return this.contract.borrowRatePerBlock();
   };
 
   getDecimals = () => {
-    return this.methods.decimals().call();
+    return this.contract.decimals();
   };
 
   balanceOfUnderlying = () => {
-    return this.methods.balanceOfUnderlying(this.account).call();
+    return this.contract.balanceOfUnderlying(this.account);
   };
 
   borrowBalanceCurrent = () => {
-    return this.methods.borrowBalanceCurrent(this.account).call();
+    return this.contract.borrowBalanceCurrent(this.account);
   };
 
   getExchangeRate = () => {
-    return this.methods.exchangeRateStored().call();
+    return this.contract.exchangeRateStored();
   };
 
   getCash = () => {
-    return this.methods.getCash().call();
+    return this.contract.getCash();
+  };
+
+  getName = () => {
+    return this.contract.name();
+  };
+
+  getTotalBorrows = () => {
+    return this.contract.totalBorrows();
+  };
+
+  getTotalSupply = () => {
+    return this.contract.totalSupply();
+  };
+
+  getExchangeRateStored = () => {
+    return this.contract.exchangeRateStored();
   };
 }
