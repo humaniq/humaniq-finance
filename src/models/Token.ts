@@ -8,13 +8,11 @@ export class Token {
   cToken: any;
   account: any;
   contract: any;
-  isEther: any;
 
   constructor(token: any, cToken?: any, account?: string, isEth?: boolean) {
     this.token = token;
     this.cToken = cToken;
     this.account = account;
-    this.isEther = isEth;
     this.contract = isEth
       ? CEtherContract(token, getProviderStore.provider)
       : CErc20Contract(token, getProviderStore.provider);
