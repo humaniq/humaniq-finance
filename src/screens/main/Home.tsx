@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react"
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { MainInfoHeader } from "components/main/header/MainInfoHeader";
@@ -13,11 +13,13 @@ import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg";
 import { LinearProgress } from "components/ui/progress/LinearProgress";
 import { LiquidityBottomSheet } from "components/bottom-sheet/LiquidityBottomSheet";
-import { WalletBalance } from "components/wallet/WalletBalance";
 import { Borrows } from "components/borrow/Borrows";
 import { Deposits } from "components/deposit/Deposits";
 import { getProviderStore } from "App";
 import { Loader } from "components/loader/Loader";
+import {useNavigate} from "react-router-dom"
+import routes from "utils/routes"
+import {BorrowSupplyItem} from "models/types"
 import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
 import "screens/main/Home.sass";
@@ -29,6 +31,18 @@ export interface MainScreenInterface {
 const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
   const [visible, setVisible] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, isDeposit: boolean = false) => {
+    navigate(routes.valuation.path, {
+      state: {
+        item: JSON.stringify(item),
+        isDeposit: isDeposit,
+        borrowLimit: view.borrowLimit,
+        totalBorrow: view.totalBorrow,
+      }
+    });
+  }, [navigate, view]);
 
   useEffect(() => {
     (async () => {
@@ -109,13 +123,12 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 placement={PLACEMENT.BOTTOM}
               />
             </View>
-            <LinearProgress progress={40} amount={view.getBorrowLimit} />
+            <LinearProgress progress={view.getBorrowLimitPercentage} amount={view.getBorrowLimit} />
           </View>
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits list={view.supplyMarket} />
-          <WalletBalance list={view.tokenList} />
-          <Borrows list={view.borrowMarket} onPress={() => setVisible(true)} />
+          <Deposits data={view.supplyMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)} />
+          <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick} />
         </View>
       </View>
       <LiquidityBottomSheet

@@ -8,10 +8,11 @@ import { SupplyItem } from "components/main/supply/SupplyItem";
 import { BorrowSupplyItem } from "models/types";
 
 export interface DepositsProps {
-  list: BorrowSupplyItem[];
+  data: BorrowSupplyItem[]
+  onClick?: (item: BorrowSupplyItem) => void
 }
 
-export const Deposits: React.FC<DepositsProps> = ({ list = [] }) => {
+export const Deposits: React.FC<DepositsProps> = ({ data = [], onClick }) => {
   const { t } = useTranslation();
 
   return (
@@ -30,8 +31,11 @@ export const Deposits: React.FC<DepositsProps> = ({ list = [] }) => {
         />
       </div>
       <div className="deposits--list">
-        {list.map((item, index) => (
-          <SupplyItem key={`supply_item_${item.symbol}_${index}`} item={item} />
+        {data.map((item, index) => (
+          <SupplyItem
+            onSupplyClick={() => onClick?.(item)}
+            key={`supply_item_${item.symbol}_${index}`}
+            item={item} />
         ))}
       </div>
     </div>

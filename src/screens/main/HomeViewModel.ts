@@ -64,6 +64,19 @@ export class HomeViewModel {
     this.ethAccount = getProviderStore.currentAccount;
   }
 
+  get isUserMarketShown() {
+    return this.userSuppliedMarket.length || this.userBorrowedMarket.length;
+  }
+
+  get getAvailableLimit() {
+    return this.borrowLimit - this.totalBorrow;
+  }
+
+  get getBorrowLimitPercentage() {
+    const limit = (this.totalBorrow / this.borrowLimit) * 100;
+    return parseFloat(limit.toFixed(2));
+  }
+
   get getAccount() {
     return renderShortAddress(this.ethAccount) || t("wallet.notConnected");
   }
@@ -82,7 +95,7 @@ export class HomeViewModel {
 
   get isConnectionSupport() {
     return (
-      +URLS.NETWORK_ID === this.networkId && +URLS.CHAIN_ID === this.chainId
+      URLS.NETWORK_ID === this.networkId && URLS.CHAIN_ID === this.chainId
     );
   }
 
@@ -300,6 +313,7 @@ export class HomeViewModel {
       this.setLoader(false);
       return;
     }
+
     if (!this.isRefreshing) {
       this.setLoader(true);
     }

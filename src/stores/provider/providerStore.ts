@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Logger } from "utils/logger";
-import { hexToDecimal } from "utils/textUtils";
 import { ConnectInfo, ProviderMessage } from "models/contracts/types";
 import { ethers } from "ethers";
 
@@ -93,8 +92,8 @@ export class ProviderStore {
         })
       ])
 
-      this.chainId = hexToDecimal(chainId)
-      this.networkId = hexToDecimal(networkId)
+      this.chainId = +chainId
+      this.networkId = +networkId
 
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
