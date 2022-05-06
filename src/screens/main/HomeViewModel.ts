@@ -12,26 +12,6 @@ import { t } from "i18next";
 import { BorrowSupplyItem } from "models/types";
 
 export class HomeViewModel {
-  tokenList = [
-    {
-      id: 0,
-      title: "Wrapped Bitcoin",
-      coin: "WBTC",
-      amountUSD: "$200",
-      amountCOIN: "0.0047",
-    },
-  ];
-
-  borrowList = [
-    {
-      id: 0,
-      title: "Wrapped Bitcoin",
-      coin: "WBTC",
-      amountUSD: "$200",
-      amountCOIN: "0.0047",
-    },
-  ];
-
   supplyMarket: BorrowSupplyItem[] = [];
   userSuppliedMarket: BorrowSupplyItem[] = [];
   borrowMarket: BorrowSupplyItem[] = [];

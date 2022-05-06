@@ -7,6 +7,13 @@ import {formatToCurrency, formatToNumber} from "utils/utils"
 import {BigNumber} from "ethers"
 import {ValuationState} from "screens/valuation/Valuation"
 import {isEmpty} from "utils/textUtils"
+import {Token} from "models/Token"
+import {getProviderStore} from "App"
+import {isEther} from "models/ContractsAPI"
+import {Comptroller} from "models/Comptroller"
+import {Ctoken} from "models/CToken"
+import {FaucetToken} from "models/FaucetToken"
+import {ERC20Contract} from "models/contracts/ERC20Contract"
 
 export class ValuationViewModel {
   item: BorrowSupplyItem = {} as any
@@ -17,26 +24,25 @@ export class ValuationViewModel {
   inputValue = ""
   isSwap = false
 
+  tokenContract: any
+  comptroller: any
+  ethAccount?: string | null = null;
+  cTokenContract: any
+  faucetContract: any
+
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
+    this.ethAccount = getProviderStore.currentAccount
   }
 
   get isEnoughBalance() {
     return this.isSwap ? Big(this.item.tokenUsdValue).gte(+this.getInputValue) : Big(this.item.balance).gte(+this.getInputValue)
   }
 
-  isMobile = () => {
-    return window.innerWidth < 740
-  }
-
   get getInputFontSize() {
-    return this.isMobile()
-      ? this.getInputValue.length < 8
-        ? "35px"
-        : "22px"
-      : this.getInputValue.length < 8
-        ? "50px"
-        : "32px"
+    return this.getInputValue.length < 8
+      ? "50px"
+      : "32px"
   }
 
   get getTokenSymbol() {
@@ -123,8 +129,47 @@ export class ValuationViewModel {
     return `${t(this.isDeposit ? "main.deposit" : "main.borrow")} ${formatToCurrency(this.inputValueFiat)}`
   }
 
-  handleButtonClick = () => {
+  handleButtonClick = async () => {
+    let gas = 0;
+    // const inputValue = this.isMaxValueSet ? this.balance : this.inputValue;
+    const inputValue = this.inputValue;
+    let supplyValue = await this.getValue(inputValue);
 
+    // this.setTransactionModal({
+    //   title: "Confirm Transaction",
+    //   message: "Confirm the transaction"
+    // });
+
+    // if (this.isEther && this.isMaxValueSet) {
+    //   const gasPrice = await web3.eth.getGasPrice();
+    //
+    //   gas = await web3.eth.estimateGas({
+    //     from: this.ethAccount,
+    //     to: this.cToken,
+    //     data: "0x1249c58b",
+    //     value: supplyValue
+    //   });
+    //
+    //   const fee = gas * gasPrice;
+    //   supplyValue = Big(supplyValue).minus(fee);
+    // }
+
+    const contract = ERC20Contract(this.item.token, getProviderStore.provider)
+
+    if (this.isEther) {
+    }
+
+    // this.cTokenContract
+    //   .supply(supplyValue, gas)
+    //   .on("error", this.onTransactionError)
+    //   .on("transactionHash", async hash => {
+    //     this.onTransactionConfirm();
+    //     await this.comptroller.waitForTransaction(hash);
+    //     this.onTransactionConfirmed();
+    //   })
+    //   .catch(() => {
+    //     this.closeModal();
+    //   });
   }
 
   setInputValue = (value: string) => {
@@ -144,10 +189,45 @@ export class ValuationViewModel {
     } catch (e) {
       Logger.info("ERROR", e)
     }
+
     this.borrowLimit = borrowLimit
     this.totalBorrow = totalBorrow
     this.isDeposit = isDeposit
+
+    if (this.ethAccount) {
+      const isEth = await isEther(this.item.cToken);
+
+      this.comptroller = new Comptroller(this.ethAccount);
+
+      this.tokenContract = new Token(
+        this.item.token,
+        this.item.cToken,
+        this.ethAccount,
+        isEth
+      );
+
+      this.cTokenContract = new Ctoken(this.item.cToken, this.ethAccount, isEth);
+
+      this.faucetContract = new FaucetToken(
+        this.item.token,
+        this.item.cToken,
+        this.ethAccount,
+        true
+      );
+    }
+
     this.isRefreshing = false
+  }
+
+  getValue = async (value: any) => {
+    const tokenDecimals = this.isEther
+      ? 18
+      : await this.tokenContract.getDecimals();
+    const decimals = Big(10).pow(+tokenDecimals);
+
+    return Big(value)
+      .times(decimals)
+      .toFixed();
   }
 
   setMaxValue = () => {

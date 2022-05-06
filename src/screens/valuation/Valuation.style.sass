@@ -5,7 +5,7 @@
   flex-direction: column
   width: 100%
   background-color: $blue-ozone
-  &--content
+  &-content
     padding-left: 16px
     padding-right: 16px
     padding-bottom: 16px
@@ -24,16 +24,16 @@
       padding: 1.3em 1em
       border-radius: 12px
       justify-content: space-between
-      .title
+      &-title
         font-style: normal
         font-weight: 400
-        font-size: 1.3em
+        font-size: 1.2em
         letter-spacing: 0.5px
         color: $grey-text
-      .value
+      &-value
         font-style: normal
         font-weight: 400
-        font-size: 1.3em
+        font-size: 1.2em
         letter-spacing: 0.5px
         color: $textBlack
     &-progress
@@ -54,7 +54,7 @@
         letter-spacing: 0.5px
         background-color: $blue-origin
 
-.v-supply-item
+.v-supply
   flex-direction: column
   margin-bottom: 8px
   padding-bottom: 1px
@@ -69,7 +69,7 @@
     justify-content: center
     margin-top: 6px
     margin-bottom: 5px
-  &--content
+  &-content
     display: flex
     flex-direction: row
     background-color: $white
@@ -119,7 +119,7 @@
       color: $white
       pointer-events: none
 
-.calc-form
+.v-form
   display: flex
   flex-direction: column
   margin-top: 1.6em
@@ -155,16 +155,16 @@
       .arrow-icon
         margin-left: 2px
         margin-right: 2px
-    .title
+    &-title
       font-style: normal
       font-weight: 400
-      font-size: 1.3em
+      font-size: 1.2em
       letter-spacing: 0.5px
       color: $grey-text
-    .value
+    &-value
       font-style: normal
       font-weight: 400
-      font-size: 1.3em
+      font-size: 1.2em
       letter-spacing: 0.5px
       color: $textBlack
   &-arrow-row
@@ -187,7 +187,7 @@
     &:hover
       background-color: $primary-light
       border-radius: 12px
-  .title
+  &-title
     font-style: normal
     font-weight: 500
     font-size: 1.3em
@@ -217,7 +217,7 @@
         color: $grey-text
       &:focus
         outline: none!important
-    .calc-icon-container
+    .v-form-icon-container
       display: flex
       background-color: $white
       border-radius: 100px
@@ -225,5 +225,7 @@
       height: 56px
       align-items: center
       justify-content: center
+      &-icon
+
       &:hover
         background-color: $primary-light

@@ -131,11 +131,11 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
           <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick} />
         </View>
       </View>
-      <LiquidityBottomSheet
-        visible={visible}
-        setVisible={() => setVisible(false)}
-        list={view.tokenList.filter((item) => item.id === 0)}
-      />
+      {/*<LiquidityBottomSheet*/}
+      {/*  visible={visible}*/}
+      {/*  setVisible={() => setVisible(false)}*/}
+      {/*  list={view.tokenList.filter((item) => item.id === 0)}*/}
+      {/*/>*/}
     </>
   );
 };
