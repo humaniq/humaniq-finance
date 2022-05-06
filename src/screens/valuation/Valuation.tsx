@@ -124,9 +124,9 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
             </div>
           </div>
           <Button
+            className="calc-form-btn"
             onClick={view.handleButtonClick}
             disabled={view.isButtonDisabled}
-            className="calc-form-btn"
             text={view.getDepositButtonText}/>
         </div>
       </div>
