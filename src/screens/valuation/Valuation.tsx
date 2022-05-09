@@ -96,7 +96,7 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
             </div>
           </div>
           <span className="v-form-title">{view.getFiatOrTokenInput}</span>
-          <Button className="fee-btn" text="Slow fee $10.00"/>
+          <Button loading={view.gasEstimating} className="fee-btn" text="Slow fee $10.00"/>
           <div className="v-form-row">
             <span className="v-form-row-title">{`${t("main.deposit")} ${t("main.netApy")}`}</span>
             <span className="v-form-row-value">{view.getDepositPerYear}</span>

@@ -30,6 +30,7 @@ export class ValuationViewModel {
   ethAccount?: string | null = null;
   cTokenContract: Ctoken
   faucetContract: any
+  gasEstimating = false
 
   protected readonly api: ApiService
 
@@ -166,6 +167,8 @@ export class ValuationViewModel {
     //   supplyValue = Big(supplyValue).minus(fee);
     // }
 
+    this.gasEstimating = true
+
     const gasPrice = await getProviderStore.provider.getFeeData() as GasFeeData
     const gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 1)
 
@@ -186,6 +189,8 @@ export class ValuationViewModel {
     //   .catch(() => {
     //     this.closeModal();
     //   });
+
+    this.gasEstimating = false
   }
 
   setInputValue = (value: string) => {
