@@ -173,7 +173,6 @@ export class ValuationViewModel {
     const gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 1)
 
     const fee = gasPrice.gasPrice.mul(gasLimit)
-    console.log("feeee", utils.formatUnits(fee, "eth"))
 
     if (this.isEther) {
     }
