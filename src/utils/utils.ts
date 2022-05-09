@@ -1,3 +1,5 @@
+import Big from "big.js"
+
 const pow = Math.pow,
   floor = Math.floor,
   abs = Math.abs,
@@ -25,15 +27,16 @@ export function formatToNumber(n: number) {
   return intlSimple.format(n);
 }
 
-export function preciseRound(n: number) {
+export function preciseRound(n: any) {
   return parseFloat(
     n.toExponential(~~Math.max(1, 2 + Math.log10(Math.abs(n))))
   );
 }
 
-// export function formatBalance(value: number) {
-//   return value.gte(1) ? parseFloat(value.toFixed(4)) : preciseRound(value);
-// }
+export function formatBalance(value: any) {
+  let v = Big(value)
+  return v.gte(1) ? parseFloat(v.toFixed(4)) : preciseRound(v);
+}
 
 export function beautifyNumber(n: number, isCurrency: boolean) {
   let base = floor(log(abs(n)) / log(1000));

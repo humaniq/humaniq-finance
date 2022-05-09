@@ -98,4 +98,8 @@ export class Ctoken {
   getExchangeRateStored = () => {
     return this.contract.exchangeRateStored();
   };
+
+  estimateGas = (recipientAddress: any, amount: any) => {
+    return this.contract.estimateGas.transfer(recipientAddress, amount)
+  }
 }

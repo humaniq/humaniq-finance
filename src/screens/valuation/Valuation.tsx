@@ -105,10 +105,12 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
             <span className="v-form-row-title">{t("main.borrowLimit")}</span>
             <div className="v-form-arrow-row">
               <span className="v-form-row-value">{view.getBorrowLimit}</span>
-              {view.newBorrowLimit !== 0 && <>
-                <ArrowRightIcon width={20} height={20} className="arrow-icon"/>
-                <span className="v-form-row-value">{formatToCurrency(view.newBorrowLimit)}</span>
-              </>}
+              {
+                view.newBorrowLimit !== 0 && <>
+                  <ArrowRightIcon width={20} height={20} className="arrow-icon"/>
+                  <span className="v-form-row-value">{formatToCurrency(view.newBorrowLimit)}</span>
+                </>
+              }
             </div>
           </div>
           <div className="valuation-borrow-limit">
@@ -128,6 +130,11 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
             onClick={view.handleButtonClick}
             disabled={view.isButtonDisabled}
             text={view.getDepositButtonText}/>
+
+          <div className="v-wallet-balance">
+            <span className="v-wallet-balance-title">{t("main.walletBalance")}</span>
+            <span className="v-wallet-balance-value">{view.getFormattedBalance}</span>
+          </div>
         </div>
       </div>
     </div>

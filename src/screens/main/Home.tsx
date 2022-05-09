@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react"
+import React, {useCallback, useEffect} from "react"
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { MainInfoHeader } from "components/main/header/MainInfoHeader";
@@ -29,7 +29,6 @@ export interface MainScreenInterface {
 }
 
 const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
-  const [visible, setVisible] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -48,8 +47,6 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
     (async () => {
       await view.mounted();
     })();
-
-    return () => view.unMounted();
   }, [view]);
 
   if (view.isRefreshing) return <Loader />;
@@ -127,14 +124,14 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
           </View>
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits data={view.supplyMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)} />
-          <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick} />
+          <Deposits data={view.userSuppliedMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)} />
+          <Borrows data={view.userBorrowedMarket} onClick={onBorrowOrSupplyClick} />
         </View>
       </View>
       {/*<LiquidityBottomSheet*/}
-      {/*  visible={visible}*/}
-      {/*  setVisible={() => setVisible(false)}*/}
-      {/*  list={view.tokenList.filter((item) => item.id === 0)}*/}
+      {/*  visible={view.modalVisible}*/}
+      {/*  setVisible={() => view.setModalVisible(false)}*/}
+      {/*  list={[]}*/}
       {/*/>*/}
     </>
   );

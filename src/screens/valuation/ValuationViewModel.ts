@@ -3,8 +3,8 @@ import {BorrowSupplyItem} from "models/types"
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatToCurrency, formatToNumber} from "utils/utils"
-import {BigNumber} from "ethers"
+import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
+import {BigNumber, utils} from "ethers"
 import {ValuationState} from "screens/valuation/Valuation"
 import {isEmpty} from "utils/textUtils"
 import {Token} from "models/Token"
@@ -13,7 +13,9 @@ import {isEther} from "models/ContractsAPI"
 import {Comptroller} from "models/Comptroller"
 import {Ctoken} from "models/CToken"
 import {FaucetToken} from "models/FaucetToken"
-import {ERC20Contract} from "models/contracts/ERC20Contract"
+import {ApiService} from "services/apiService/apiService"
+import {URLS} from "constants/api"
+import {GasFeeData, GasFeeResponse} from "models/contracts/types"
 
 export class ValuationViewModel {
   item: BorrowSupplyItem = {} as any
@@ -23,20 +25,22 @@ export class ValuationViewModel {
   totalBorrow = 0
   inputValue = ""
   isSwap = false
-
   tokenContract: any
   comptroller: any
   ethAccount?: string | null = null;
-  cTokenContract: any
+  cTokenContract: Ctoken
   faucetContract: any
+
+  protected readonly api: ApiService
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
     this.ethAccount = getProviderStore.currentAccount
+    this.api = new ApiService()
   }
 
   get isEnoughBalance() {
-    return this.isSwap ? Big(this.item.tokenUsdValue).gte(+this.getInputValue) : Big(this.item.balance).gte(+this.getInputValue)
+    return this.isSwap ? this.balance.mul(this.item.tokenUsdValue).gte(+this.getInputValue) : this.balance.gte(+this.getInputValue)
   }
 
   get getInputFontSize() {
@@ -49,12 +53,20 @@ export class ValuationViewModel {
     return this.item.symbol
   }
 
+  get balance() {
+    return Big(this.item.balance)
+  }
+
+  get getFormattedBalance() {
+    return `${formatBalance(this.balance)} ${this.getTokenSymbol}`
+  }
+
   get getTitle() {
     return `${t(this.isDeposit ? "main.deposit" : "main.borrow")} ${this.getTokenSymbol}`
   }
 
   get getTokenBalance() {
-    return `${Big(this.item.balance).toFixed(2)}`
+    return `${this.balance.toFixed(2)}`
   }
 
   get getTokenUsdValue() {
@@ -94,6 +106,7 @@ export class ValuationViewModel {
     if (!this.getInputValue) return 0
     if (!this.item.isEnteredTheMarket) return this.borrowLimit
 
+    // @ts-ignore
     return this.borrowLimit + (this.isSwap ? this.inputValueToken : this.inputValueFiat) * this.collateralMantissa
   }
 
@@ -104,13 +117,13 @@ export class ValuationViewModel {
   get inputValueFiat() {
     if (!this.getInputValue) return 0
 
-    return parseFloat(this.getInputValue) * this.item.tokenUsdValue
+    return Big(this.getInputValue).mul(Big(this.item.tokenUsdValue))
   }
 
   get inputValueToken() {
     if (!this.getInputValue) return 0
 
-    return parseFloat(this.getInputValue) / this.item.tokenUsdValue
+    return Big(this.getInputValue).div(Big(this.item.tokenUsdValue))
   }
 
   get getTokenOrFiat() {
@@ -132,8 +145,7 @@ export class ValuationViewModel {
   handleButtonClick = async () => {
     let gas = 0;
     // const inputValue = this.isMaxValueSet ? this.balance : this.inputValue;
-    const inputValue = this.inputValue;
-    let supplyValue = await this.getValue(inputValue);
+    // let supplyValue = await this.getValue(inputValue);
 
     // this.setTransactionModal({
     //   title: "Confirm Transaction",
@@ -154,7 +166,11 @@ export class ValuationViewModel {
     //   supplyValue = Big(supplyValue).minus(fee);
     // }
 
-    const contract = ERC20Contract(this.item.token, getProviderStore.provider)
+    const gasPrice = await getProviderStore.provider.getFeeData() as GasFeeData
+    const gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 1)
+
+    const fee = gasPrice.gasPrice.mul(gasLimit)
+    console.log("feeee", utils.formatUnits(fee, "eth"))
 
     if (this.isEther) {
     }
@@ -181,6 +197,7 @@ export class ValuationViewModel {
 
     try {
       this.item = JSON.parse(item, ((key, value) => {
+        // mapping big number values with ethers utils
         if (typeof value === 'object' && value.type === 'BigNumber') {
           return BigNumber.from(value)
         }
@@ -231,15 +248,26 @@ export class ValuationViewModel {
   }
 
   setMaxValue = () => {
-    let maxValue = this.item.balance
+    let maxValue = this.balance
 
     if (this.isSwap) {
-      maxValue = this.item.tokenUsdValue
+      maxValue = Big(this.item.tokenUsdValue).mul(this.balance)
     }
+
     this.setInputValue(String(maxValue))
   }
 
   onSwap = () => {
     this.isSwap = !this.isSwap
+  }
+
+  getGasFee = async () => {
+    try {
+      const result = await this.api.get<GasFeeResponse>(URLS.ETHERSCAN_URL)
+
+      if (result.isOk) {
+
+      }
+    } catch (e) {}
   }
 }
