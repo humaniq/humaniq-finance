@@ -100,7 +100,7 @@ export class ValuationViewModel {
   }
 
   get getInputValue() {
-    return this.inputValue.replace(/^\D+\.?\D*$/, '')
+    return this.inputValue.replace(/[^\d.]/g, '')
   }
 
   get newBorrowLimit() {
@@ -146,7 +146,7 @@ export class ValuationViewModel {
   handleButtonClick = async () => {
     let gas = 0;
     // const inputValue = this.isMaxValueSet ? this.balance : this.inputValue;
-    // let supplyValue = await this.getValue(inputValue);
+    let supplyValue = await this.getValue(this.inputValue);
 
     // this.setTransactionModal({
     //   title: "Confirm Transaction",
@@ -171,10 +171,12 @@ export class ValuationViewModel {
 
     const gasPrice = await getProviderStore.provider.getFeeData() as GasFeeData
     const gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 1)
-
     const fee = gasPrice.gasPrice.mul(gasLimit)
 
+    this.gasEstimating = false
+
     if (this.isEther) {
+      // supplyValue = fee.sub(supplyValue);
     }
 
     // this.cTokenContract
@@ -188,12 +190,15 @@ export class ValuationViewModel {
     //   .catch(() => {
     //     this.closeModal();
     //   });
-
-    this.gasEstimating = false
   }
 
-  setInputValue = (value: string) => {
-    this.inputValue = value
+  setInputValue = (e: any) => {
+    let value = e.target.value
+    if (this.inputValue.length === 0 && value === '.') {
+      this.inputValue = "0."
+    } else {
+      this.inputValue = e.target.value
+    }
   }
 
   mounted = async (state: ValuationState) => {

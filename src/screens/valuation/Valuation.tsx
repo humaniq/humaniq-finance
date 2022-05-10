@@ -90,7 +90,7 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
               className="v-form-middle-row-input"
               placeholder="0"
               value={view.getInputValue}
-              onChange={event => view.setInputValue(event.target.value)}/>
+              onChange={view.setInputValue}/>
             <div onClick={view.onSwap} className="v-form-icon-container">
               <ChangeIcon width={26} height={26} className="v-form-icon-container-icon"/>
             </div>
