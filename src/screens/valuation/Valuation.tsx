@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react"
+import React, {useCallback, useEffect, useRef} from "react"
 import {ValuationViewModel} from "./ValuationViewModel"
 import {withStore} from "utils/hoc"
 import {observer} from "mobx-react"
@@ -84,13 +84,15 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
               <MaxIcon width={32} height={32} className="v-form-icon-container-icon"/>
             </div>
             <input
+              inputMode="decimal"
               style={{
                 fontSize: view.getInputFontSize
               }}
+              autoFocus
               className="v-form-middle-row-input"
               placeholder="0"
               value={view.getInputValue}
-              onChange={view.setInputValue}/>
+              onChange={(e) => view.setInputValue(e.target.value)}/>
             <div onClick={view.onSwap} className="v-form-icon-container">
               <ChangeIcon width={26} height={26} className="v-form-icon-container-icon"/>
             </div>

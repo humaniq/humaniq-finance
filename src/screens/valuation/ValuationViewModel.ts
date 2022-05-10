@@ -4,7 +4,7 @@ import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
 import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
-import {BigNumber, utils} from "ethers"
+import {BigNumber} from "ethers"
 import {ValuationState} from "screens/valuation/Valuation"
 import {isEmpty} from "utils/textUtils"
 import {Token} from "models/Token"
@@ -100,7 +100,7 @@ export class ValuationViewModel {
   }
 
   get getInputValue() {
-    return this.inputValue.replace(/[^\d.]/g, '')
+    return this.inputValue
   }
 
   get newBorrowLimit() {
@@ -146,7 +146,7 @@ export class ValuationViewModel {
   handleButtonClick = async () => {
     let gas = 0;
     // const inputValue = this.isMaxValueSet ? this.balance : this.inputValue;
-    let supplyValue = await this.getValue(this.inputValue);
+    let supplyValue = await this.getValue(this.getInputValue);
 
     // this.setTransactionModal({
     //   title: "Confirm Transaction",
@@ -192,13 +192,17 @@ export class ValuationViewModel {
     //   });
   }
 
-  setInputValue = (e: any) => {
-    let value = e.target.value
+  setInputValue = (value: string) => {
+    if (!/^([0-9]+)?(\.)?([0-9]+)?$/.test(value)) {
+      return
+    }
+
     if (this.inputValue.length === 0 && value === '.') {
       this.inputValue = "0."
-    } else {
-      this.inputValue = e.target.value
+      return
     }
+
+    this.inputValue = value
   }
 
   mounted = async (state: ValuationState) => {
