@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { ReactComponent as InfoIcon } from "assets/icons/ic_question.svg";
-import "./styles.sass";
 import Tooltip from "rc-tooltip";
 import { View, ViewDirections } from "../ui/view/View";
-import "./tolltip.sass";
 import { t } from "translations/translate";
+import "./styles.sass";
+import "./tolltip.sass";
 
 export enum PLACEMENT {
   TOP = "top",

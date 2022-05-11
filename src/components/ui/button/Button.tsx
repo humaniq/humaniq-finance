@@ -1,4 +1,6 @@
 import React from "react";
+import {TailSpin} from "react-loader-spinner"
+import colors from "utils/colors"
 import "./Button.style.sass";
 
 export interface ButtonProps {
@@ -7,6 +9,7 @@ export interface ButtonProps {
   onClick?: () => void;
   style?: any;
   className?: string;
+  loading?: boolean
 }
 
 /**
@@ -17,6 +20,7 @@ export interface ButtonProps {
  * @param className
  * @param style
  * @param disabled
+ * @param loading
  * @param props
  * @constructor
  */
@@ -26,8 +30,14 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   style,
   disabled = false,
+  loading = false,
   ...props
 }) => {
+
+  if (loading) return <div className="btn-loader">
+    <TailSpin width={30} color={colors.primary} height={24}/>
+  </div>
+
   return (
     <button
       disabled={disabled}

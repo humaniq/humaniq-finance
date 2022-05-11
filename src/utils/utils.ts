@@ -1,4 +1,4 @@
-import CONFIG from "@/config/env";
+import Big from "big.js"
 
 const pow = Math.pow,
   floor = Math.floor,
@@ -14,30 +14,31 @@ const formatOptions = {
 const intlCurrency = Intl.NumberFormat("en-US", formatOptions);
 const intlSimple = Intl.NumberFormat();
 
-function round(n, precision) {
+function round(n: number, precision: number) {
   const prec = Math.pow(10, precision);
   return Math.round(n * prec) / prec;
 }
 
-export function formatToCurrency(number) {
-  return intlCurrency.format(number);
+export function formatToCurrency(n: any) {
+  return intlCurrency.format(n);
 }
 
-export function formatToNumber(number) {
-  return intlSimple.format(number);
+export function formatToNumber(n: number) {
+  return intlSimple.format(n);
 }
 
-export function preciseRound(n) {
+export function preciseRound(n: any) {
   return parseFloat(
     n.toExponential(~~Math.max(1, 2 + Math.log10(Math.abs(n))))
   );
 }
 
-export function formatBalance(value) {
-  return value.gte(1) ? parseFloat(value.toFixed(4)) : preciseRound(value);
+export function formatBalance(value: any) {
+  let v = Big(value)
+  return v.gte(1) ? parseFloat(v.toFixed(4)) : preciseRound(v);
 }
 
-export function beautifyNumber(n, isCurrency) {
+export function beautifyNumber(n: number, isCurrency: boolean) {
   let base = floor(log(abs(n)) / log(1000));
   const suffix = abbrev[Math.min(2, base - 1)];
   base = abbrev.indexOf(suffix) + 1;
@@ -48,22 +49,18 @@ export function beautifyNumber(n, isCurrency) {
       ? formatToCurrency(rounded) + suffix
       : formatToCurrency(n)
     : suffix
-    ? rounded + suffix
-    : n;
+      ? rounded + suffix
+      : n;
 }
 
-export function upperFirst(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+export function upperFirst(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-export function toCamelCase(str) {
-  return str
+export function toCamelCase(value: string) {
+  return value
     .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
       return index === 0 ? word.toLowerCase() : word.toUpperCase();
     })
     .replace(/\s+/g, "");
 }
-
-export const allEnvSettled = !Object.values(CONFIG).some(
-  (i) => i === undefined
-);

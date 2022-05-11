@@ -3,32 +3,27 @@ import { View, ViewDirections } from "../../ui/view/View";
 import { Text } from "../../ui/text/Text";
 import { Divider } from "../../ui/divider/Divider";
 import { Button } from "../../ui/button/Button";
-import { t } from "translations/translate";
 import { BorrowSupplyItem } from "models/types";
 import Big from "big.js";
-import "./SupplyItem.style.sass";
 import { icons } from "utils/icons";
+import "./SupplyItem.style.sass";
 
 export interface TokenItemProps {
-  onClick?: () => void;
-  onButtonClick?: () => void;
+  onSupplyClick?: () => void;
   className?: string;
   disabled?: boolean;
-  insufficientBalance?: boolean;
   item: BorrowSupplyItem;
 }
 
 export const SupplyItem: React.FC<TokenItemProps> = ({
-  onClick,
-  onButtonClick,
+  onSupplyClick,
   className,
   disabled,
-  insufficientBalance = false,
   item,
   ...rest
 }) => {
   return (
-    <div onClick={onClick} className={`supply-item ${className}`} {...rest}>
+    <div className={`supply-item ${className}`} {...rest}>
       <div className="supply-item--content">
         <img
           src={icons[item.symbol]}
@@ -54,15 +49,15 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
           <Button
             disabled={disabled}
             className="token-button"
-            onClick={onButtonClick}
+            onClick={onSupplyClick}
             text={`Deposit ${item.supplyApy}%`}
           />
-          {insufficientBalance && (
-            <>
-              <Divider marginT={10} />
-              <span className="insufficient">{t("insufficientBalance")}</span>
-            </>
-          )}
+          {/*{ (*/}
+          {/*  <>*/}
+          {/*    <Divider marginT={10} />*/}
+          {/*    <span className="insufficient">{t("insufficientBalance")}</span>*/}
+          {/*  </>*/}
+          {/*)}*/}
         </View>
       </div>
     </div>

@@ -4,9 +4,12 @@
   "notFound": "Not Found",
   "insufficientBalance": "Insufficient balance",
   "main": {
+    "deposit": "Deposit",
     "deposited": "Deposited",
+    "borrow": "Borrow",
     "borrowed": "Borrowed",
     "borrowLimit": "Borrow limit",
+    "borrowLimitUsed": "Borrow limit used",
     "walletBalance": "Your wallet balance",
     "availableToBorrow": "Available to borrow",
     "liquidity": "Liquidity",

@@ -10,11 +10,11 @@ import { BorrowSupplyItem } from "models/types";
 import "./Borrows.style.sass";
 
 export interface BorrowsProps {
-  list: BorrowSupplyItem[];
-  onPress?: () => void;
+  data: BorrowSupplyItem[];
+  onClick?: (item: BorrowSupplyItem) => void
 }
 
-export const Borrows: React.FC<BorrowsProps> = ({ list, onPress }) => {
+export const Borrows: React.FC<BorrowsProps> = ({ data, onClick }) => {
   const { t } = useTranslation();
 
   return (
@@ -34,15 +34,17 @@ export const Borrows: React.FC<BorrowsProps> = ({ list, onPress }) => {
           />
         </div>
         <Button
-          onClick={onPress}
           className="liquidity-btn"
           text={t("main.liquidity")}
         />
       </div>
       <HintMessage message={t("main.borrowHint")} />
       <div className="list">
-        {list.map((item, index) => (
-          <BorrowItem key={`borrow_item_${item.symbol}_${index}`} item={item} />
+        {data.map((item, index) => (
+          <BorrowItem
+            onBorrowClick={() => onClick?.(item)}
+            key={`borrow_item_${item.symbol}_${index}`}
+            item={item} />
         ))}
       </div>
     </div>
