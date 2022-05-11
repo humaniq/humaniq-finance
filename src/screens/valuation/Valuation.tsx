@@ -94,7 +94,7 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
               value={view.getInputValue}
               onChange={(e) => view.setInputValue(e.target.value)}/>
             <div onClick={view.onSwap} className="v-form-icon-container">
-              <ChangeIcon width={26} height={26} className="v-form-icon-container-icon"/>
+              <ChangeIcon width={23} height={23} className="v-form-icon-container-icon"/>
             </div>
           </div>
           <span className="v-form-title">{view.getFiatOrTokenInput}</span>
@@ -109,7 +109,7 @@ const ValuationImpl: React.FC<ValuationProps> = ({view}) => {
               <span className="v-form-row-value">{view.getBorrowLimit}</span>
               {
                 view.newBorrowLimit !== 0 && <>
-                  <ArrowRightIcon width={20} height={20} className="arrow-icon"/>
+                  <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
                   <span className="v-form-row-value">{formatToCurrency(view.newBorrowLimit)}</span>
                 </>
               }
