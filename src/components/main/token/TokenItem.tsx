@@ -61,7 +61,7 @@ export const TokenItem: React.FC<TokenItemProps> = ({
           {insufficientBalance && (
             <>
               <Divider marginT={10} />
-              <span className="insufficient">{t("insufficientBalance")}</span>
+              <span className="insufficient">{t("transaction.insufficientBalance")}</span>
             </>
           )}
         </View>

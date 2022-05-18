@@ -30,7 +30,7 @@ export const LiquidityBottomSheet: React.FC<LiquidityBottomSheetProps> = ({
           size={16}
           className="label"
           color={colors.blackText}
-          text={t("main.liquidity")}
+          text={t("home.liquidity")}
         />
         <div className="list">
           {list.map((item, index) => (

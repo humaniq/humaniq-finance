@@ -24,7 +24,7 @@ export const Borrows: React.FC<BorrowsProps> = ({ data, onClick }) => {
           <Text
             className="label"
             size={16}
-            text={t("main.availableToBorrow")}
+            text={t("home.availableToBorrow")}
             color={colors.blackText}
           />
           <InfoButton
@@ -35,10 +35,10 @@ export const Borrows: React.FC<BorrowsProps> = ({ data, onClick }) => {
         </div>
         <Button
           className="liquidity-btn"
-          text={t("main.liquidity")}
+          text={t("home.liquidity")}
         />
       </div>
-      <HintMessage message={t("main.borrowHint")} />
+      <HintMessage message={t("home.borrowHint")} />
       <div className="list">
         {data.map((item, index) => (
           <BorrowItem

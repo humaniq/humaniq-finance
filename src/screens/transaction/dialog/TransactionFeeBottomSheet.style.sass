@@ -1,0 +1,27 @@
+@import "../../../styles/colors"
+
+.transaction-fee-sheet-container
+  --rsbs-backdrop-bg: rgba(0, 0, 0, 0.6)
+  --rsbs-bg: #F5FAFF
+  [data-rsbs-root]
+    background-color: #F5FAFF
+  [data-rsbs-overlay]
+    background-color: transparent
+  [data-rsbs-header]:before
+    width: 50px
+    background-color: #ffffff
+
+.transaction-fee-sheet-content
+  display: flex
+  flex-direction: column
+  background-color: $blue-ozone
+  padding: 30px 16px 16px
+  border-top-left-radius: 14px
+  border-top-right-radius: 14px
+  &-label
+    font-style: normal
+    font-weight: 500
+    line-height: 22px
+    align-items: center
+    letter-spacing: 0.5px
+    margin-right: 6px

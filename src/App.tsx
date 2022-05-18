@@ -5,7 +5,7 @@ import routes from "./utils/routes";
 import { ETHProvider } from "stores/provider/providerStore";
 import b from "buffer";
 import { Home } from "screens/main/Home";
-import { Valuation } from "screens/valuation/Valuation";
+import { Transaction } from "screens/transaction/Transaction";
 import { ConnectWallet } from "components/modals/ConnectWallet";
 import { observer } from "mobx-react";
 
@@ -33,8 +33,8 @@ export const App = observer(() => {
                   <Routes>
                     <Route path={routes.home.path} element={<Home />} />
                     <Route
-                      path={routes.valuation.path}
-                      element={<Valuation />}
+                      path={routes.transaction.path}
+                      element={<Transaction />}
                     />
                   </Routes>
                 </Router>

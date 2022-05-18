@@ -33,7 +33,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
   const navigate = useNavigate();
 
   const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, isDeposit: boolean = false) => {
-    navigate(routes.valuation.path, {
+    navigate(routes.transaction.path, {
       state: {
         item: JSON.stringify(item),
         isDeposit: isDeposit,
@@ -70,7 +70,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
               value={view.getNetApy}
             >
               <EllipseIcon width="100%" height="100%" className="ellipse" />
-              <Text className="circle-title" text={t("main.netApy")} />
+              <Text className="circle-title" text={t("home.netApy")} />
               <span className="circle-amount">{view.getNetApy}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
@@ -82,7 +82,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   size={16}
                   color={"#0066DA"}
                   className="label"
-                  text={t("main.deposited")}
+                  text={t("home.deposited")}
                 />
                 <Text
                   size={24}
@@ -96,7 +96,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   size={16}
                   color={"#895EF2"}
                   className="label"
-                  text={t("main.borrowed")}
+                  text={t("home.borrowed")}
                 />
                 <Text
                   size={24}
@@ -113,7 +113,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 size={15}
                 color={colors.greyHalf}
                 className="label"
-                text={t("main.borrowLimit")}
+                text={t("home.borrowLimit")}
               />
               <InfoButton
                 message={t("hints.borrowLimit")}
