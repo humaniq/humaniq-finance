@@ -1,5 +1,13 @@
 export const BASE_URL = "";
 
+export enum GAS_PRICE_SPEED {
+  FASTEST = 'FASTEST',
+  FAST = 'FAST',
+  SAFE_LOW = 'SAFE_LOW'
+}
+
+export const GAS_FEE = "https://ethgasstation.info/api/ethgasAPI.json"
+
 export const URLS = {
   API_URL: "https://ledger-api-dev.unfederalreservetesting.com",
   NETWORK: "rinkeby",

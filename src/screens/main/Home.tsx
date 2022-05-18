@@ -12,7 +12,6 @@ import { InfoButton, PLACEMENT } from "components/info-button/InfoButton";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg";
 import { LinearProgress } from "components/ui/progress/LinearProgress";
-import { LiquidityBottomSheet } from "components/bottom-sheet/LiquidityBottomSheet";
 import { Borrows } from "components/borrow/Borrows";
 import { Deposits } from "components/deposit/Deposits";
 import { getProviderStore } from "App";
@@ -23,6 +22,7 @@ import {BorrowSupplyItem} from "models/types"
 import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
 import "screens/main/Home.sass";
+import {useSharedData} from "hooks/useSharedData"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -31,16 +31,16 @@ export interface MainScreenInterface {
 const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { setData } = useSharedData()
 
   const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, isDeposit: boolean = false) => {
-    navigate(routes.valuation.path, {
-      state: {
-        item: JSON.stringify(item),
-        isDeposit: isDeposit,
-        borrowLimit: view.borrowLimit,
-        totalBorrow: view.totalBorrow,
-      }
-    });
+    setData({
+      item,
+      isDeposit: isDeposit,
+      borrowLimit: view.borrowLimit,
+      totalBorrow: view.totalBorrow,
+    })
+    navigate(routes.transaction.path);
   }, [navigate, view]);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
               value={view.getNetApy}
             >
               <EllipseIcon width="100%" height="100%" className="ellipse" />
-              <Text className="circle-title" text={t("main.netApy")} />
+              <Text className="circle-title" text={t("home.netApy")} />
               <span className="circle-amount">{view.getNetApy}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
@@ -82,7 +82,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   size={16}
                   color={"#0066DA"}
                   className="label"
-                  text={t("main.deposited")}
+                  text={t("home.deposited")}
                 />
                 <Text
                   size={24}
@@ -96,7 +96,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   size={16}
                   color={"#895EF2"}
                   className="label"
-                  text={t("main.borrowed")}
+                  text={t("home.borrowed")}
                 />
                 <Text
                   size={24}
@@ -113,7 +113,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 size={15}
                 color={colors.greyHalf}
                 className="label"
-                text={t("main.borrowLimit")}
+                text={t("home.borrowLimit")}
               />
               <InfoButton
                 message={t("hints.borrowLimit")}
@@ -125,14 +125,9 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
           <Deposits data={view.userSuppliedMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)} />
-          <Borrows data={view.userBorrowedMarket} onClick={onBorrowOrSupplyClick} />
+          <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick} />
         </View>
       </View>
-      {/*<LiquidityBottomSheet*/}
-      {/*  visible={view.modalVisible}*/}
-      {/*  setVisible={() => view.setModalVisible(false)}*/}
-      {/*  list={[]}*/}
-      {/*/>*/}
     </>
   );
 };

@@ -53,7 +53,7 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
               <span className={"message"}>{message}</span>
               <View className={"right"}>
                 <span onClick={() => setVisible(false)} className="okBtn">
-                  {t("general.clear")}
+                  {t("common.clear")}
                 </span>
               </View>
             </View>

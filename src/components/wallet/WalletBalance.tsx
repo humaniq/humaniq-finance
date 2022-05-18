@@ -17,7 +17,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ list }) => {
   const { t } = useTranslation();
 
   const onItemClick = useCallback(() => {
-    navigate(routes.valuation.path);
+    navigate(routes.transaction.path);
   }, [navigate]);
 
   return (
@@ -27,7 +27,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ list }) => {
           size={16}
           className="label"
           color={colors.blackText}
-          text={t("main.walletBalance")}
+          text={t("home.walletBalance")}
         />
         <InfoButton
           message={t("hints.balance")}

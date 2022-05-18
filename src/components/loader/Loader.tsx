@@ -14,7 +14,7 @@ export const Loader = () => {
         ariaLabel="loading"
       />
       <span className="loader-container__message">
-        {t("general.loading")}...
+        {t("common.loading")}...
       </span>
     </div>
   );
