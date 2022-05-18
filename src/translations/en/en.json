@@ -25,7 +25,8 @@
     "netApy": "% per year"
   },
   "transaction": {
-    "insufficientBalance": "Insufficient balance"
+    "insufficientBalance": "Insufficient balance",
+    "borrowBalance": "Borrow balance"
   },
   "deposits": {
     "title": "Deposits"

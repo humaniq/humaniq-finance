@@ -8,6 +8,7 @@ import { Home } from "screens/main/Home";
 import { Transaction } from "screens/transaction/Transaction";
 import { ConnectWallet } from "components/modals/ConnectWallet";
 import { observer } from "mobx-react";
+import {SharedDataProvider} from "hooks/useSharedData"
 
 window.Buffer = b.Buffer;
 
@@ -23,29 +24,31 @@ export const App = observer(() => {
   }, []);
 
   return (
-    <div className="App">
-      {getProviderStore.initialized ? (
-        <>
-          {getProviderStore.hasProvider ? (
-            <>
-              {getProviderStore.currentAccount ? (
-                <Router>
-                  <Routes>
-                    <Route path={routes.home.path} element={<Home />} />
-                    <Route
-                      path={routes.transaction.path}
-                      element={<Transaction />}
-                    />
-                  </Routes>
-                </Router>
-              ) : (
-                <ConnectWallet />
-              )}
-            </>
-          ) : null}
-        </>
-      ) : null}
-    </div>
+    <SharedDataProvider>
+      <div className="App">
+        {getProviderStore.initialized ? (
+          <>
+            {getProviderStore.hasProvider ? (
+              <>
+                {getProviderStore.currentAccount ? (
+                  <Router>
+                    <Routes>
+                      <Route path={routes.home.path} element={<Home />} />
+                      <Route
+                        path={routes.transaction.path}
+                        element={<Transaction />}
+                      />
+                    </Routes>
+                  </Router>
+                ) : (
+                  <ConnectWallet />
+                )}
+              </>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+    </SharedDataProvider>
   );
 });
 

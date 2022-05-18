@@ -3,7 +3,7 @@ import {TransactionViewModel} from "./TransactionViewModel"
 import {withStore} from "utils/hoc"
 import {observer} from "mobx-react"
 import {Header} from "components/header/Header"
-import {useLocation, useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 import {Loader} from "components/loader/Loader"
 import {icons} from "utils/icons"
 import {View, ViewDirections} from "components/ui/view/View"
@@ -15,10 +15,12 @@ import {Button} from "components/ui/button/Button"
 import {t} from "translations/translate"
 import {Divider} from "components/ui/divider/Divider"
 import {formatToCurrency} from "utils/utils"
+import {useSharedData} from "hooks/useSharedData"
 import "./Transaction.style.sass"
+import {BorrowSupplyItem} from "models/types"
 
 export type TransactionState = {
-  item: string
+  item: BorrowSupplyItem
   isDeposit: boolean
   borrowLimit: number
   totalBorrow: number
@@ -30,7 +32,7 @@ export interface TransactionProps {
 
 const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   const navigate = useNavigate()
-  const {state} = useLocation()
+  const {data, setData} = useSharedData()
 
   const onClose = useCallback(() => {
     navigate(-1)
@@ -38,9 +40,14 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
 
   useEffect(() => {
     (async () => {
-      await view.mounted(state as TransactionState)
+      if (data) {
+        await view.mounted(data as TransactionState)
+      }
+      return () => setData(null)
     })()
-  }, [state, view])
+  }, [view])
+
+  if (!data) return null
 
   if (view.isRefreshing) return <Loader/>
 
@@ -104,13 +111,13 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               className="fee-btn"
               text={view.getTransactionFiatFee}/>
             <div className="v-form-row">
-              <span className="v-form-row-title">{`${t("home.deposit")} ${t("home.netApy")}`}</span>
-              <span className="v-form-row-value">{view.getDepositPerYear}</span>
+              <span className="v-form-row-title">{view.getApyTitle}</span>
+              <span className="v-form-row-value">{view.getApyValue}</span>
             </div>
             <div className="v-form-row">
-              <span className="v-form-row-title">{t("home.borrowLimit")}</span>
+              <span className="v-form-row-title">{view.getBorrowLimitTitle}</span>
               <div className="v-form-arrow-row">
-                <span className="v-form-row-value">{view.getBorrowLimit}</span>
+                <span className="v-form-row-value">{view.getBorrowLimitValue}</span>
                 {
                   view.newBorrowLimit !== 0 && <>
                     <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
