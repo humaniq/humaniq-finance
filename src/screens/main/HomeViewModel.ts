@@ -294,10 +294,10 @@ export class HomeViewModel {
   }
 
   init = async () => {
-    if (!this.isConnectionSupport) {
-      this.setLoader(false)
-      return
-    }
+    // if (!this.isConnectionSupport) {
+    //   this.setLoader(false)
+    //   return
+    // }
 
     if (!this.isRefreshing) {
       this.setLoader(true)
