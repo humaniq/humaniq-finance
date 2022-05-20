@@ -21,31 +21,11 @@ export const URLS = {
   ETHERSCAN_URL: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=URM3S7N8RENJXU4B6GVCTYT19NP529F3K9`,
 };
 
-function handleError(response: any) {
-  if (!response.ok) throw new Error(response);
-
-  return response.json();
-}
-
-export function getGasFee() {
-  return fetch(URLS.ETHERSCAN_URL)
-    .then(handleError)
-    .then((json) => json.result.ProposeGasPrice) // response in GWei
-    .catch((err) => console.error(err));
-}
-
-export function getTotalEarned(account: any) {
-  const url = `${URLS.API_URL}/profits?addr=${account}`;
-
-  return fetch(url)
-    .then(handleError)
-    .catch((err) => console.error(err));
-}
-
-export function getMarketDetails() {
-  const url = `${URLS.API_URL}/all_markets`;
-
-  return fetch(url)
-    .then(handleError)
-    .catch((err) => console.error(err));
-}
+export const rpc = {
+  1: "https://mainnet.infura.io/v3/c306191fe58d401b900a38911b8a43c9",
+  3: "https://ropsten.infura.io/v3/c306191fe58d401b900a38911b8a43c9",
+  4: "https://rinkeby.infura.io/v3/c306191fe58d401b900a38911b8a43c9",
+  5: "https://goerli.infura.io/v3/c306191fe58d401b900a38911b8a43c9",
+  97: "https://data-seed-prebsc-1-s1.binance.org:8545",
+  56: "https://bsc-dataseed.binance.org",
+};

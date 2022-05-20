@@ -8,7 +8,7 @@ export const ConnectWallet = observer(() => {
   return (
     <div className="connect-wallet">
       <span className="connect-wallet__logo">{t("appName")}</span>
-      <div className="wallet-item" onClick={getProviderStore.connect}>
+      <div className="wallet-item" onClick={getProviderStore.toggleConnectDialog}>
         <span className="wallet-item__name">{t("wallet.connect")}</span>
         <span className="wallet-item__description">
           {t("wallet.connectDescription")}

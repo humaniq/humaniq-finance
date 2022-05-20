@@ -11,12 +11,12 @@ export class Comptroller {
     this.account = account;
     this.contract = ComptrollerContract(
       URLS.COMPTROLLER_ADDRESS,
-      getProviderStore.provider
+      getProviderStore.currentProvider
     );
   }
 
   waitForTransaction = (transactionHash: string) => {
-    return getProviderStore.provider.waitForTransaction(transactionHash);
+    return getProviderStore.currentProvider.waitForTransaction(transactionHash);
   };
 
   getAllMarkets = async (): Promise<string[]> => {

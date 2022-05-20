@@ -1,5 +1,6 @@
 {
   "appName": "SAVY",
+  "humaniqName": "Humaniq wallet",
   "common": {
     "low": "Low",
     "slow": "Slow",
@@ -9,7 +10,9 @@
     "fee": "Fee",
     "ok": "Ok",
     "clear": "Clear",
-    "loading": "Loading"
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "later": "Later"
   },
   "home": {
     "deposit": "Deposit",
@@ -43,6 +46,11 @@
     "connect": "Connect",
     "connectDescription": "Connect your wallet to proceed",
     "connectWallet": "Connect your Wallet",
-    "notFound": "Not Found"
+    "notFound": "Not Found",
+    "connectWalletDialog": "Connect wallet",
+    "chooseConnection": "Choose connection method",
+    "disconnectWalletDialog": "Disconnect wallet",
+    "chooseDisconnection": "Are you sure, that you want to disconnect wallet?",
+    "walletConnectName": "WalletConnect"
   }
 }

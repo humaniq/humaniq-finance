@@ -13,8 +13,8 @@ export class Ctoken {
     this.account = account;
     this.isEther = isEth;
     this.contract = isEth
-      ? CEtherContract(cToken, getProviderStore.provider)
-      : CErc20Contract(cToken, getProviderStore.provider);
+      ? CEtherContract(cToken, getProviderStore.currentProvider)
+      : CErc20Contract(cToken, getProviderStore.currentProvider);
   }
 
   supply = (value: any, gas: any) => {

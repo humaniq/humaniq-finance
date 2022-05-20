@@ -14,8 +14,8 @@ export class Token {
     this.cToken = cToken;
     this.account = account;
     this.contract = isEth
-      ? CEtherContract(token, getProviderStore.provider)
-      : CErc20Contract(token, getProviderStore.provider);
+      ? CEtherContract(token, getProviderStore.currentProvider)
+      : CErc20Contract(token, getProviderStore.currentProvider);
   }
 
   approve = () => {
