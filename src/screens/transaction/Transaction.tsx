@@ -45,7 +45,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
       }
       return () => setData(null)
     })()
-  }, [view])
+  }, [view, data, setData])
 
   if (!data) return null
 
@@ -84,7 +84,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <span className="v-supply-insufficient-balance">{t("transaction.insufficientBalance")}</span>
             </>}
           </div>
-
           <div className="v-form">
             <span className="v-form-title">{view.getTokenOrFiat}</span>
             <div className="v-form-middle-row">
@@ -143,7 +142,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               onClick={view.handleButtonClick}
               disabled={view.isButtonDisabled}
               text={view.getDepositButtonText}/>
-
             <div className="v-wallet-balance">
               <span className="v-wallet-balance-title">{t("home.walletBalance")}</span>
               <span className="v-wallet-balance-value">{view.getFormattedBalance}</span>

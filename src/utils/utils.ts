@@ -14,31 +14,31 @@ const formatOptions = {
 const intlCurrency = Intl.NumberFormat("en-US", formatOptions);
 const intlSimple = Intl.NumberFormat();
 
-function round(n: number, precision: number) {
+export const round = (n: number, precision: number) => {
   const prec = Math.pow(10, precision);
   return Math.round(n * prec) / prec;
 }
 
-export function formatToCurrency(n: any) {
+export const formatToCurrency = (n: any) => {
   return intlCurrency.format(n);
 }
 
-export function formatToNumber(n: number) {
+export const formatToNumber = (n: number) => {
   return intlSimple.format(n);
 }
 
-export function preciseRound(n: any) {
+export const preciseRound = (n: any) => {
   return parseFloat(
     n.toExponential(~~Math.max(1, 2 + Math.log10(Math.abs(n))))
   );
 }
 
-export function formatBalance(value: any) {
+export const formatBalance = (value: any) => {
   let v = Big(value)
   return v.gte(1) ? parseFloat(v.toFixed(4)) : preciseRound(v);
 }
 
-export function beautifyNumber(n: number, isCurrency: boolean) {
+export const beautifyNumber = (n: number, isCurrency: boolean) => {
   let base = floor(log(abs(n)) / log(1000));
   const suffix = abbrev[Math.min(2, base - 1)];
   base = abbrev.indexOf(suffix) + 1;
@@ -51,16 +51,4 @@ export function beautifyNumber(n: number, isCurrency: boolean) {
     : suffix
       ? rounded + suffix
       : n;
-}
-
-export function upperFirst(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-export function toCamelCase(value: string) {
-  return value
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    })
-    .replace(/\s+/g, "");
 }
