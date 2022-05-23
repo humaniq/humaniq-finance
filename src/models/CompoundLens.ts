@@ -10,7 +10,7 @@ export class CompoundLens {
     this.account = account;
     this.contract = CompoundLensContract(
       URLS.COMPOUNDLENS_ADDRESS,
-      getProviderStore.provider
+      getProviderStore.currentProvider
     );
   }
 

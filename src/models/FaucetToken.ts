@@ -13,8 +13,8 @@ export class FaucetToken {
     this.cToken = cToken;
     this.account = account;
     this.contract = isNonStandart
-      ? FaucetNonStandardToken(this.token, getProviderStore.provider)
-      : FaucetContract(this.token, getProviderStore.provider);
+      ? FaucetNonStandardToken(this.token, getProviderStore.currentProvider)
+      : FaucetContract(this.token, getProviderStore.currentProvider);
   }
 
   allocateTo = (value: any) => {

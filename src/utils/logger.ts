@@ -1,21 +1,21 @@
 export class Logger {
-  static log(msg: any, ...optionalParams: any[]) {
-    console.log(msg, optionalParams);
+  static log(...params: any[]) {
+    console.log(params);
   }
 
-  static debug(msg: any, ...optionalParams: any[]) {
-    console.debug(msg, optionalParams);
+  static debug(...params: any[]) {
+    console.debug(params);
   }
 
-  static error(msg: any, err: any, ...optionalParams: any[]) {
-    console.error(msg, err, optionalParams);
+  static error(...params: any[]) {
+    console.error(params);
   }
 
-  static info(msg: any, ...optionalParams: any[]) {
-    console.info(msg, optionalParams);
+  static info(...params: any[]) {
+    console.info(params);
   }
 
-  static warning(msg: any, ...optionalParams: any[]) {
-    console.warn(msg, optionalParams);
+  static warning(...params: any[]) {
+    console.warn(params);
   }
 }

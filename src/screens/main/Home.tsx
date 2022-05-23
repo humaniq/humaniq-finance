@@ -59,7 +59,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
             <Text className={"logoText"} text={t("appName")} />
             <AddressView
               title={view.getAccount}
-              onClick={getProviderStore.disconnect}
+              onClick={getProviderStore.toggleDisconnectDialog}
             />
           </View>
           <View style={{ marginTop: 16 }}>
