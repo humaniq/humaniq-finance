@@ -36,12 +36,12 @@ export class ProviderStore {
           const result = await provider.enable()
           this.currentAccount = result[0]
           this.currentProvider = provider
-          this.addListeners()
+          this.initProvider()
           break
         case PROVIDERS.WEB3:
         default:
           this.currentProvider = new ethers.providers.Web3Provider(window.ethereum)
-          this.addListeners()
+          this.initProvider()
           await this.connect()
       }
       this.connectedProvider = type
@@ -60,7 +60,7 @@ export class ProviderStore {
     }
   }
 
-  addListeners = () => {
+  initProvider = () => {
     if (!this.currentProvider) return
 
     this.currentProvider.on("accountsChanged", this.handleAccountsChange)
