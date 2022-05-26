@@ -3,8 +3,10 @@
 .valuation
   display: flex
   flex-direction: column
-  width: 100%
   background-color: $blue-ozone
+  width: 800px
+  @include mq($until: tablet)
+    width: 100%
   &-content
     padding-left: 16px
     padding-right: 16px
