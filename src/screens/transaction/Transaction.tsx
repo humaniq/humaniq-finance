@@ -16,8 +16,9 @@ import {t} from "translations/translate"
 import {Divider} from "components/ui/divider/Divider"
 import {formatToCurrency} from "utils/utils"
 import {useSharedData} from "hooks/useSharedData"
-import "./Transaction.style.sass"
 import {BorrowSupplyItem} from "models/types"
+import AutosizeInput from 'react-input-autosize';
+import "./Transaction.style.sass"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -90,13 +91,13 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <div onClick={view.setMaxValue} className="v-form-icon-container">
                 <MaxIcon width={32} height={32} className="v-form-icon-container-icon"/>
               </div>
-              <input
+              <AutosizeInput
                 inputMode="decimal"
-                style={{
+                inputStyle={{
                   fontSize: view.getInputFontSize
                 }}
                 autoFocus
-                className="v-form-middle-row-input"
+                inputClassName="v-form-middle-row-input"
                 placeholder="0"
                 value={view.getInputValue}
                 onChange={(e) => view.setInputValue(e.target.value)}/>

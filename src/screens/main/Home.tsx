@@ -23,6 +23,7 @@ import "react-spring-bottom-sheet/dist/style.css";
 import "../../styles/circular.sass";
 import "screens/main/Home.sass";
 import {useSharedData} from "hooks/useSharedData"
+import { ConnectionNotSupported } from "components/connection-support/ConnectionNotSupported";
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -51,9 +52,11 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
 
   if (view.isRefreshing) return <Loader />;
 
+  if (!view.isConnectionSupported) return <ConnectionNotSupported />
+
   return (
     <>
-      <View className="main" direction={ViewDirections.COLUMN}>
+      <div className="main">
         <MainInfoHeader className="header">
           <View className={"row"}>
             <Text className={"logoText"} text={t("appName")} />
@@ -127,7 +130,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
           <Deposits data={view.userSuppliedMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)} />
           <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick} />
         </View>
-      </View>
+      </div>
     </>
   );
 };

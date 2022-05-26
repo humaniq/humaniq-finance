@@ -14,6 +14,7 @@ import MuiAlert from "@mui/material/Alert"
 import {ConnectDialog} from "components/dialogs/ConnectDialog"
 import {DisconnectDialog} from "components/dialogs/DisconnectDialog"
 import {ConnectWallet} from "components/modals/ConnectWallet"
+import {Loader} from "components/loader/Loader"
 
 window.Buffer = b.Buffer
 
@@ -42,6 +43,8 @@ export const App = observer(() => {
 
     return () => getProviderStore.removeListeners()
   }, [])
+  
+  if (getProviderStore.isConnecting) return <Loader />
 
   return (
     <>

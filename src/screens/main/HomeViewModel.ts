@@ -74,7 +74,7 @@ export class HomeViewModel {
     return `$${this.totalSupply.toFixed(2)}`
   }
 
-  get isConnectionSupport() {
+  get isConnectionSupported() {
     return (
       URLS.NETWORK_ID === this.networkId && URLS.CHAIN_ID === this.chainId
     )
@@ -294,7 +294,7 @@ export class HomeViewModel {
   }
 
   init = async () => {
-    if (!this.isConnectionSupport) {
+    if (!this.isConnectionSupported) {
       this.setLoader(false)
       return
     }

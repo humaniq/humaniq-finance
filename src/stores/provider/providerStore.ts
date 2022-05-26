@@ -14,8 +14,8 @@ export class ProviderStore {
   initialized = false
   currentAccount?: string | null = null
   hasProvider = false
-  chainId: number
-  networkId: number
+  chainId: number = 4
+  networkId: number = 4
 
   signer: any
   currentProvider: any
@@ -24,8 +24,14 @@ export class ProviderStore {
   disconnectDialog = false
   connectedProvider: PROVIDERS
 
+  isConnecting = false
+
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
+  }
+
+  get isConnectionSupported() {
+    return this.chainId === 4 && this.networkId === 4
   }
 
   setProvider = async (type: PROVIDERS) => {
@@ -119,6 +125,8 @@ export class ProviderStore {
 
   connect = async () => {
     try {
+      this.isConnecting = true
+
       const [chainId, networkId] = await Promise.all<string>([
         await window.ethereum.request({
           method: "eth_chainId"
@@ -142,6 +150,8 @@ export class ProviderStore {
       })
     } catch (e) {
       Logger.info("ERROR", e)
+    } finally {
+      this.isConnecting = false
     }
   }
 
