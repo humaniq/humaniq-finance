@@ -20,11 +20,15 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
   return (
     <div className="progress-container">
       <div className="progress" style={{ marginLeft: progress > 0 ? 0 : 10 }}>
-        <div className="child" style={{ width: `${progress}%` }}>
-          <span className="text">{`${progress}%`}</span>
+        <div className="child" style={{ width: `${handleProgress(progress)}%` }}>
+          <span className="progress-text">{`${handleProgress(progress)}%`}</span>
         </div>
       </div>
       <span className="amount">{amount}</span>
     </div>
   );
 };
+
+const handleProgress = (currentProgress: number) => {
+  return Math.min(currentProgress, 100)
+}

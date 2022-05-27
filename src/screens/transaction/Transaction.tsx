@@ -17,7 +17,7 @@ import {Divider} from "components/ui/divider/Divider"
 import {formatToCurrency} from "utils/utils"
 import {useSharedData} from "hooks/useSharedData"
 import {BorrowSupplyItem} from "models/types"
-import AutosizeInput from 'react-input-autosize';
+import AutosizeInput from 'react-input-autosize'
 import "./Transaction.style.sass"
 
 export type TransactionState = {
@@ -40,7 +40,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   }, [navigate])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (data) {
         await view.mounted(data as TransactionState)
       }
@@ -48,7 +48,10 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     })()
   }, [view, data, setData])
 
-  if (!data) return null
+  if (!data) return <div className="no-data">
+    <span className="no-data-title">{t("noData")}</span>
+    <a onClick={onClose} className="no-data-description">{t("returnToMain")}</a>
+  </div>
 
   if (view.isRefreshing) return <Loader/>
 

@@ -1,84 +1,84 @@
 import React, {useCallback, useEffect} from "react"
-import { observer } from "mobx-react";
-import { useTranslation } from "react-i18next";
-import { MainInfoHeader } from "components/main/header/MainInfoHeader";
-import { View, ViewDirections } from "components/ui/view/View";
-import { Text } from "components/ui/text/Text";
-import { AddressView } from "components/main/address/AddressView";
-import colors from "../../utils/colors";
-import { withStore } from "utils/hoc";
-import { HomeViewModel } from "screens/main/HomeViewModel";
-import { InfoButton, PLACEMENT } from "components/info-button/InfoButton";
-import { CircularProgressbarWithChildren } from "react-circular-progressbar";
-import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg";
-import { LinearProgress } from "components/ui/progress/LinearProgress";
-import { Borrows } from "components/borrow/Borrows";
-import { Deposits } from "components/deposit/Deposits";
-import { getProviderStore } from "App";
-import { Loader } from "components/loader/Loader";
+import {observer} from "mobx-react"
+import {useTranslation} from "react-i18next"
+import {MainInfoHeader} from "components/main/header/MainInfoHeader"
+import {View, ViewDirections} from "components/ui/view/View"
+import {Text} from "components/ui/text/Text"
+import {AddressView} from "components/main/address/AddressView"
+import colors from "../../utils/colors"
+import {withStore} from "utils/hoc"
+import {HomeViewModel} from "screens/main/HomeViewModel"
+import {InfoButton, PLACEMENT} from "components/info-button/InfoButton"
+import {CircularProgressbarWithChildren} from "react-circular-progressbar"
+import {ReactComponent as EllipseIcon} from "../../assets/images/ellipse.svg"
+import {LinearProgress} from "components/ui/progress/LinearProgress"
+import {Borrows} from "components/borrow/Borrows"
+import {Deposits} from "components/deposit/Deposits"
+import {getProviderStore} from "App"
+import {Loader} from "components/loader/Loader"
 import {useNavigate} from "react-router-dom"
 import routes from "utils/routes"
 import {BorrowSupplyItem} from "models/types"
-import "react-spring-bottom-sheet/dist/style.css";
-import "../../styles/circular.sass";
-import "screens/main/Home.sass";
 import {useSharedData} from "hooks/useSharedData"
-import { ConnectionNotSupported } from "components/connection-support/ConnectionNotSupported";
+import {ConnectionNotSupported} from "components/connection-support/ConnectionNotSupported"
+import "react-spring-bottom-sheet/dist/style.css"
+import "../../styles/circular.sass"
+import "./Home.style.sass"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
 }
 
-const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { setData } = useSharedData()
+const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
+  const {t} = useTranslation()
+  const navigate = useNavigate()
+  const {setData} = useSharedData()
 
   const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, isDeposit: boolean = false) => {
     setData({
       item,
       isDeposit: isDeposit,
       borrowLimit: view.borrowLimit,
-      totalBorrow: view.totalBorrow,
+      totalBorrow: view.totalBorrow
     })
-    navigate(routes.transaction.path);
-  }, [navigate, view]);
+    navigate(routes.transaction.path)
+  }, [navigate, view])
 
   useEffect(() => {
-    (async () => {
-      await view.mounted();
-    })();
-  }, [view]);
+    ;(async () => {
+      await view.mounted()
+    })()
+  }, [view])
 
-  if (view.isRefreshing) return <Loader />;
+  if (view.isRefreshing) return <Loader/>
 
-  if (!view.isConnectionSupported) return <ConnectionNotSupported />
+  if (!view.isConnectionSupported) return <ConnectionNotSupported/>
 
   return (
     <>
       <div className="main">
         <MainInfoHeader className="header">
           <View className={"row"}>
-            <Text className={"logoText"} text={t("appName")} />
+            <Text className={"logoText"} text={t("appName")}/>
             <AddressView
               title={view.getAccount}
               onClick={getProviderStore.toggleDisconnectDialog}
             />
           </View>
-          <View style={{ marginTop: 16 }}>
+          <View style={{marginTop: 16}}>
             <CircularProgressbarWithChildren
               background={true}
               strokeWidth={4}
               className="circle"
               value={view.getNetApy}
             >
-              <EllipseIcon width="100%" height="100%" className="ellipse" />
-              <Text className="circle-title" text={t("home.netApy")} />
+              <EllipseIcon width="100%" height="100%" className="ellipse"/>
+              <Text className="circle-title" text={t("home.netApy")}/>
               <span className="circle-amount">{view.getNetApy}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
               <View
-                style={{ marginBottom: 8 }}
+                style={{marginBottom: 8}}
                 direction={ViewDirections.COLUMN}
               >
                 <Text
@@ -94,7 +94,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                   text={view.getSupplyBalance}
                 />
               </View>
-              <View style={{ marginTop: 8 }} direction={ViewDirections.COLUMN}>
+              <View style={{marginTop: 8}} direction={ViewDirections.COLUMN}>
                 <Text
                   size={16}
                   color={"#895EF2"}
@@ -123,16 +123,16 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
                 placement={PLACEMENT.BOTTOM}
               />
             </View>
-            <LinearProgress progress={view.getBorrowLimitPercentage} amount={view.getBorrowLimit} />
+            <LinearProgress progress={view.getBorrowLimitPercentage} amount={view.getBorrowLimit}/>
           </View>
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits data={view.userSuppliedMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)} />
-          <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick} />
+          <Deposits data={view.userSuppliedMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)}/>
+          <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick}/>
         </View>
       </div>
     </>
-  );
-};
+  )
+}
 
-export const Home = withStore(HomeViewModel, observer(HomeImpl));
+export const Home = withStore(HomeViewModel, observer(HomeImpl))

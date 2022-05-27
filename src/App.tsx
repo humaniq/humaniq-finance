@@ -37,13 +37,13 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export const App = observer(() => {
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await getProviderStore.init()
     })()
 
     return () => getProviderStore.removeListeners()
   }, [])
-  
+
   if (getProviderStore.isConnecting) return <Loader />
 
   return (

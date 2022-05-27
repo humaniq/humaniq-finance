@@ -78,11 +78,11 @@ export class TransactionViewModel {
   }
 
   get getTokenBalance() {
-    return `${this.balance.toFixed(2)}`
+    return `${this.balance.toFixed(4)}`
   }
 
   get getTokenUsdValue() {
-    return formatToCurrency(this.item.tokenUsdValue)
+    return formatToCurrency(parseFloat(this.item.tokenUsdValue).toFixed(4))
   }
 
   get getApyTitle() {
