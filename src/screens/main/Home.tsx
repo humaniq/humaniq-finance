@@ -82,7 +82,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
                 direction={ViewDirections.COLUMN}
               >
                 <Text
-                  size={16}
+                  size={15}
                   color={"#0066DA"}
                   className="label"
                   text={t("home.deposited")}
@@ -96,7 +96,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
               </View>
               <View style={{marginTop: 8}} direction={ViewDirections.COLUMN}>
                 <Text
-                  size={16}
+                  size={15}
                   color={"#895EF2"}
                   className="label"
                   text={t("home.borrowed")}

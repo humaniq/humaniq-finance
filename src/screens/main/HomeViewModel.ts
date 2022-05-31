@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx"
-import {URLS} from "constants/api"
 import {Comptroller} from "models/Comptroller"
 import {CompoundLens} from "models/CompoundLens"
 import {Ctoken} from "models/CToken"
@@ -76,7 +75,8 @@ export class HomeViewModel {
 
   get isConnectionSupported() {
     return (
-      URLS.NETWORK_ID === this.networkId && URLS.CHAIN_ID === this.chainId
+      getProviderStore.currentNetwork.networkID === this.networkId
+      && getProviderStore.currentNetwork.chainID === this.chainId
     )
   }
 

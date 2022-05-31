@@ -1,4 +1,3 @@
-import { URLS } from "constants/api";
 import { CompoundLensContract } from "models/contracts/CompoundLensContract";
 import { getProviderStore } from "App";
 
@@ -9,7 +8,7 @@ export class CompoundLens {
   constructor(account: string) {
     this.account = account;
     this.contract = CompoundLensContract(
-      URLS.COMPOUNDLENS_ADDRESS,
+      getProviderStore.currentNetwork.compoundLensAddress,
       getProviderStore.currentProvider
     );
   }
@@ -36,7 +35,7 @@ export class CompoundLens {
   getCompoundBalance(ersdlToken: any) {
     return this.contract.getCompBalance(
       ersdlToken,
-      URLS.COMPTROLLER_ADDRESS,
+      getProviderStore.currentNetwork.comptrollerAddress,
       this.account
     );
   }

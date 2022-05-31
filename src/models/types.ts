@@ -41,3 +41,7 @@ export type BorrowSupplyItem = {
   supplyDistributionApy: any;
   borrowDistributionApy: any;
 };
+
+export type CoinCostResponse = {
+  [k: string]: any
+}

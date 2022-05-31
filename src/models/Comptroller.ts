@@ -1,4 +1,3 @@
-import { URLS } from "constants/api";
 import { tAccountLiquidity } from "models/contracts/types";
 import { ComptrollerContract } from "models/contracts/ComptrollerContract";
 import { getProviderStore } from "App";
@@ -10,7 +9,7 @@ export class Comptroller {
   constructor(account: string) {
     this.account = account;
     this.contract = ComptrollerContract(
-      URLS.COMPTROLLER_ADDRESS,
+      getProviderStore.currentNetwork.comptrollerAddress,
       getProviderStore.currentProvider
     );
   }

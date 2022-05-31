@@ -2,8 +2,8 @@ import {makeAutoObservable, runInAction} from "mobx"
 import {Logger} from "utils/logger"
 import {ConnectInfo, ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import {rpc} from "constants/api"
 import {ethers} from "ethers"
+import {EVM_NETWORKS, EVM_NETWORKS_NAMES, rpc} from "constants/network"
 
 export enum PROVIDERS {
   WEB3 = "WEB3",
@@ -25,9 +25,18 @@ export class ProviderStore {
   connectedProvider: PROVIDERS
 
   isConnecting = false
+  currentNetworkName = EVM_NETWORKS_NAMES.BSC_TESTNET
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
+  }
+
+  get currentNetwork() {
+    return this.networks[this.currentNetworkName]
+  }
+
+  get networks() {
+    return EVM_NETWORKS
   }
 
   get isConnectionSupported() {
