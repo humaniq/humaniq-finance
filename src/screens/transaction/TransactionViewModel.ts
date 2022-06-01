@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx"
-import {BorrowSupplyItem, CoinCostResponse} from "models/types"
+import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/types"
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
@@ -14,7 +14,7 @@ import {Comptroller} from "models/Comptroller"
 import {Ctoken} from "models/CToken"
 import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
-import {COINGECKO_API_URL, COINGECKO_ROUTES} from "constants/network"
+import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -40,7 +40,12 @@ export class TransactionViewModel {
   safeLowGas: any = 0
 
   showTransactionFeeModal = false
-  nativeCoinPrice = 0
+  nativeCoinPrice: FinanceCurrency = {
+    currency: "",
+    price: 0,
+    source: "",
+    time: ""
+  }
 
   protected readonly api: ApiService
 
@@ -48,7 +53,7 @@ export class TransactionViewModel {
     makeAutoObservable(this, undefined, {autoBind: true})
     this.ethAccount = getProviderStore.currentAccount
     this.api = new ApiService()
-    this.api.init(COINGECKO_API_URL)
+    this.api.init(API_FINANCE)
   }
 
   get isEnoughBalance() {
@@ -114,8 +119,8 @@ export class TransactionViewModel {
     return 0
   }
 
-  get isEther() {
-    return this.item.symbol === "ETH"
+  get isNative() {
+    return this.item.symbol === "ETH" // TODO replace with bnb
   }
 
   get getInputValue() {
@@ -163,7 +168,7 @@ export class TransactionViewModel {
   }
 
   get getTransactionFiatFee() {
-    return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.gasPrice).mul(this.gasLimit), 18) * this.nativeCoinPrice).toFixed(2)}`
+    return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.gasPrice).mul(this.gasLimit), 18) * this.nativeCoinPrice.price).toFixed(2)}`
   }
 
   setTransactionFeeModalVisible = (state: boolean = false) => {
@@ -184,7 +189,7 @@ export class TransactionViewModel {
 
     this.gasEstimating = false
 
-    if (this.isEther) {
+    if (this.isNative) {
       inputValue = this.txPrice.sub(inputValue)
     }
 
@@ -267,7 +272,7 @@ export class TransactionViewModel {
   }
 
   getValue = async (value: any) => {
-    const tokenDecimals = this.isEther
+    const tokenDecimals = this.isNative
       ? 18
       : await this.tokenContract.getDecimals()
 
@@ -311,14 +316,14 @@ export class TransactionViewModel {
 
   getNativeCoinCost = async () => {
     try {
-      const nativeCoin = getProviderStore.currentNetwork.nativeCoin
-      const cost = await this.api.get<CoinCostResponse>(COINGECKO_ROUTES.GET_TOKEN_PRICE, {
+      const nativeSymbol = getProviderStore.currentNetwork.nativeSymbol
+      const cost = await this.api.get<FinanceCostResponse>(FINANCE_ROUTES.GET_PRICES, {
         queryParams: {
-          ids: nativeCoin,
-          vs_currencies: "usd"
+          symbol: nativeSymbol,
+          currency: "usd"
         }
       })
-      this.nativeCoinPrice = cost.data[nativeCoin]["usd"]
+      this.nativeCoinPrice = cost.data.payload[nativeSymbol]["usd"] as FinanceCurrency
     } catch (e) {
       Logger.log("Coin cost error: ", e)
     }

@@ -42,6 +42,18 @@ export type BorrowSupplyItem = {
   borrowDistributionApy: any;
 };
 
-export type CoinCostResponse = {
+export type CoinGeckoCostResponse = {
   [k: string]: any
+}
+
+export type FinanceCostResponse = {
+  status: string
+  payload: any
+}
+
+export type FinanceCurrency = {
+  currency: string
+  price: number
+  source: string
+  time: string
 }

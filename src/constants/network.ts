@@ -1,5 +1,10 @@
 export const BASE_URL = ""
 export const COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
+export const API_FINANCE = "https://apifinance.humaniq.com/api/v1"
+
+export const FINANCE_ROUTES = {
+  GET_PRICES: "/prices/list"
+}
 
 export const COINGECKO_ROUTES = {
   GET_TOKEN_PRICE: '/simple/price'
