@@ -16,8 +16,9 @@ import {t} from "translations/translate"
 import {Divider} from "components/ui/divider/Divider"
 import {formatToCurrency} from "utils/utils"
 import {useSharedData} from "hooks/useSharedData"
-import "./Transaction.style.sass"
 import {BorrowSupplyItem} from "models/types"
+import AutosizeInput from 'react-input-autosize'
+import "./Transaction.style.sass"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -39,7 +40,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   }, [navigate])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (data) {
         await view.mounted(data as TransactionState)
       }
@@ -47,7 +48,10 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     })()
   }, [view, data, setData])
 
-  if (!data) return null
+  if (!data) return <div className="no-data">
+    <span className="no-data-title">{t("noData")}</span>
+    <a onClick={onClose} className="no-data-description">{t("returnToMain")}</a>
+  </div>
 
   if (view.isRefreshing) return <Loader/>
 
@@ -88,20 +92,20 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
             <span className="v-form-title">{view.getTokenOrFiat}</span>
             <div className="v-form-middle-row">
               <div onClick={view.setMaxValue} className="v-form-icon-container">
-                <MaxIcon width={32} height={32} className="v-form-icon-container-icon"/>
+                <MaxIcon width={30} height={30} className="v-form-icon-container-icon"/>
               </div>
-              <input
+              <AutosizeInput
                 inputMode="decimal"
-                style={{
+                inputStyle={{
                   fontSize: view.getInputFontSize
                 }}
                 autoFocus
-                className="v-form-middle-row-input"
+                inputClassName="v-form-middle-row-input"
                 placeholder="0"
                 value={view.getInputValue}
                 onChange={(e) => view.setInputValue(e.target.value)}/>
               <div onClick={view.onSwap} className="v-form-icon-container">
-                <ChangeIcon width={23} height={23} className="v-form-icon-container-icon"/>
+                <ChangeIcon width={21} height={21} className="v-form-icon-container-icon"/>
               </div>
             </div>
             <span className="v-form-title">{view.getFiatOrTokenInput}</span>

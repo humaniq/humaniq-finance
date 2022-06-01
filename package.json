@@ -13,6 +13,7 @@
     "@walletconnect/web3-provider": "^1.7.8",
     "axios": "^0.21.1",
     "big.js": "^6.1.1",
+    "build-url": "^6.0.1",
     "dayjs": "^1.10.6",
     "ethereumjs-util": "^7.1.4",
     "ethers": "^5.6.4",
@@ -25,6 +26,7 @@
     "react-circular-progressbar": "^2.0.4",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.16.2",
+    "react-input-autosize": "^3.0.0",
     "react-loader-spinner": "^6.0.0-0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "4.0.3",
@@ -63,6 +65,7 @@
     "@types/node": "^17.0.23",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@types/react-input-autosize": "^2.2.1",
     "msw": "^0.32.2",
     "sass": "^1.50.0"
   },

@@ -41,3 +41,19 @@ export type BorrowSupplyItem = {
   supplyDistributionApy: any;
   borrowDistributionApy: any;
 };
+
+export type CoinGeckoCostResponse = {
+  [k: string]: any
+}
+
+export type FinanceCostResponse = {
+  status: string
+  payload: any
+}
+
+export type FinanceCurrency = {
+  currency: string
+  price: number
+  source: string
+  time: string
+}

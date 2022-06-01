@@ -14,6 +14,7 @@ import MuiAlert from "@mui/material/Alert"
 import {ConnectDialog} from "components/dialogs/ConnectDialog"
 import {DisconnectDialog} from "components/dialogs/DisconnectDialog"
 import {ConnectWallet} from "components/modals/ConnectWallet"
+import {Loader} from "components/loader/Loader"
 
 window.Buffer = b.Buffer
 
@@ -36,12 +37,14 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export const App = observer(() => {
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await getProviderStore.init()
     })()
 
     return () => getProviderStore.removeListeners()
   }, [])
+
+  if (getProviderStore.isConnecting) return <Loader />
 
   return (
     <>

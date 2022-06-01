@@ -2,8 +2,8 @@ import {makeAutoObservable, runInAction} from "mobx"
 import {Logger} from "utils/logger"
 import {ConnectInfo, ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import {rpc} from "constants/api"
 import {ethers} from "ethers"
+import {EVM_NETWORKS, EVM_NETWORKS_NAMES, rpc} from "constants/network"
 
 export enum PROVIDERS {
   WEB3 = "WEB3",
@@ -14,8 +14,8 @@ export class ProviderStore {
   initialized = false
   currentAccount?: string | null = null
   hasProvider = false
-  chainId: number
-  networkId: number
+  chainId: number = 4
+  networkId: number = 4
 
   signer: any
   currentProvider: any
@@ -24,8 +24,23 @@ export class ProviderStore {
   disconnectDialog = false
   connectedProvider: PROVIDERS
 
+  isConnecting = false
+  currentNetworkName = EVM_NETWORKS_NAMES.BSC_TESTNET
+
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
+  }
+
+  get currentNetwork() {
+    return this.networks[this.currentNetworkName]
+  }
+
+  get networks() {
+    return EVM_NETWORKS
+  }
+
+  get isConnectionSupported() {
+    return this.chainId === 4 && this.networkId === 4
   }
 
   setProvider = async (type: PROVIDERS) => {
@@ -119,6 +134,8 @@ export class ProviderStore {
 
   connect = async () => {
     try {
+      this.isConnecting = true
+
       const [chainId, networkId] = await Promise.all<string>([
         await window.ethereum.request({
           method: "eth_chainId"
@@ -142,6 +159,8 @@ export class ProviderStore {
       })
     } catch (e) {
       Logger.info("ERROR", e)
+    } finally {
+      this.isConnecting = false
     }
   }
 

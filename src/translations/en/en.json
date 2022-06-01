@@ -1,6 +1,8 @@
 {
   "appName": "SAVY",
   "humaniqName": "Humaniq wallet",
+  "noData": "No data",
+  "returnToMain": "Return to main page",
   "common": {
     "low": "Low",
     "slow": "Slow",
