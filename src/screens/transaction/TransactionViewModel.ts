@@ -317,13 +317,17 @@ export class TransactionViewModel {
   getNativeCoinCost = async () => {
     try {
       const nativeSymbol = getProviderStore.currentNetwork.nativeSymbol
-      const cost = await this.api.get<FinanceCostResponse>(FINANCE_ROUTES.GET_PRICES, {
+      const fiatCurrency = "usd"
+
+      const costResponse = await this.api.get<FinanceCostResponse>(FINANCE_ROUTES.GET_PRICES, {
         queryParams: {
           symbol: nativeSymbol,
-          currency: "usd"
+          currency: fiatCurrency
         }
       })
-      this.nativeCoinPrice = cost.data.payload[nativeSymbol]["usd"] as FinanceCurrency
+      if (costResponse.isOk) {
+        this.nativeCoinPrice = costResponse.data.payload[nativeSymbol][fiatCurrency] as FinanceCurrency
+      }
     } catch (e) {
       Logger.log("Coin cost error: ", e)
     }
