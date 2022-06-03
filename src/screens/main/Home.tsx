@@ -24,6 +24,7 @@ import {ConnectionNotSupported} from "components/connection-support/ConnectionNo
 import "react-spring-bottom-sheet/dist/style.css"
 import "../../styles/circular.sass"
 import "./Home.style.sass"
+import {TRANSACTION_TYPE} from "models/contracts/types"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -34,15 +35,15 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
   const navigate = useNavigate()
   const {setData} = useSharedData()
 
-  const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, isDeposit: boolean = false) => {
+  const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, type: string = TRANSACTION_TYPE.DEPOSIT) => {
     setData({
       item,
-      isDeposit: isDeposit,
+      transactionType: type,
       borrowLimit: view.borrowLimit,
       totalBorrow: view.totalBorrow
     })
     navigate(routes.transaction.path)
-  }, [navigate, view])
+  }, [navigate, view, setData])
 
   useEffect(() => {
     ;(async () => {
@@ -127,8 +128,8 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           </View>
         </MainInfoHeader>
         <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits data={view.userSuppliedMarket} onClick={(item) => onBorrowOrSupplyClick(item, true)}/>
-          <Borrows data={view.borrowMarket} onClick={onBorrowOrSupplyClick}/>
+          <Deposits data={view.userSuppliedMarket} onClick={onBorrowOrSupplyClick}/>
+          <Borrows data={view.borrowMarket} onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
         </View>
       </div>
     </>

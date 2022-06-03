@@ -42,7 +42,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             <Avatar className={"avatar"}>
               <img alt={"humaniq"} src={HumaniqLogo} />
             </Avatar>
-            <span>{t("humaniqName")}</span>
+            <span>{t("hmqName")}</span>
           </Paper>
           <Paper
             elevation={0}

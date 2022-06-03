@@ -1,20 +1,20 @@
 import React, {useMemo} from "react"
 import colors from "utils/colors"
-import "./LinearProgress.style.sass";
+import "./TransactionLinearProgress.style.sass";
 
-export interface LinearProgressProps {
-  progress?: number;
-  amount: string;
+export interface TransactionLinearProgressProps {
+  progress: number;
+  amount?: string;
 }
 
 /**
- * LinearProgress
+ * Transaction LinearProgress
  *
  * @param progress
  * @param amount
  * @constructor
  */
-export const LinearProgress: React.FC<LinearProgressProps> = ({
+export const TransactionLinearProgress: React.FC<TransactionLinearProgressProps> = ({
   progress = 0,
   amount,
 }) => {
@@ -33,13 +33,13 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
   const handleProgress = useMemo(() => Math.min(progress, 100), [progress, amount])
 
   return (
-    <div className="progress-container">
-      <div className="progress" style={{ marginLeft: progress > 0 ? 0 : 10 }}>
-        <div className="progress-child" style={{ width: `${handleProgress}%`, backgroundColor: progressColor }}>
-          <span className="progress-text">{`${handleProgress}%`}</span>
-        </div>
+    <div className="tx-progress-container">
+      <div className="tx-progress">
+        <div
+          className="tx-progress-child"
+          style={{width: `${handleProgress}%`, backgroundColor: progressColor}}
+        />
       </div>
-      <span className="amount">{amount}</span>
     </div>
   );
 };
