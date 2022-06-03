@@ -15,11 +15,12 @@ import {Ctoken} from "models/CToken"
 import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
+import {TRANSACTION_TYPE} from "models/contracts/types"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
   isRefreshing = true
-  isDeposit = false
+  transactionType = TRANSACTION_TYPE.DEPOSIT
   borrowLimit = 0
   totalBorrow = 0
   inputValue = ""
@@ -54,6 +55,18 @@ export class TransactionViewModel {
     this.ethAccount = getProviderStore.currentAccount
     this.api = new ApiService()
     this.api.init(API_FINANCE)
+  }
+
+  get isDeposit() {
+    return this.transactionType === TRANSACTION_TYPE.DEPOSIT
+  }
+
+  get isBorrow() {
+    return this.transactionType === TRANSACTION_TYPE.BORROW
+  }
+
+  get isWithdraw() {
+    return this.transactionType === TRANSACTION_TYPE.WITHDRAW
   }
 
   get isEnoughBalance() {
@@ -226,12 +239,12 @@ export class TransactionViewModel {
   }
 
   mounted = async (state: TransactionState) => {
-    const {isDeposit, item, borrowLimit, totalBorrow} = state
+    const {transactionType, item, borrowLimit, totalBorrow} = state
 
     this.item = item
     this.borrowLimit = borrowLimit
     this.totalBorrow = totalBorrow
-    this.isDeposit = isDeposit
+    this.transactionType = transactionType
 
     if (this.ethAccount) {
       const isEth = await isEther(this.item.cToken)

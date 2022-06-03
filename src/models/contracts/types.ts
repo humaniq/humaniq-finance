@@ -39,3 +39,9 @@ export type GasFeeData = {
   maxFeePerGas: BigNumber
   maxPriorityFeePerGas: BigNumber
 }
+
+export enum TRANSACTION_TYPE {
+  DEPOSIT = "deposit",
+  BORROW = "borrow",
+  WITHDRAW = "withdraw"
+}

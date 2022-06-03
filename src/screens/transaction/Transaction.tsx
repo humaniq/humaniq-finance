@@ -19,10 +19,12 @@ import {useSharedData} from "hooks/useSharedData"
 import {BorrowSupplyItem} from "models/types"
 import AutosizeInput from 'react-input-autosize'
 import "./Transaction.style.sass"
+import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
+import {TRANSACTION_TYPE} from "models/contracts/types"
 
 export type TransactionState = {
   item: BorrowSupplyItem
-  isDeposit: boolean
+  transactionType: TRANSACTION_TYPE
   borrowLimit: number
   totalBorrow: number
 }
@@ -48,10 +50,12 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     })()
   }, [view, data, setData])
 
-  if (!data) return <div className="no-data">
-    <span className="no-data-title">{t("noData")}</span>
-    <a onClick={onClose} className="no-data-description">{t("returnToMain")}</a>
-  </div>
+  if (!data) return (
+    <div className="no-data">
+      <span className="no-data-title">{t("noData")}</span>
+      <a onClick={onClose} className="no-data-description">{t("returnToMain")}</a>
+    </div>
+  )
 
   if (view.isRefreshing) return <Loader/>
 
@@ -134,12 +138,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 <span className="valuation-borrow-limit-row-title">{t("home.borrowLimitUsed")}</span>
                 <span className="valuation-borrow-limit-row-value">{view.getBorrowLimitUsed}</span>
               </div>
-              <div className="valuation-borrow-limit-progress">
-                <div
-                  className="valuation-borrow-limit-progress-child"
-                  style={{width: `${view.borrowLimitUsed}%`}}
-                />
-              </div>
+              <TransactionLinearProgress progress={view.borrowLimitUsed}/>
             </div>
             <Button
               className="v-form-btn"

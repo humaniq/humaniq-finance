@@ -1,6 +1,6 @@
 {
   "appName": "SAVY",
-  "humaniqName": "Humaniq wallet",
+  "hmqName": "Humaniq wallet",
   "noData": "No data",
   "returnToMain": "Return to main page",
   "common": {
@@ -31,7 +31,10 @@
   },
   "transaction": {
     "insufficientBalance": "Insufficient balance",
-    "borrowBalance": "Borrow balance"
+    "borrowBalance": "Borrow balance",
+    "withdraw": "Withdraw",
+    "repay": "Repay",
+    "transactionSubmitted": "Transaction submitted"
   },
   "deposits": {
     "title": "Deposits"

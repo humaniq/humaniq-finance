@@ -1,10 +1,9 @@
-@import "../../../styles/colors"
+@import "../../../../styles/colors"
 
-.progress-container
+.tx-progress-container
   display: flex
   flex-direction: row
   align-items: center
-  margin-top: 20px
   .amount
     color: rgba(255, 255, 255, 0.5)
     margin-left: 10px
@@ -13,11 +12,13 @@
     font-size: 12px
     letter-spacing: 0.5px
 
-.progress
+.tx-progress
   width: 100%
   border-radius: 40px
-  background-color: rgba(224, 224, 224, 0.15)
+  background-color: $grey-divider
   height: 6px
+  margin-left: 10px
+  margin-right: 10px
   overflow: hidden
   &-child
     display: flex
@@ -26,12 +27,3 @@
     border-radius: 40px
     justify-content: flex-end
     align-items: center
-
-.progress-text
-  position: absolute
-  color: $white
-  font-weight: 400
-  font-style: normal
-  font-size: 12px
-  letter-spacing: 0.5px
-  background-color: $blue-origin
