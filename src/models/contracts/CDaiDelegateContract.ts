@@ -1,4 +1,4 @@
-import { ContractInterface, ethers } from "ethers";
+import {ContractInterface, ethers, providers, Signer} from "ethers"
 
 const abi: ContractInterface = [
   {
@@ -997,5 +997,5 @@ const abi: ContractInterface = [
   },
 ];
 
-export const CDaiDelegateContract = (address: string, provider: any) =>
+export const CDaiDelegateContract = (address: string, provider: Signer | providers.Provider) =>
   new ethers.Contract(address, abi, provider);

@@ -13,20 +13,19 @@ export class Ctoken {
     this.account = account;
     this.isEther = isEth;
     this.contract = isEth
-      ? CEtherContract(cToken, getProviderStore.currentProvider)
-      : CErc20Contract(cToken, getProviderStore.currentProvider);
+      ? CEtherContract(cToken, getProviderStore.signer)
+      : CErc20Contract(cToken, getProviderStore.signer);
   }
 
   supply = (value: any, gas: any) => {
     const params: any = { from: this.account };
-    const contractSig = this.contract.connect(getProviderStore.signer)
     if (this.isEther) {
       params.value = value;
       params.gas = gas;
 
-      return contractSig.mint(params);
+      return this.contract.mint(params);
     }
-    return contractSig.mint(value, params);
+    return this.contract.mint(value, params);
   };
 
   getEstimateGas = (method: any, value: any) => {
@@ -34,25 +33,21 @@ export class Ctoken {
   };
 
   borrow = (value: any) => {
-    const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig.borrow(value).send({ from: this.account });
+    return this.contract.borrow(value).send({ from: this.account });
   };
 
   repayBorrow = (value: any) => {
-    const contractSig = this.contract.connect(getProviderStore.signer)
-
     if (this.isEther) {
       return this.contract.repayBorrow().send({
         from: this.account,
         value,
       });
     }
-    return contractSig.repayBorrow(value).send({ from: this.account });
+    return this.contract.repayBorrow(value).send({ from: this.account });
   };
 
   withdraw = (value: any) => {
-    const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig.redeemUnderlying(value).send({ from: this.account });
+    return this.contract.redeemUnderlying(value).send({ from: this.account });
   };
 
   supplyRatePerBlock = () => {

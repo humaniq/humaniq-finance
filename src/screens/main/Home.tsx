@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect} from "react"
 import {observer} from "mobx-react"
-import {useTranslation} from "react-i18next"
 import {MainInfoHeader} from "components/main/header/MainInfoHeader"
 import {View, ViewDirections} from "components/ui/view/View"
 import {Text} from "components/ui/text/Text"
@@ -25,13 +24,13 @@ import "react-spring-bottom-sheet/dist/style.css"
 import "../../styles/circular.sass"
 import "./Home.style.sass"
 import {TRANSACTION_TYPE} from "models/contracts/types"
+import {t} from "translations/translate"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
 }
 
 const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
-  const {t} = useTranslation()
   const navigate = useNavigate()
   const {setData} = useSharedData()
 
@@ -59,13 +58,13 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
     <>
       <div className="main">
         <MainInfoHeader className="header">
-          <View className={"row"}>
-            <Text className={"logoText"} text={t("appName")}/>
+          <div className={"row"}>
+            <span className={"logoText"}>{t("appName")}</span>
             <AddressView
               title={view.getAccount}
               onClick={getProviderStore.toggleDisconnectDialog}
             />
-          </View>
+          </div>
           <View style={{marginTop: 16}}>
             <CircularProgressbarWithChildren
               background={true}
@@ -127,10 +126,10 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             <LinearProgress progress={view.getBorrowLimitPercentage} amount={view.getBorrowLimit}/>
           </View>
         </MainInfoHeader>
-        <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits data={view.userSuppliedMarket} onClick={onBorrowOrSupplyClick}/>
+        <div className="content">
+          <Deposits data={view.supplyMarket} onClick={onBorrowOrSupplyClick}/>
           <Borrows data={view.borrowMarket} onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
-        </View>
+        </div>
       </div>
     </>
   )

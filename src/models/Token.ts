@@ -14,13 +14,12 @@ export class Token {
     this.cToken = cToken;
     this.account = account;
     this.contract = isEth
-      ? CEtherContract(token, getProviderStore.currentProvider)
-      : CErc20Contract(token, getProviderStore.currentProvider);
+      ? CEtherContract(token, getProviderStore.signer)
+      : CErc20Contract(token, getProviderStore.signer);
   }
 
   approve = () => {
-    const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig
+    return this.contract
       .approve(this.cToken, MAX_UINT_256)
       .send({ from: this.account });
   };

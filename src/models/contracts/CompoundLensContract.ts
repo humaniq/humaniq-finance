@@ -1,4 +1,4 @@
-import {ContractInterface, ethers} from "ethers"
+import {ContractInterface, ethers, providers, Signer} from "ethers"
 
 const abi: ContractInterface = [{
   "constant": false,
@@ -353,4 +353,4 @@ const abi: ContractInterface = [{
   "type": "function"
 }]
 
-export const CompoundLensContract = (address: string, provider: any) => new ethers.Contract(address, abi, provider)
+export const CompoundLensContract = (address: string, provider: Signer | providers.Provider) => new ethers.Contract(address, abi, provider)

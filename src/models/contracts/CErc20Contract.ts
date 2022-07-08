@@ -1,4 +1,4 @@
-import {ContractInterface, ethers} from "ethers"
+import {ContractInterface, ethers, providers, Signer} from "ethers"
 
 const abi: ContractInterface = [
   {
@@ -1387,4 +1387,4 @@ const abi: ContractInterface = [
   }
 ];
 
-export const CErc20Contract = (address: string, provider: any) => new ethers.Contract(address, abi, provider)
+export const CErc20Contract = (address: string, provider: Signer | providers.Provider) => new ethers.Contract(address, abi, provider)

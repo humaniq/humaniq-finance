@@ -62,15 +62,13 @@ export const EVM_NETWORKS: {[key: string]: EVM_NETWORK} = {
   },
   [EVM_NETWORKS_NAMES.BSC_TESTNET]: {
     name: EVM_NETWORKS_NAMES.BSC_TESTNET,
-    // chainID: 97,
-    // networkID: 97,
-    chainID: 4,
-    networkID: 4,
+    chainID: 97,
+    networkID: 97,
     type: EVM_NETWORKS_NAMES.BSC_TESTNET,
     env: NETWORK_TYPE.TEST,
     nativeCoin: NATIVE_COIN.BINANCECOIN,
     nativeSymbol: NATIVE_COIN_SYMBOL.BNB,
-    comptrollerAddress: "0x44abc8395f35b6290af32601234fe11954808011",
-    compoundLensAddress: "0x3E419553fa0477e6D3B0dBB6d88d270cA29bca1e"
+    comptrollerAddress: "0x75E6E3881ad08Da94091C10c1c8945b7cba2C6B6",
+    compoundLensAddress: "0xCBeCAeA2673065E94e7024fe129a1Cf55Bf9B1DD"
   },
 }

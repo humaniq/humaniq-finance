@@ -23,11 +23,9 @@ export class HomeViewModel {
   ersdlBalance = 0
   comptroller: any = null
   cTokenAddressList: string[] = []
-  ethAccount?: string | null = null
+  account?: string | null = null
   market = []
   isRefreshing = true
-  networkId = 4
-  chainId = 4
   ersdlPrice = 0
   totalBorrow = 0
   totalSupply = 0
@@ -39,9 +37,7 @@ export class HomeViewModel {
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
-    this.networkId = getProviderStore.networkId
-    this.chainId = getProviderStore.chainId
-    this.ethAccount = getProviderStore.currentAccount
+    this.account = getProviderStore.currentAccount
   }
 
   get isUserMarketShown() {
@@ -53,12 +49,12 @@ export class HomeViewModel {
   }
 
   get getBorrowLimitPercentage() {
-    const limit = (this.totalBorrow / this.borrowLimit) * 100
+    const limit = this.totalBorrow === 0 ? 0 : (this.totalBorrow / this.borrowLimit) * 100
     return parseFloat(limit.toFixed(2))
   }
 
   get getAccount() {
-    return renderShortAddress(this.ethAccount) || t("wallet.notConnected")
+    return renderShortAddress(this.account) || t("wallet.notConnected")
   }
 
   get getNetApy() {
@@ -74,10 +70,7 @@ export class HomeViewModel {
   }
 
   get isConnectionSupported() {
-    return (
-      getProviderStore.currentNetwork.networkID === this.networkId
-      && getProviderStore.currentNetwork.chainID === this.chainId
-    )
+    return getProviderStore.isConnectionSupported
   }
 
   get getBorrowLimit() {
@@ -149,7 +142,7 @@ export class HomeViewModel {
       const isEth = await isEther(data.cToken)
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
-      const cTokenContract = new Ctoken(data.cToken, this.ethAccount, isEth)
+      const cTokenContract = new Ctoken(data.cToken, this.account, isEth)
       const cTokenData = Object.assign({}, data)
 
       let token: any = null
@@ -182,7 +175,7 @@ export class HomeViewModel {
 
       // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
       //   data.cToken
-      // ));// TODO check what's the problem
+      // ));
       // cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
       //   data.cToken
       // )); // TODO check what's the problem
@@ -266,6 +259,9 @@ export class HomeViewModel {
     const ersdl: any = this.market.find(
       (token: any) => token.symbol === "eRSDL"
     )
+
+    if (!ersdl) return
+
     const balance = await this.cl.getCompoundBalance(ersdl.token)
 
     this.ersdlPrice = ersdl.underlyingPrice
@@ -371,10 +367,10 @@ export class HomeViewModel {
   }
 
   mounted = async () => {
-    if (this.ethAccount) {
+    if (this.account) {
       this.setLoader(true)
-      this.comptroller = new Comptroller(this.ethAccount)
-      this.cl = new CompoundLens(this.ethAccount)
+      this.comptroller = new Comptroller(this.account)
+      this.cl = new CompoundLens(this.account)
       await this.init()
       this.setLoader(false)
     }

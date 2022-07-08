@@ -10,7 +10,7 @@ export class Comptroller {
     this.account = account;
     this.contract = ComptrollerContract(
       getProviderStore.currentNetwork.comptrollerAddress,
-      getProviderStore.currentProvider
+      getProviderStore.signer
     );
   }
 
