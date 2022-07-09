@@ -47,7 +47,9 @@ export class ProviderStore {
         case PROVIDERS.WC:
           const provider = new WalletConnectProvider({rpc})
           const result = await provider.enable()
-          this.currentAccount = result[0]
+          runInAction(() => {
+            this.currentAccount = result[0]
+          })
           this.currentProvider = new ethers.providers.Web3Provider(provider)
           this.initProvider()
           break
@@ -61,7 +63,9 @@ export class ProviderStore {
       }
       this.connectedProvider = type
       localStorage.setItem("connected", type)
-      this.connectDialog = false
+      runInAction(() => {
+        this.connectDialog = false
+      })
     } catch (e) {
       Logger.error("ERROR", e)
     }

@@ -6,7 +6,7 @@ const ethTokenSymbol = "unETH";
 export const isEther = async (token: any) => {
   const symbol = await CEtherContract(
     token,
-    getProviderStore.signer
+    getProviderStore.currentProvider
   ).symbol();
 
   return symbol === ethTokenSymbol;

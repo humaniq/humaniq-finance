@@ -16,6 +16,7 @@ import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
+import {WBGLTestContract} from "models/contracts/WBGLTestContract"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -55,6 +56,7 @@ export class TransactionViewModel {
     to: "",
     from: "",
   }
+  lastVal: string;
 
   protected readonly api: ApiService
 
@@ -75,6 +77,14 @@ export class TransactionViewModel {
 
   get isWithdraw() {
     return this.transactionType === TRANSACTION_TYPE.WITHDRAW
+  }
+
+  get isWBGLTest() {
+    return this.item.symbol === 'wbglTest'
+  }
+
+  get isBUSDTest() {
+    return this.item.symbol === 'busdTest'
   }
 
   get isEnoughBalance() {
@@ -144,7 +154,6 @@ export class TransactionViewModel {
   }
 
   get isNative() {
-    console.log("test", this.item.symbol)
     return this.item.symbol === getProviderStore.currentNetwork.nativeSymbol
   }
 
@@ -185,7 +194,7 @@ export class TransactionViewModel {
   }
 
   get isButtonDisabled() {
-    return isEmpty(this.getInputValue)
+    return isEmpty(this.getInputValue) || !this.isEnoughBalance
   }
 
   get getDepositButtonText() {
@@ -205,11 +214,26 @@ export class TransactionViewModel {
   }
 
   handleButtonClick = async () => {
-    let gas = 0
-    let inputValue = await this.getValue(1)
+    let gas = 30
+    let inputValue = 0
+
+    const wbgl = WBGLTestContract("0x88Ab2F4Eb09Be66535C66EF2FF11780B8A86d86a", getProviderStore.signer)
+    const res = await wbgl.approve("0x88Ab2F4Eb09Be66535C66EF2FF11780B8A86d86a", inputValue)
+
+    console.log("okay", res)
+    console.log("ctoken", this.item.cToken)
 
     this.gasEstimating = true
-    // this.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
+    // this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
+    this.txData.gasLimit = await this.cTokenContract.getEstimateGas(
+      "",
+      ethers.utils
+        .parseUnits(this.inputValue, 18)
+        .toHexString()
+    )
+
+
+    console.log("gas limit", this.txData.gasLimit)
     this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
 
     this.gasEstimating = false
@@ -220,13 +244,14 @@ export class TransactionViewModel {
 
     try {
       if (this.isDeposit) {
-        const supplyHash = await this.cTokenContract.supply(inputValue, 40000)
+        const supplyHash = await this.cTokenContract.supply(inputValue, gas)
 
         console.log("hash", supplyHash)
         return
 
         if (supplyHash) {
-          await this.comptroller.waitForTransaction(supplyHash)
+          const ibi = await this.comptroller.waitForTransaction(supplyHash.hash)
+          console.log("tesss", ibi)
         }
       } else {
         const borrowHash = await this.cTokenContract.borrow(inputValue)
@@ -311,7 +336,6 @@ export class TransactionViewModel {
         this.gasEstimating = false
       }
     }
-
     this.isRefreshing = false
   }
 
@@ -338,18 +362,15 @@ export class TransactionViewModel {
   }
 
   onSwap = () => {
-    if (this.inputFiat) {
-      this.inputValue = this.inputValueToken.toFixed(2)
-    } else {
-      this.inputValue = this.inputValueFiat.toFixed(2)
-    }
-
+    this.inputValue = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValueFiat.toFixed(2)
     this.inputFiat = !this.inputFiat
   }
 
   getGasFee = async () => {
     try {
       this.txData.gasPrice = await getProviderStore.currentProvider.getGasPrice()
+      console.log("mda", +utils.formatUnits(+this.txData.gasPrice.mul(this.txData.gasLimit), 18))
+      console.log("gas", +this.txData.gasPrice)
     } catch (e) {
       Logger.log("Gas price fetching error: ", e)
     } finally {

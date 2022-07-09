@@ -16,7 +16,6 @@ export interface TransactionLinearProgressProps {
  */
 export const TransactionLinearProgress: React.FC<TransactionLinearProgressProps> = ({
   progress = 0,
-  amount,
 }) => {
 
   const progressColor = useMemo(() => {
@@ -28,9 +27,9 @@ export const TransactionLinearProgress: React.FC<TransactionLinearProgressProps>
       return colors.redAlert
     }
     return ""
-  }, [progress, amount])
+  }, [progress])
 
-  const handleProgress = useMemo(() => Math.min(progress, 100), [progress, amount])
+  const handleProgress = useMemo(() => Math.min(progress, 100), [progress])
 
   return (
     <div className="tx-progress-container">
