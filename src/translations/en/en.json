@@ -45,6 +45,12 @@
     "borrowAvailable": "Here is a list of coins you can borrow and repay later. But you can borrow them only after deposit funds.\nYour deposit will be used as collateral. You won’t be able to borrow more than 80% of your deposited funds.",
     "deposits": "Here is your crypto that you have deposited. You can use them as collateral to borrow funds."
   },
+  "transactionMessage": {
+    "pending": "Transaction is pending",
+    "success": "Success",
+    "error": "Error transaction",
+    "denied": "User denied transaction"
+  },
   "wallet": {
     "notConnected": "Not connected",
     "disconnect": "Disconnect",

@@ -1,4 +1,4 @@
-import {IReactionDisposer, makeAutoObservable, reaction} from "mobx"
+import {IReactionDisposer, makeAutoObservable, reaction, runInAction} from "mobx"
 import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/types"
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
@@ -17,6 +17,9 @@ import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {WBGLTestContract} from "models/contracts/WBGLTestContract"
+import {TRANSACTION_STATUS} from "components/transaction-message/TransactionMessage"
+import {WBGL} from "models/WBGL"
+import {BUSD} from "models/BUSD"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -58,6 +61,12 @@ export class TransactionViewModel {
   }
   lastVal: string
   inputRef?: any
+  transactionInProgress = false
+  transactionMessageVisible = false;
+  transactionMessageStatus = TRANSACTION_STATUS.PENDING;
+  transactionMessage = "";
+
+  selectedToken: WBGL | BUSD
 
   swapReaction?: IReactionDisposer
 
@@ -68,6 +77,65 @@ export class TransactionViewModel {
     this.account = getProviderStore.currentAccount
     this.api = new ApiService()
     this.api.init(API_FINANCE)
+  }
+
+  mounted = async (state: TransactionState) => {
+    const {transactionType, item, borrowLimit, totalBorrow} = state
+
+    this.item = item
+    this.borrowLimit = borrowLimit
+    this.totalBorrow = totalBorrow
+    this.transactionType = transactionType
+
+    if (this.isWBGL) {
+      this.selectedToken = new WBGL(getProviderStore.signer, this.account)
+    } else {
+      this.selectedToken = new BUSD(getProviderStore.signer, this.account)
+    }
+
+    this.swapReaction = reaction(() => this.inputFiat, (val) => {
+      this.inputValue = !val ?
+        this.inputValueToken ? this.inputValueToken.toFixed(2) : "" :
+        this.inputValueFiat ? this.inputValueFiat.toFixed(2) : ""
+
+      this.inputRef?.focus()
+    })
+
+    if (this.account) {
+      const isEth = await isEther(this.item.cToken)
+
+      this.comptroller = new Comptroller(this.account)
+
+      this.tokenContract = new Token(
+        this.item.token,
+        this.item.cToken,
+        this.account,
+        isEth
+      )
+
+      this.cTokenContract = new Ctoken(this.item.cToken, this.account, this.isWBGL)
+
+      this.faucetContract = new FaucetToken(
+        this.item.token,
+        this.item.cToken,
+        this.account,
+        true
+      )
+
+      this.gasEstimating = true
+
+      try {
+        await Promise.all([
+          this.estimateGasLimit(),
+          this.getGasFee(),
+          this.getNativeCoinCost()
+        ])
+      } catch (e) {
+      } finally {
+        this.gasEstimating = false
+      }
+    }
+    this.isRefreshing = false
   }
 
   get isDeposit() {
@@ -224,50 +292,86 @@ export class TransactionViewModel {
     this.showTransactionFeeModal = true
   }
 
-  handleButtonClick = async () => {
-    let gas = 0
-    let inputValue = await this.getValue(this.inputValue)
-    console.info("i", +inputValue)
-
-    this.gasEstimating = true
+  handleTransaction = async () => {
+    const input = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValue
+    let inputValue = await this.getValue(input)
     this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
-    this.gasEstimating = false
 
     if (this.isNative) {
       inputValue = this.txPrice.sub(inputValue)
     }
     try {
-      if (this.isDeposit) {
-        const wbgl = WBGLTestContract("0xaE1A1D3f65C88449016f957b4a29969eaae61492", getProviderStore.signer)
+      let approvedResult: boolean
 
-        const approved = await wbgl.approve(
+      const allowanceAmount = await this.selectedToken.allowance(
+        this.item.cToken
+      )
+
+      console.log("allowance", +allowanceAmount)
+
+      // check if supply is allowed, otherwise it should be approved
+      if (+allowanceAmount >= +inputValue) {
+        // can proceed with supply
+        approvedResult = true
+      } else {
+        // need to approve
+        approvedResult = !!await this.selectedToken.approve(
           this.item.cToken, inputValue
         )
+      }
 
-        if (approved) {
-          const {gasPrice, gasLimit} = approved
-          this.txData.gasPrice = gasPrice
-          this.txData.gasLimit = gasLimit
-
-          const {hash} = await this.cTokenContract.supply(inputValue, this.txData.gasLimit)
+      if (this.isDeposit) {
+        if (approvedResult) {
+          runInAction(() => this.transactionInProgress = true)
+          const {hash} = await this.cTokenContract.supply(inputValue)
 
           if (hash) {
             const supplyRes = await this.comptroller.waitForTransaction(hash)
             console.log("supplyRes", supplyRes)
+            runInAction(() => this.transactionMessageStatus = TRANSACTION_STATUS.SUCCESS)
+            this.transactionMessageVisible = true;
           }
         }
       } else if (this.isBorrow) {
-        const {hash} = await this.cTokenContract.borrow(inputValue)
+        const isMarketExists = await this.isMarketExists();
 
-        if (hash) {
-          await this.comptroller.waitForTransaction(hash)
+        if (!isMarketExists) {
+          console.log("Market is not available!!")
+          return;
+        }
+        // for borrow
+        if (approvedResult) {
+          const {hash} = await this.cTokenContract.borrow(inputValue)
+          if (hash) {
+            const depositRes = await this.comptroller.waitForTransaction(hash)
+            console.log("supplyRes", depositRes)
+          }
         }
       } else {
-        // for withdrawing
+        // for withdraw
       }
-    } catch (e) {
-      Logger.log("ERR", e)
+    } catch (e: any) {
+      if (e.code === 4001) {
+        runInAction(() => this.transactionMessage = t("transactionMessage.denied"))
+      }
+      runInAction(() => {
+        this.transactionMessageStatus = TRANSACTION_STATUS.ERROR;
+        this.transactionMessageVisible = true;
+      })
+      } finally {
+      setTimeout(() => {
+        runInAction(() => {
+          this.transactionMessageVisible = false;
+          this.transactionMessage = "";
+        })
+      }, 3000);
+      runInAction(() => this.transactionInProgress = false)
     }
+  }
+
+  isMarketExists = async () => {
+    const markets = await this.comptroller.getAllMarkets();
+    return markets.includes(this.item.cToken);
   }
 
   setInputValue = (value: string) => {
@@ -297,59 +401,6 @@ export class TransactionViewModel {
       console.log("ERROR-FEE", e)
       return 0
     }
-  }
-
-  mounted = async (state: TransactionState) => {
-    const {transactionType, item, borrowLimit, totalBorrow} = state
-
-    this.item = item
-    this.borrowLimit = borrowLimit
-    this.totalBorrow = totalBorrow
-    this.transactionType = transactionType
-
-    this.swapReaction = reaction(() => this.inputFiat, (val) => {
-      this.inputValue = !val ?
-        this.inputValueToken ? this.inputValueToken.toFixed(2) : "" :
-        this.inputValueFiat ? this.inputValueFiat.toFixed(2) : ""
-
-      this.inputRef?.focus()
-    })
-
-    if (this.account) {
-      const isEth = await isEther(this.item.cToken)
-
-      this.comptroller = new Comptroller(this.account)
-
-      this.tokenContract = new Token(
-        this.item.token,
-        this.item.cToken,
-        this.account,
-        isEth
-      )
-
-      this.cTokenContract = new Ctoken(this.item.cToken, this.account, this.isWBGL)
-
-      this.faucetContract = new FaucetToken(
-        this.item.token,
-        this.item.cToken,
-        this.account,
-        true
-      )
-
-      this.gasEstimating = true
-
-      try {
-        await Promise.all([
-          this.estimateGasLimit(),
-          this.getGasFee(),
-          this.getNativeCoinCost()
-        ])
-      } catch (e) {
-      } finally {
-        this.gasEstimating = false
-      }
-    }
-    this.isRefreshing = false
   }
 
   unMounted = () => {

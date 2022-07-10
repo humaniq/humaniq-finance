@@ -49,8 +49,7 @@ export class HomeViewModel {
   }
 
   get getBorrowLimitPercentage() {
-    const limit = this.totalBorrow === 0 ? 0 : (this.totalBorrow / this.borrowLimit) * 100
-    return parseFloat(limit.toFixed(2))
+    return this.totalBorrow === 0 ? 0 : (this.totalBorrow / this.borrowLimit) * 100
   }
 
   get getAccount() {
@@ -59,6 +58,10 @@ export class HomeViewModel {
 
   get getNetApy() {
     return this.netApy
+  }
+
+  get getNetApyLabel() {
+    return `${this.netApy ? this.netApy : "--/--"}`
   }
 
   get getBorrowBalance() {

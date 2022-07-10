@@ -1,0 +1,21 @@
+@import "src/styles/vars"
+
+.message-content
+  display: flex
+  flex-direction: row
+  color: $blue-origin
+  align-items: center
+  .progress
+    color: $primary
+    width: 32px !important
+    height: 32px !important
+    &.avatar
+      background-color: rgba($green-mile, 0.07)
+    .icon
+      width: 18px
+      height: 18px
+      color: $green-mile
+      &.error
+        color: $orange-warning
+  .message
+    padding-left: 10px

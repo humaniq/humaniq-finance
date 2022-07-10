@@ -1,5 +1,8 @@
 import {ethers, providers, Signer} from "ethers"
 
+export const contractWBGLAddress =
+  "0xaE1A1D3f65C88449016f957b4a29969eaae61492"
+
 const abi = [{
   "inputs": [{"internalType": "address", "name": "_owner", "type": "address"}],
   "stateMutability": "nonpayable",
@@ -134,5 +137,5 @@ const abi = [{
   "type": "function"
 }]
 
-export const WBGLTestContract = (address: string, provider: Signer | providers.Provider) =>
-  new ethers.Contract(address, abi, provider)
+export const WBGLTestContract = (provider: Signer | providers.Provider) =>
+  new ethers.Contract(contractWBGLAddress, abi, provider)

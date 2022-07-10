@@ -21,6 +21,8 @@ import AutosizeInput from 'react-input-autosize'
 import "./Transaction.style.sass"
 import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
 import {TRANSACTION_TYPE} from "models/contracts/types"
+import {TransactionMessage} from "components/transaction-message/TransactionMessage"
+import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -148,7 +150,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
             </div>
             <Button
               className="v-form-btn"
-              onClick={view.handleButtonClick}
+              onClick={view.handleTransaction}
               disabled={view.isButtonDisabled}
               text={view.getDepositButtonText}/>
             <div className="v-wallet-balance">
@@ -158,6 +160,12 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
           </div>
         </div>
       </div>
+      <TransactionMessage
+        isOpen={view.transactionMessageVisible}
+        status={view.transactionMessageStatus}
+        message={view.transactionMessage}
+      />
+      <FullScreenLoader isVisible={view.transactionInProgress}/>
     </>
   )
 }

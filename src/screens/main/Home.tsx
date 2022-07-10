@@ -74,7 +74,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             >
               <EllipseIcon width="100%" height="100%" className="ellipse"/>
               <Text className="circle-title" text={t("home.netApy")}/>
-              <span className="circle-amount">{view.getNetApy}</span>
+              <span className="circle-amount">{view.getNetApyLabel}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
               <View

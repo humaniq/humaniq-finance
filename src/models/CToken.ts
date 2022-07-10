@@ -1,5 +1,6 @@
 import {getProviderStore} from "App"
 import {svWBGLDelegatorContract} from "models/contracts/svWBGLDelegatorContract"
+import {svBUSDDelegatorContract} from "models/contracts/svBUSDDelegatorContract"
 
 export class Ctoken {
   cToken: any
@@ -10,10 +11,12 @@ export class Ctoken {
   constructor(cToken: any, account: any, isWBGL: boolean) {
     this.cToken = cToken
     this.account = account
-    this.contract = svWBGLDelegatorContract(cToken, getProviderStore.currentProvider)
+    this.contract = isWBGL ?
+      svWBGLDelegatorContract(cToken, getProviderStore.currentProvider) :
+      svBUSDDelegatorContract(cToken, getProviderStore.currentProvider)
   }
 
-  supply = (value: any, gas: any) => {
+  supply = (value: any, gas?: any) => {
     const params: any = {from: this.account}
     const contractSig = this.contract.connect(getProviderStore.signer)
     // if (this.isEther) {
@@ -30,8 +33,9 @@ export class Ctoken {
   }
 
   borrow = (value: any) => {
+    const params: any = {from: this.account}
     const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig.borrow(value).send({from: this.account})
+    return contractSig.borrow(value, params)
   }
 
   repayBorrow = (value: any) => {
