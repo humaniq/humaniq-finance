@@ -227,11 +227,9 @@ export class TransactionViewModel {
   handleButtonClick = async () => {
     let gas = 0
     let inputValue = await this.getValue(this.inputValue)
-
     console.info("i", +inputValue)
 
     this.gasEstimating = true
-    // this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
     this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
     this.gasEstimating = false
 
@@ -241,6 +239,7 @@ export class TransactionViewModel {
     try {
       if (this.isDeposit) {
         const wbgl = WBGLTestContract("0xaE1A1D3f65C88449016f957b4a29969eaae61492", getProviderStore.signer)
+
         const approved = await wbgl.approve(
           this.item.cToken, inputValue
         )
@@ -361,7 +360,7 @@ export class TransactionViewModel {
   getValue = async (value: any) => {
     const tokenDecimals = this.isNative
       ? 18
-      : await this.item.cTokenDecimals
+      : await this.item.underlyingDecimals
 
     return ethers.utils.parseUnits(value, tokenDecimals)
   }
