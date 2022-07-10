@@ -16,6 +16,7 @@ import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
+import {WBGLTestContract} from "models/contracts/WBGLTestContract"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -220,10 +221,13 @@ export class TransactionViewModel {
   }
 
   handleButtonClick = async () => {
+    let gas = 0
     let inputValue = await this.getValue(this.inputValue);
 
+    console.info("i", +inputValue)
+
     this.gasEstimating = true
-    this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
+    // this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
     this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
     this.gasEstimating = false
 
@@ -232,10 +236,16 @@ export class TransactionViewModel {
     }
     try {
       if (this.isDeposit) {
-        const supplyHash = await this.cTokenContract.supply(inputValue, this.txData.gasLimit)
+        const wbgl = WBGLTestContract("0xaE1A1D3f65C88449016f957b4a29969eaae61492", getProviderStore.signer)
+        const res = await wbgl.approve(
+          this.item.cToken, inputValue
+        )
+        console.info("res", res)
+        const supplyHash = await this.cTokenContract.supply(inputValue, gas)
 
         if (supplyHash) {
           const supplyRes = await this.comptroller.waitForTransaction(supplyHash.hash)
+          console.log("supplyRes", supplyRes)
         }
       } else {
         const borrowHash = await this.cTokenContract.borrow(inputValue)
@@ -339,7 +349,7 @@ export class TransactionViewModel {
   getValue = async (value: any) => {
     const tokenDecimals = this.isNative
       ? 18
-      : await this.cTokenContract.getDecimals()
+      : await this.item.cTokenDecimals
 
     return ethers.utils.parseUnits(value, tokenDecimals)
   }
