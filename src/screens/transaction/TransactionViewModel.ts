@@ -44,7 +44,7 @@ export class TransactionViewModel {
     source: "",
     time: ""
   }
-  inputFiat = true;
+  inputFiat = true
 
   txData = {
     data: undefined,
@@ -54,9 +54,9 @@ export class TransactionViewModel {
     nonce: 0,
     value: "0",
     to: "",
-    from: "",
+    from: ""
   }
-  lastVal: string;
+  lastVal: string
   inputRef?: any
 
   swapReaction?: IReactionDisposer
@@ -109,6 +109,10 @@ export class TransactionViewModel {
 
   get balance() {
     return this.item.balance
+  }
+
+  get tokensFiatPrice() {
+    return formatToCurrency(Big(this.item.tokenUsdValue).mul(this.balance))
   }
 
   get getFormattedBalance() {
@@ -222,7 +226,7 @@ export class TransactionViewModel {
 
   handleButtonClick = async () => {
     let gas = 0
-    let inputValue = await this.getValue(this.inputValue);
+    let inputValue = await this.getValue(this.inputValue)
 
     console.info("i", +inputValue)
 
@@ -242,8 +246,9 @@ export class TransactionViewModel {
         )
 
         if (approved) {
-          this.txData.gasPrice = approved.gasPrice
-          this.txData.gasLimit = approved.gasLimit
+          const {gasPrice, gasLimit} = approved
+          this.txData.gasPrice = gasPrice
+          this.txData.gasLimit = gasLimit
 
           const {hash} = await this.cTokenContract.supply(inputValue, this.txData.gasLimit)
 
@@ -280,7 +285,7 @@ export class TransactionViewModel {
   }
 
   get transactionTotalAmount() {
-    return this.txData.gasPrice ? +this.inputValueToken + this.transactionFee : 0;
+    return this.txData.gasPrice ? +this.inputValueToken + this.transactionFee : 0
   }
 
   get transactionFee() {
@@ -288,10 +293,10 @@ export class TransactionViewModel {
       return +ethers.utils.formatUnits(
         (+this.txData.gasPrice * this.txData.gasLimit).toString(),
         18
-      );
+      )
     } catch (e) {
-      console.log("ERROR-FEE", e);
-      return 0;
+      console.log("ERROR-FEE", e)
+      return 0
     }
   }
 
@@ -305,7 +310,7 @@ export class TransactionViewModel {
 
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
       this.inputValue = !val ?
-        this.inputValueToken ? this.inputValueToken.toFixed(2) : "":
+        this.inputValueToken ? this.inputValueToken.toFixed(2) : "" :
         this.inputValueFiat ? this.inputValueFiat.toFixed(2) : ""
 
       this.inputRef?.focus()
