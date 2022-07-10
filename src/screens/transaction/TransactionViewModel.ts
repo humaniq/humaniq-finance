@@ -235,7 +235,7 @@ export class TransactionViewModel {
         const supplyHash = await this.cTokenContract.supply(inputValue, this.txData.gasLimit)
 
         if (supplyHash) {
-          const ibi = await this.comptroller.waitForTransaction(supplyHash.hash)
+          const supplyRes = await this.comptroller.waitForTransaction(supplyHash.hash)
         }
       } else {
         const borrowHash = await this.cTokenContract.borrow(inputValue)
