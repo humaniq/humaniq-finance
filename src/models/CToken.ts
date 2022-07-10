@@ -1,31 +1,30 @@
 import { getProviderStore } from "App";
-import {CEtherContract} from "models/contracts/CEtherContract"
-import {CErc20Contract} from "models/contracts/CErc20Contract"
+import {svWBGLDelegatorContract} from "models/contracts/svWBGLDelegatorContract"
+import {svBUSDDelegatorContract} from "models/contracts/svBUSDDelegatorContract"
 
 export class Ctoken {
   cToken: any;
   account: any;
-  isEther: boolean;
+  isWBGL: boolean;
   contract: any;
 
-  constructor(cToken: any, account: any, isEth: boolean) {
+  constructor(cToken: any, account: any, isWBGL: boolean) {
     this.cToken = cToken;
     this.account = account;
-    this.isEther = isEth;
-    this.contract = isEth
-      ? CEtherContract(cToken, getProviderStore.currentProvider)
-      : CErc20Contract(cToken, getProviderStore.currentProvider);
+    this.contract = isWBGL ?
+      svWBGLDelegatorContract(cToken, getProviderStore.currentProvider) :
+      svBUSDDelegatorContract(cToken, getProviderStore.currentProvider);
   }
 
   supply = (value: any, gas: any) => {
     const params: any = { from: this.account };
     const contractSig = this.contract.connect(getProviderStore.signer)
-    if (this.isEther) {
-      params.value = value;
-      params.gas = gas;
-
-      return contractSig.mint(params);
-    }
+    // if (this.isEther) {
+    //   params.value = value;
+    //   params.gas = gas;
+    //
+    //   return contractSig.mint(params);
+    // }
     return contractSig.mint(value, params);
   };
 
@@ -40,12 +39,12 @@ export class Ctoken {
 
   repayBorrow = (value: any) => {
     const contractSig = this.contract.connect(getProviderStore.signer)
-    if (this.isEther) {
-      return contractSig.repayBorrow().send({
-        from: this.account,
-        value,
-      });
-    }
+    // if (this.isEther) {
+    //   return contractSig.repayBorrow().send({
+    //     from: this.account,
+    //     value,
+    //   });
+    // }
     return contractSig.repayBorrow(value).send({ from: this.account });
   };
 

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react"
+import React, {useCallback, useEffect, useRef} from "react"
 import {TransactionViewModel} from "./TransactionViewModel"
 import {withStore} from "utils/hoc"
 import {observer} from "mobx-react"
@@ -36,6 +36,7 @@ export interface TransactionProps {
 const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   const navigate = useNavigate()
   const {data, setData} = useSharedData()
+  const inputRef = useRef<any>(null)
 
   const onClose = useCallback(() => {
     navigate(-1)
@@ -45,8 +46,12 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     ;(async () => {
       if (data) {
         await view.mounted(data as TransactionState)
+        view.setInputRef(inputRef.current)
       }
-      return () => setData(null)
+      return () => {
+        setData(null)
+        view.unMounted()
+      }
     })()
   }, [view, data, setData])
 
@@ -99,6 +104,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 <MaxIcon width={30} height={30} className="v-form-icon-container-icon"/>
               </div>
               <AutosizeInput
+                ref={inputRef}
                 inputMode="decimal"
                 inputStyle={{
                   fontSize: view.getInputFontSize

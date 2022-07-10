@@ -1,4 +1,4 @@
-import {makeAutoObservable, reaction} from "mobx"
+import {IReactionDisposer, makeAutoObservable, reaction} from "mobx"
 import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/types"
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
@@ -16,7 +16,6 @@ import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
-import {WBGLTestContract} from "models/contracts/WBGLTestContract"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -57,6 +56,9 @@ export class TransactionViewModel {
     from: "",
   }
   lastVal: string;
+  inputRef?: any
+
+  swapReaction?: IReactionDisposer
 
   protected readonly api: ApiService
 
@@ -79,12 +81,12 @@ export class TransactionViewModel {
     return this.transactionType === TRANSACTION_TYPE.WITHDRAW
   }
 
-  get isWBGLTest() {
-    return this.item.symbol === 'wbglTest'
+  get isWBGL() {
+    return this.item.symbol === 'TWBGL'
   }
 
-  get isBUSDTest() {
-    return this.item.symbol === 'busdTest'
+  get isBUSD() {
+    return this.item.symbol === 'BUSD'
   }
 
   get isEnoughBalance() {
@@ -205,6 +207,10 @@ export class TransactionViewModel {
     return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.txData.gasPrice).mul(this.txData.gasLimit), 18) * this.nativeCoinPrice.price).toFixed(2)}`
   }
 
+  setInputRef = (ref: any) => {
+    this.inputRef = ref
+  }
+
   setTransactionFeeModalVisible = (state: boolean = false) => {
     this.showTransactionFeeModal = state
   }
@@ -214,44 +220,22 @@ export class TransactionViewModel {
   }
 
   handleButtonClick = async () => {
-    let gas = 30
-    let inputValue = 0
-
-    const wbgl = WBGLTestContract("0x88Ab2F4Eb09Be66535C66EF2FF11780B8A86d86a", getProviderStore.signer)
-    const res = await wbgl.approve("0x88Ab2F4Eb09Be66535C66EF2FF11780B8A86d86a", inputValue)
-
-    console.log("okay", res)
-    console.log("ctoken", this.item.cToken)
+    let inputValue = await this.getValue(this.inputValue);
 
     this.gasEstimating = true
-    // this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
-    this.txData.gasLimit = await this.cTokenContract.getEstimateGas(
-      "",
-      ethers.utils
-        .parseUnits(this.inputValue, 18)
-        .toHexString()
-    )
-
-
-    console.log("gas limit", this.txData.gasLimit)
+    this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
     this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
-
     this.gasEstimating = false
 
     if (this.isNative) {
       inputValue = this.txPrice.sub(inputValue)
     }
-
     try {
       if (this.isDeposit) {
-        const supplyHash = await this.cTokenContract.supply(inputValue, gas)
-
-        console.log("hash", supplyHash)
-        return
+        const supplyHash = await this.cTokenContract.supply(inputValue, this.txData.gasLimit)
 
         if (supplyHash) {
           const ibi = await this.comptroller.waitForTransaction(supplyHash.hash)
-          console.log("tesss", ibi)
         }
       } else {
         const borrowHash = await this.cTokenContract.borrow(inputValue)
@@ -302,6 +286,14 @@ export class TransactionViewModel {
     this.totalBorrow = totalBorrow
     this.transactionType = transactionType
 
+    this.swapReaction = reaction(() => this.inputFiat, (val) => {
+      this.inputValue = !val ?
+        this.inputValueToken ? this.inputValueToken.toFixed(2) : "":
+        this.inputValueFiat ? this.inputValueFiat.toFixed(2) : ""
+
+      this.inputRef?.focus()
+    })
+
     if (this.account) {
       const isEth = await isEther(this.item.cToken)
 
@@ -314,7 +306,7 @@ export class TransactionViewModel {
         isEth
       )
 
-      this.cTokenContract = new Ctoken(this.item.cToken, this.account, isEth)
+      this.cTokenContract = new Ctoken(this.item.cToken, this.account, this.isWBGL)
 
       this.faucetContract = new FaucetToken(
         this.item.token,
@@ -339,48 +331,43 @@ export class TransactionViewModel {
     this.isRefreshing = false
   }
 
+  unMounted = () => {
+    this.swapReaction?.()
+    this.inputRef = null
+  }
+
   getValue = async (value: any) => {
     const tokenDecimals = this.isNative
       ? 18
-      : await this.tokenContract.getDecimals()
+      : await this.cTokenContract.getDecimals()
 
-    const decimals = Big(10).pow(+tokenDecimals)
-
-    return Big(value)
-      .times(decimals)
-      .toFixed()
+    return ethers.utils.parseUnits(value, tokenDecimals)
   }
 
   setMaxValue = () => {
     let maxValue = this.balance
-
     if (this.inputFiat) {
       maxValue = Big(this.item.tokenUsdValue).mul(this.balance)
     }
-
-    this.setInputValue(maxValue.toString())
+    this.setInputValue(maxValue.toFixed(2))
+    this.inputRef?.focus()
   }
 
   onSwap = () => {
-    this.inputValue = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValueFiat.toFixed(2)
     this.inputFiat = !this.inputFiat
   }
 
   getGasFee = async () => {
     try {
       this.txData.gasPrice = await getProviderStore.currentProvider.getGasPrice()
-      console.log("mda", +utils.formatUnits(+this.txData.gasPrice.mul(this.txData.gasLimit), 18))
-      console.log("gas", +this.txData.gasPrice)
     } catch (e) {
       Logger.log("Gas price fetching error: ", e)
-    } finally {
     }
   }
 
   estimateGasLimit = async () => {
     try {
-      this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 1)
-      console.log("gas limit", this.txData.gasLimit)
+      this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 0)
     } catch (e) {
       Logger.info("Gas limit estimation error: ", e)
     }
