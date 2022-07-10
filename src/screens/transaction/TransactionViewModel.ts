@@ -237,22 +237,29 @@ export class TransactionViewModel {
     try {
       if (this.isDeposit) {
         const wbgl = WBGLTestContract("0xaE1A1D3f65C88449016f957b4a29969eaae61492", getProviderStore.signer)
-        const res = await wbgl.approve(
+        const approved = await wbgl.approve(
           this.item.cToken, inputValue
         )
-        console.info("res", res)
-        const supplyHash = await this.cTokenContract.supply(inputValue, gas)
 
-        if (supplyHash) {
-          const supplyRes = await this.comptroller.waitForTransaction(supplyHash.hash)
-          console.log("supplyRes", supplyRes)
+        if (approved) {
+          this.txData.gasPrice = approved.gasPrice
+          this.txData.gasLimit = approved.gasLimit
+
+          const {hash} = await this.cTokenContract.supply(inputValue, this.txData.gasLimit)
+
+          if (hash) {
+            const supplyRes = await this.comptroller.waitForTransaction(hash)
+            console.log("supplyRes", supplyRes)
+          }
+        }
+      } else if (this.isBorrow) {
+        const {hash} = await this.cTokenContract.borrow(inputValue)
+
+        if (hash) {
+          await this.comptroller.waitForTransaction(hash)
         }
       } else {
-        const borrowHash = await this.cTokenContract.borrow(inputValue)
-
-        if (borrowHash) {
-          await this.comptroller.waitForTransaction(borrowHash)
-        }
+        // for withdrawing
       }
     } catch (e) {
       Logger.log("ERR", e)
