@@ -9,6 +9,7 @@ import {getProviderStore} from "App"
 import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
+import {BigNumber, ethers} from "ethers"
 
 export class HomeViewModel {
   supplyMarket: BorrowSupplyItem[] = []
@@ -103,10 +104,14 @@ export class HomeViewModel {
       0
     )
 
+    console.log("totalSupply", totalSupply)
+
     const totalBorrow = market.reduce(
       (acc: any, current: any) => acc + current.fiatBorrow,
       0
     )
+
+    console.log("totalBorrow", totalBorrow)
 
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
@@ -115,6 +120,8 @@ export class HomeViewModel {
           : acc + (current.fiatSupply * current.supplyApy) / 100,
       0
     )
+
+    console.log("totalEarning", totalEarning)
 
     const totalSpending = market.reduce(
       (acc: any, current: any) =>
@@ -128,6 +135,9 @@ export class HomeViewModel {
       totalSupply === 0
         ? 0
         : ((totalEarning - totalSpending) * 100) / totalSupply
+    console.log("totalEarning", totalEarning)
+    console.log("totalSpending", totalSpending)
+    console.log("netApy", netApy)
     netApy = Math.round((netApy + Number.EPSILON) * 100) / 100
 
     this.totalBorrow = totalBorrow
@@ -142,25 +152,18 @@ export class HomeViewModel {
     totalEarned: any
   ) => {
     return metadata.map(async (data: any) => {
-      const isEth = await isEther(data.cToken)
+      // const isEth = await isEther(data.cToken)
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
-      const cTokenContract = new Ctoken(data.cToken, this.account, isEth)
+      const cTokenContract = new Ctoken(data.cToken, this.account, data.symbol === "TWBGL")
       const cTokenData = Object.assign({}, data)
 
-      let token: any = null
+      let token: any
 
-      if (!isEth) {
-        cTokenData.token = data.underlyingAssetAddress
-        token = new Token(cTokenData.token)
-        cTokenData.symbol = await token.getSymbol()
-        cTokenData.name = await token.getName()
-      } else {
-        // For eth cToken = tokenun
-        cTokenData.token = data.cToken
-        cTokenData.symbol = "ETH"
-        cTokenData.name = "ETH"
-      }
+      cTokenData.token = data.underlyingAssetAddress
+      token = new Token(cTokenData.token)
+      cTokenData.symbol = await token.getSymbol()
+      cTokenData.name = await token.getName()
 
       cTokenData.cName = await cTokenContract.getName()
       cTokenData.totalBorrows = await cTokenContract.getTotalBorrows()
@@ -173,15 +176,12 @@ export class HomeViewModel {
         data.cToken
       )
 
-      cTokenData.supplyAllowed = true
-      cTokenData.borrowAllowed = true
-
-      // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
-      //   data.cToken
-      // ));
-      // cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
-      //   data.cToken
-      // )); // TODO check what's the problem
+      cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
+        data.cToken
+      ));
+      cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
+        data.cToken
+      ));
 
       cTokenData.underlyingPrice = price.underlyingPrice
       cTokenData.tokenBalance = balance.tokenBalance
@@ -189,8 +189,8 @@ export class HomeViewModel {
       cTokenData.borrowBalance = balance.borrowBalanceCurrent
       cTokenData.supplyBalance = balance.balanceOfUnderlying
       cTokenData.balanceOf = balance.balanceOf
-      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400 // TODO 0 default
-      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400 // TODO 0 default
+      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 0 // TODO 0 default
+      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 0 // TODO 0 default
 
       return cTokenData
     })
@@ -215,8 +215,9 @@ export class HomeViewModel {
       item.underlyingPrice,
       item.underlyingDecimals
     )
+
     item.tokenUsdValue = this.convertToUSD(
-      Math.pow(10, item.underlyingDecimals),
+      Math.pow(10, +item.underlyingDecimals),
       item.underlyingPrice,
       item.underlyingDecimals
     )
@@ -241,15 +242,15 @@ export class HomeViewModel {
   }
 
   convertToUSD = (value: any, underlyingPrice: any, tokenDecimals: any) => {
-    const oracleMantissa = Big(10).pow(18)
+    const oracleMantissa = Big(10).pow(+tokenDecimals)
     const decimalValue = Big(10).pow(+tokenDecimals)
-    const mantisa = Big(10).pow(18 - tokenDecimals)
+    const mantissa = Big(10).pow(18 - (+tokenDecimals))
 
     const usdValue = Big(value)
       .times(underlyingPrice)
       .div(decimalValue)
       .div(oracleMantissa)
-      .div(mantisa)
+      .div(mantissa)
 
     return usdValue.toNumber()
   }
@@ -307,6 +308,7 @@ export class HomeViewModel {
     const underlyingPrices = await this.cl.getUnderlyingPriceAll(
       this.cTokenAddressList
     )
+
     // const totalEarned = await getTotalEarned(this.ethAccount) // TODO error from backend
     const cTokensDataTasks = this.cTokenAddressList.map(this.getTokenData)
     const cTokensDataResults = await Promise.all(cTokensDataTasks)

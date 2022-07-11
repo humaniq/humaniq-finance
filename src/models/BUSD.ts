@@ -16,6 +16,6 @@ export class BUSD {
   }
 
   approve = async (cToken: any, amount: any) => {
-    return this.contract.allowance(cToken, amount)
+    return this.contract.approve(cToken, amount)
   }
 }

@@ -16,7 +16,6 @@ import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
-import {WBGLTestContract} from "models/contracts/WBGLTestContract"
 import {TRANSACTION_STATUS} from "components/transaction-message/TransactionMessage"
 import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
@@ -90,6 +89,7 @@ export class TransactionViewModel {
     if (this.isWBGL) {
       this.selectedToken = new WBGL(getProviderStore.signer, this.account)
     } else {
+      console.log("busdddd")
       this.selectedToken = new BUSD(getProviderStore.signer, this.account)
     }
 
@@ -294,33 +294,33 @@ export class TransactionViewModel {
 
   handleTransaction = async () => {
     const input = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValue
-    let inputValue = await this.getValue(input)
+    let inputValue = this.getValue(input)
     this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
 
     if (this.isNative) {
       inputValue = this.txPrice.sub(inputValue)
     }
     try {
-      let approvedResult: boolean
-
-      const allowanceAmount = await this.selectedToken.allowance(
-        this.item.cToken
-      )
-
-      console.log("allowance", +allowanceAmount)
-
-      // check if supply is allowed, otherwise it should be approved
-      if (+allowanceAmount >= +inputValue) {
-        // can proceed with supply
-        approvedResult = true
-      } else {
-        // need to approve
-        approvedResult = !!await this.selectedToken.approve(
-          this.item.cToken, inputValue
-        )
-      }
-
       if (this.isDeposit) {
+        let approvedResult: boolean
+
+        const allowanceAmount = await this.selectedToken.allowance(
+          this.item.cToken
+        )
+
+        console.log("allowance", +allowanceAmount)
+        console.log("inputValue", +inputValue)
+
+        // check if supply is allowed, otherwise it should be approved
+        if (+allowanceAmount >= +inputValue) {
+          // can proceed with supply
+          approvedResult = true
+        } else {
+          // need to approve
+          approvedResult = !!await this.selectedToken.approve(
+            this.item.cToken, inputValue
+          )
+        }
         if (approvedResult) {
           runInAction(() => this.transactionInProgress = true)
           const {hash} = await this.cTokenContract.supply(inputValue)
@@ -335,22 +335,23 @@ export class TransactionViewModel {
       } else if (this.isBorrow) {
         const isMarketExists = await this.isMarketExists();
 
+        console.log("isMarketExists", isMarketExists)
+
         if (!isMarketExists) {
           console.log("Market is not available!!")
           return;
         }
         // for borrow
-        if (approvedResult) {
-          const {hash} = await this.cTokenContract.borrow(inputValue)
-          if (hash) {
-            const depositRes = await this.comptroller.waitForTransaction(hash)
-            console.log("supplyRes", depositRes)
-          }
+        const {hash} = await this.cTokenContract.borrow(inputValue)
+        if (hash) {
+          const depositRes = await this.comptroller.waitForTransaction(hash)
+          console.log("supplyRes", depositRes)
         }
       } else {
         // for withdraw
       }
     } catch (e: any) {
+      console.error(e)
       if (e.code === 4001) {
         runInAction(() => this.transactionMessage = t("transactionMessage.denied"))
       }
@@ -408,10 +409,10 @@ export class TransactionViewModel {
     this.inputRef = null
   }
 
-  getValue = async (value: any) => {
+  getValue = (value: any) => {
     const tokenDecimals = this.isNative
       ? 18
-      : await this.item.underlyingDecimals
+      : this.item.underlyingDecimals
 
     return ethers.utils.parseUnits(value, tokenDecimals)
   }

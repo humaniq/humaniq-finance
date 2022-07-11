@@ -16,37 +16,23 @@ export class Ctoken {
       svBUSDDelegatorContract(cToken, getProviderStore.currentProvider)
   }
 
-  supply = (value: any, gas?: any) => {
-    const params: any = {from: this.account}
+  supply = async (value: any, gas?: any) => {
     const contractSig = this.contract.connect(getProviderStore.signer)
-    // if (this.isEther) {
-    //   params.value = value;
-    //   params.gas = gas;
-    //
-    //   return contractSig.mint(params);
-    // }
-    return contractSig.mint(value, params)
+    return contractSig.mint(value, {from: this.account})
   }
 
-  getEstimateGas = (method: any, value: any) => {
+  getEstimateGas = async (method: any, value: any) => {
     return this.contract[method]().estimateGas({from: this.account, value})
   }
 
-  borrow = (value: any) => {
-    const params: any = {from: this.account}
+  borrow = async (value: any) => {
     const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig.borrow(value, params)
+    return contractSig.borrow(value, {from: this.account})
   }
 
-  repayBorrow = (value: any) => {
+  repayBorrow = async (value: any) => {
     const contractSig = this.contract.connect(getProviderStore.signer)
-    // if (this.isEther) {
-    //   return contractSig.repayBorrow().send({
-    //     from: this.account,
-    //     value,
-    //   });
-    // }
-    return contractSig.repayBorrow(value).send({from: this.account})
+    return contractSig.repayBorrow(value, {from: this.account})
   }
 
   withdraw = (value: any) => {
@@ -55,11 +41,13 @@ export class Ctoken {
   }
 
   supplyRatePerBlock = () => {
-    return this.contract.supplyRatePerBlock()
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.supplyRatePerBlock()
   }
 
   borrowRatePerBlock = () => {
-    return this.contract.borrowRatePerBlock()
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.borrowRatePerBlock()
   }
 
   getDecimals = () => {
@@ -72,15 +60,18 @@ export class Ctoken {
   }
 
   balanceOfUnderlying = () => {
-    return this.contract.balanceOfUnderlying(this.account)
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.balanceOfUnderlying(this.account)
   }
 
   borrowBalanceCurrent = () => {
-    return this.contract.borrowBalanceCurrent(this.account)
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.borrowBalanceCurrent(this.account)
   }
 
   getExchangeRate = () => {
-    return this.contract.exchangeRateStored()
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.exchangeRateStored()
   }
 
   getCash = () => {
@@ -92,11 +83,13 @@ export class Ctoken {
   }
 
   getTotalBorrows = () => {
-    return this.contract.totalBorrows()
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.totalBorrows()
   }
 
   getTotalSupply = () => {
-    return this.contract.totalSupply()
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.totalSupply()
   }
 
   getExchangeRateStored = () => {
