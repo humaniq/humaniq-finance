@@ -215,19 +215,19 @@ export class TransactionViewModel {
   }
 
   get getApyTitle() {
-    return `${t(this.isDeposit ? "home.deposit" : "home.borrow")} ${t("home.netApy")}`
+    return `${t(this.isDeposit || this.isWithdraw ? "home.deposit" : "home.borrow")} ${t("home.netApy")}`
   }
 
   get getApyValue() {
-    return `${this.isDeposit ? this.item.supplyApy : this.item.borrowApy}%`
+    return `${this.isDeposit || this.isWithdraw ? this.item.supplyApy : this.item.borrowApy}%`
   }
 
   get getBorrowLimitTitle() {
-    return `${t(this.isDeposit ? "home.borrowLimit" : "transaction.borrowBalance")}`
+    return `${t(this.isDeposit || this.isWithdraw ? "home.borrowLimit" : "transaction.borrowBalance")}`
   }
 
   get getBorrowLimitValue() {
-    return formatToCurrency(this.isDeposit ? this.borrowLimit : this.totalBorrow)
+    return formatToCurrency(this.isDeposit || this.isWithdraw ? this.borrowLimit : this.totalBorrow)
   }
 
   get getBorrowLimitUsed() {
