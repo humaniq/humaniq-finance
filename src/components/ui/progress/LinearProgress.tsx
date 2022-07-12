@@ -30,7 +30,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
     return ""
   }, [progress])
 
-  const handleProgress = useMemo(() => Math.min(progress, 100), [progress])
+  const handleProgress = useMemo(() => Math.min(progress, 100).toFixed(2), [progress])
 
   return (
     <div className="progress-container">

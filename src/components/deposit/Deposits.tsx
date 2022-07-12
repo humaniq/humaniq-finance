@@ -4,7 +4,7 @@ import colors from "../../utils/colors";
 import { InfoButton, PLACEMENT } from "../info-button/InfoButton";
 import { useTranslation } from "react-i18next";
 import "./Deposits.style.sass";
-import { SupplyItem } from "components/main/supply/SupplyItem";
+import {COLLATERAL_STATUS, SupplyItem} from "components/main/supply/SupplyItem"
 import { BorrowSupplyItem } from "models/types";
 
 export interface DepositsProps {

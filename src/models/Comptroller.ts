@@ -23,12 +23,14 @@ export class Comptroller {
     return contractSig.getAllMarkets();
   };
 
-  enterMarkets = (params: any) => {
-    return this.contract.enterMarkets(params);
+  enterMarkets = async (token: any) => {
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.enterMarkets(token, {from: this.account});
   };
 
   exitMarket = (cToken: any) => {
-    return this.contract.exitMarket(cToken);
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.exitMarket(cToken, {from: this.account});
   };
 
   checkMembership = (cToken: any) => {

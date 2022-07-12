@@ -2,14 +2,13 @@ import {makeAutoObservable} from "mobx"
 import {Comptroller} from "models/Comptroller"
 import {CompoundLens} from "models/CompoundLens"
 import {Ctoken} from "models/CToken"
-import {isEther} from "models/ContractsAPI"
 import {Token} from "models/Token"
 import Big from "big.js"
 import {getProviderStore} from "App"
 import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
-import {BigNumber, ethers} from "ethers"
+import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
 
 export class HomeViewModel {
   supplyMarket: BorrowSupplyItem[] = []
@@ -115,7 +114,7 @@ export class HomeViewModel {
 
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
-        current.supplyBalance == 0
+        current.supplyBalance === 0
           ? acc
           : acc + (current.fiatSupply * current.supplyApy) / 100,
       0
@@ -125,7 +124,7 @@ export class HomeViewModel {
 
     const totalSpending = market.reduce(
       (acc: any, current: any) =>
-        current.borrowBalance == 0
+        current.borrowBalance === 0
           ? acc
           : acc + (current.fiatBorrow * current.borrowApy) / 100,
       0
@@ -308,7 +307,6 @@ export class HomeViewModel {
     const underlyingPrices = await this.cl.getUnderlyingPriceAll(
       this.cTokenAddressList
     )
-
     // const totalEarned = await getTotalEarned(this.ethAccount) // TODO error from backend
     const cTokensDataTasks = this.cTokenAddressList.map(this.getTokenData)
     const cTokensDataResults = await Promise.all(cTokensDataTasks)
@@ -369,6 +367,28 @@ export class HomeViewModel {
 
   setLoader = (state: boolean) => {
     this.isRefreshing = state
+  }
+
+  handleCollateral = async (item: any, collateralStatus: COLLATERAL_STATUS) => {
+    try {
+      if (collateralStatus === COLLATERAL_STATUS.EXITED_MARKET) {
+        const isMarketExists = await this.isMarketExists(item);
+        if (!isMarketExists) {
+          return;
+        }
+        const {hash} = await this.comptroller.enterMarkets([item.cToken])
+        await this.comptroller.waitForTransaction(hash);
+      } else {
+        const {hash} = await this.comptroller.exitMarket(item.cToken)
+        const res = await this.comptroller.waitForTransaction(hash);
+      }
+    } catch (e: any) {
+    }
+  }
+
+  isMarketExists = async (item: any) => {
+    const markets = await this.comptroller.getAllMarkets();
+    return markets.includes(item.cToken);
   }
 
   mounted = async () => {

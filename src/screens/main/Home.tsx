@@ -127,8 +127,10 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           </View>
         </MainInfoHeader>
         <div className="content">
-          <Deposits data={view.userSuppliedMarket} onClick={onBorrowOrSupplyClick}/>
-          <Borrows data={view.borrowMarket} onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
+          <Deposits data={view.userSuppliedMarket}
+                    onClick={onBorrowOrSupplyClick}/>
+          <Borrows data={view.borrowMarket}
+                   onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
         </div>
       </div>
     </>

@@ -239,8 +239,7 @@ export class TransactionViewModel {
   get newBorrowLimit() {
     if (!this.getInputValue) return 0
     if (!this.item.isEnteredTheMarket) return this.borrowLimit
-    // @ts-ignore
-    return this.borrowLimit + (this.isSwap ? this.inputValueToken : this.inputValueFiat) * this.collateralMantissa
+    return this.borrowLimit + (this.inputFiat ? +this.getInputValue : +this.inputValueFiat) * +this.collateralMantissa
   }
 
   get collateralMantissa() {
@@ -326,16 +325,13 @@ export class TransactionViewModel {
           const {hash} = await this.cTokenContract.supply(inputValue)
 
           if (hash) {
-            const supplyRes = await this.comptroller.waitForTransaction(hash)
-            console.log("supplyRes", supplyRes)
+            await this.comptroller.waitForTransaction(hash)
             runInAction(() => this.transactionMessageStatus = TRANSACTION_STATUS.SUCCESS)
             this.transactionMessageVisible = true;
           }
         }
       } else if (this.isBorrow) {
         const isMarketExists = await this.isMarketExists();
-
-        console.log("isMarketExists", isMarketExists)
 
         if (!isMarketExists) {
           console.log("Market is not available!!")
@@ -344,8 +340,7 @@ export class TransactionViewModel {
         // for borrow
         const {hash} = await this.cTokenContract.borrow(inputValue)
         if (hash) {
-          const depositRes = await this.comptroller.waitForTransaction(hash)
-          console.log("supplyRes", depositRes)
+          await this.comptroller.waitForTransaction(hash)
         }
       } else {
         // for withdraw
