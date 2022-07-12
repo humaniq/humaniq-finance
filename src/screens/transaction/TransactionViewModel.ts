@@ -178,7 +178,7 @@ export class TransactionViewModel {
     return this.item.balance
   }
 
-  get supplyBalance() {
+  get tokenBalance() {
     if (this.isWithdraw) {
       return this.item.supply
     } else if (this.isBorrow) {
@@ -189,11 +189,11 @@ export class TransactionViewModel {
   }
 
   get tokensFiatPrice() {
-    return formatToCurrency(Big(this.item.tokenUsdValue).mul(this.supplyBalance))
+    return formatToCurrency(Big(this.item.tokenUsdValue).mul(this.tokenBalance))
   }
 
   get getFormattedBalance() {
-    return `${this.supplyBalance.toFixed(2)} ${this.getTokenSymbol}`
+    return `${this.tokenBalance.toFixed(2)} ${this.getTokenSymbol}`
   }
 
   get titleBasedOnType() {
@@ -213,7 +213,7 @@ export class TransactionViewModel {
   }
 
   get getTokenBalance() {
-    return `${this.supplyBalance.toFixed(4)}`
+    return `${this.tokenBalance.toFixed(4)}`
   }
 
   get getTokenUsdValue() {
