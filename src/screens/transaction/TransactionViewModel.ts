@@ -179,7 +179,13 @@ export class TransactionViewModel {
   }
 
   get supplyBalance() {
-    return this.isWithdraw ? this.item.supply : this.balance
+    if (this.isWithdraw) {
+      return this.item.supply
+    } else if (this.isBorrow) {
+      return this.item.borrow
+    }
+
+    return this.balance
   }
 
   get tokensFiatPrice() {
@@ -302,6 +308,8 @@ export class TransactionViewModel {
   get balanceTitle() {
     if (this.isWithdraw) {
       return t("transaction.currentlySupplying")
+    } else if (this.isBorrow) {
+      return t("transaction.currentlyBorrowing")
     }
 
     return t("home.walletBalance")

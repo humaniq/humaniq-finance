@@ -35,7 +35,8 @@
     "withdraw": "Withdraw",
     "repay": "Repay",
     "transactionSubmitted": "Transaction submitted",
-    "currentlySupplying": "Currently Supplying"
+    "currentlySupplying": "Currently Supplying",
+    "currentlyBorrowing": "Currently Borrowing"
   },
   "deposits": {
     "title": "Deposits"

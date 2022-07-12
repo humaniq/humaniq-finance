@@ -188,8 +188,8 @@ export class HomeViewModel {
       cTokenData.borrowBalance = balance.borrowBalanceCurrent
       cTokenData.supplyBalance = balance.balanceOfUnderlying
       cTokenData.balanceOf = balance.balanceOf
-      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 0 // TODO 0 default
-      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 0 // TODO 0 default
+      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400 // TODO 0 default
+      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400 // TODO 0 default
 
       return cTokenData
     })
