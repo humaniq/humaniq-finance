@@ -25,6 +25,7 @@ import "../../styles/circular.sass"
 import "./Home.style.sass"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {t} from "translations/translate"
+import {LiquidityBottomSheet} from "components/bottom-sheet/LiquidityBottomSheet"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -141,10 +142,15 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             data={view.supplyMarket}
             onClick={onBorrowOrSupplyClick}/>
           <Borrows
+            onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
             data={view.borrowMarket}
             onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
         </div>
       </div>
+      <LiquidityBottomSheet
+        list={view.borrowMarket}
+        visible={view.liquidityModalVisible}
+        onDismiss={() => view.setLiquidityModalVisibility(false)}/>
     </>
   )
 }

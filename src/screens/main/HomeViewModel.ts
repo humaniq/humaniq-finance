@@ -33,7 +33,7 @@ export class HomeViewModel {
   liquidity = 0
   netApy = 0
   tokensGeneratingRewards: any
-  modalVisible = false
+  liquidityModalVisible = false
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
@@ -78,10 +78,6 @@ export class HomeViewModel {
 
   get getBorrowLimit() {
     return `${this.borrowLimit.toFixed(2)}$`
-  }
-
-  setModalVisible = (visible: boolean) => {
-    this.modalVisible = visible
   }
 
   calculateAPY = (ratePerBlock: any) => {
@@ -389,6 +385,10 @@ export class HomeViewModel {
   isMarketExists = async (item: any) => {
     const markets = await this.comptroller.getAllMarkets();
     return markets.includes(item.cToken);
+  }
+
+  setLiquidityModalVisibility = (visibility: boolean) => {
+    this.liquidityModalVisible = visibility
   }
 
   mounted = async () => {

@@ -1,21 +1,22 @@
-import React from "react";
-import { Text } from "../ui/text/Text";
-import colors from "../../utils/colors";
-import { InfoButton, PLACEMENT } from "../info-button/InfoButton";
-import { Button } from "../ui/button/Button";
-import { HintMessage } from "../ui/hint/HintMessage";
-import { useTranslation } from "react-i18next";
-import { BorrowItem } from "components/main/borrow/BorrowItem";
-import { BorrowSupplyItem } from "models/types";
-import "./Borrows.style.sass";
+import React from "react"
+import {Text} from "../ui/text/Text"
+import colors from "../../utils/colors"
+import {InfoButton, PLACEMENT} from "../info-button/InfoButton"
+import {Button} from "../ui/button/Button"
+import {HintMessage} from "../ui/hint/HintMessage"
+import {useTranslation} from "react-i18next"
+import {BorrowItem} from "components/main/borrow/BorrowItem"
+import {BorrowSupplyItem} from "models/types"
+import "./Borrows.style.sass"
 
 export interface BorrowsProps {
   data: BorrowSupplyItem[];
   onClick?: (item: BorrowSupplyItem) => void
+  onLiquidityClick?: () => void
 }
 
-export const Borrows: React.FC<BorrowsProps> = ({ data, onClick }) => {
-  const { t } = useTranslation();
+export const Borrows: React.FC<BorrowsProps> = ({data, onClick, onLiquidityClick}) => {
+  const {t} = useTranslation()
 
   return (
     <div className="available-borrow">
@@ -36,17 +37,18 @@ export const Borrows: React.FC<BorrowsProps> = ({ data, onClick }) => {
         <Button
           className="liquidity-btn"
           text={t("home.liquidity")}
+          onClick={onLiquidityClick}
         />
       </div>
-      <HintMessage message={t("home.borrowHint")} />
+      <HintMessage message={t("home.borrowHint")}/>
       <div className="list">
         {data.map((item, index) => (
           <BorrowItem
             onBorrowClick={() => onClick?.(item)}
             key={`borrow_item_${item.symbol}_${index}`}
-            item={item} />
+            item={item}/>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,24 +1,19 @@
 import React from "react";
-import { Text } from "../../ui/text/Text";
-import BTCIcon from "../../../assets/images/ic_btc.svg";
 import { Avatar } from "../../ui/avatar/Avatar";
 import "./LiquidityTokenItem.style.sass";
+import {BorrowSupplyItem} from "models/types"
+import {beautifyNumber} from "utils/utils"
+import {icons} from "utils/icons"
 
 export interface LiquidityTokenItemProps {
-  title: string;
-  subTitle: string;
-  amount: string;
-  subAmount: string;
-  onClick?: () => void;
-  className?: string;
-  disabled?: boolean;
+  item: BorrowSupplyItem
+  onClick?: () => void
+  className?: string
+  disabled?: boolean
 }
 
 export const LiquidityTokenItem: React.FC<LiquidityTokenItemProps> = ({
-  title,
-  subTitle,
-  amount,
-  subAmount,
+  item,
   onClick,
   className,
   disabled,
@@ -27,10 +22,10 @@ export const LiquidityTokenItem: React.FC<LiquidityTokenItemProps> = ({
   return (
     <div className={`liquidity-tkn-container`} {...rest}>
       <div className="liquidity-tkn-content">
-        <Avatar className="avatar" size={30} icon={BTCIcon} />
+        <Avatar className="avatar" size={30} icon={icons[item.symbol]} />
         <div className="row">
-          <Text className="title" text={title} />
-          <Text className="title" text={amount} />
+          <span className="title">{item.name}</span>
+          <span className="title">{beautifyNumber(item.liquidity, true)}</span>
         </div>
       </div>
     </div>
