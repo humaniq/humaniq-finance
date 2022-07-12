@@ -89,7 +89,6 @@ export class TransactionViewModel {
     if (this.isWBGL) {
       this.selectedToken = new WBGL(getProviderStore.signer, this.account)
     } else {
-      console.log("busdddd")
       this.selectedToken = new BUSD(getProviderStore.signer, this.account)
     }
 
@@ -179,20 +178,36 @@ export class TransactionViewModel {
     return this.item.balance
   }
 
+  get supplyBalance() {
+    return this.isWithdraw ? this.item.supply : this.balance
+  }
+
   get tokensFiatPrice() {
-    return formatToCurrency(Big(this.item.tokenUsdValue).mul(this.balance))
+    return formatToCurrency(Big(this.item.tokenUsdValue).mul(this.supplyBalance))
   }
 
   get getFormattedBalance() {
-    return `${formatBalance(this.balance)} ${this.getTokenSymbol}`
+    return `${this.supplyBalance.toFixed(2)} ${this.getTokenSymbol}`
+  }
+
+  get titleBasedOnType() {
+    let title = "home.deposit"
+
+    if (this.isBorrow) {
+      title = "home.borrow"
+    } else if (this.isWithdraw) {
+      title = "transaction.withdraw"
+    }
+
+    return t(title)
   }
 
   get getTitle() {
-    return `${t(this.isDeposit ? "home.deposit" : "home.borrow")} ${this.getTokenSymbol}`
+    return `${this.titleBasedOnType} ${this.getTokenSymbol}`
   }
 
   get getTokenBalance() {
-    return `${this.balance.toFixed(4)}`
+    return `${this.supplyBalance.toFixed(4)}`
   }
 
   get getTokenUsdValue() {
@@ -239,6 +254,11 @@ export class TransactionViewModel {
   get newBorrowLimit() {
     if (!this.getInputValue) return 0
     if (!this.item.isEnteredTheMarket) return this.borrowLimit
+
+    if (this.isWithdraw) {
+      return this.borrowLimit - (this.inputFiat ? +this.getInputValue : +this.inputValueFiat) * +this.collateralMantissa
+    }
+
     return this.borrowLimit + (this.inputFiat ? +this.getInputValue : +this.inputValueFiat) * +this.collateralMantissa
   }
 
@@ -272,11 +292,19 @@ export class TransactionViewModel {
   }
 
   get getDepositButtonText() {
-    return `${t(this.isDeposit ? "home.deposit" : "home.borrow")} ${formatToCurrency(this.inputFiat ? this.inputValue : this.inputValueFiat)}`
+    return `${this.titleBasedOnType} ${formatToCurrency(this.inputFiat ? this.inputValue : this.inputValueFiat)}`
   }
 
   get getTransactionFiatFee() {
     return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.txData.gasPrice).mul(this.txData.gasLimit), 18) * this.nativeCoinPrice.price).toFixed(2)}`
+  }
+
+  get balanceTitle() {
+    if (this.isWithdraw) {
+      return t("transaction.currentlySupplying")
+    }
+
+    return t("home.walletBalance")
   }
 
   setInputRef = (ref: any) => {
@@ -306,9 +334,6 @@ export class TransactionViewModel {
         const allowanceAmount = await this.selectedToken.allowance(
           this.item.cToken
         )
-
-        console.log("allowance", +allowanceAmount)
-        console.log("inputValue", +inputValue)
 
         // check if supply is allowed, otherwise it should be approved
         if (+allowanceAmount >= +inputValue) {
@@ -342,8 +367,22 @@ export class TransactionViewModel {
         if (hash) {
           await this.comptroller.waitForTransaction(hash)
         }
-      } else {
-        // for withdraw
+      } else if (this.isWithdraw) {
+        // check if number is too small for transaction
+        if (
+          Big(+inputValue)
+            .times(1e18)
+            .div(this.item.exchangeRateCurrent)
+            .lt(1)
+        ) {
+          console.log("error")
+          return;
+        }
+
+        const {hash} = await this.cTokenContract.withdraw(inputValue)
+        if (hash) {
+          await this.comptroller.waitForTransaction(hash)
+        }
       }
     } catch (e: any) {
       console.error(e)

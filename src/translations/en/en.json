@@ -1,5 +1,5 @@
 {
-  "appName": "SAVY",
+  "appName": "Savy",
   "hmqName": "Humaniq wallet",
   "noData": "No data",
   "returnToMain": "Return to main page",
@@ -34,16 +34,17 @@
     "borrowBalance": "Borrow balance",
     "withdraw": "Withdraw",
     "repay": "Repay",
-    "transactionSubmitted": "Transaction submitted"
+    "transactionSubmitted": "Transaction submitted",
+    "currentlySupplying": "Currently Supplying"
   },
   "deposits": {
     "title": "Deposits"
   },
   "hints": {
     "borrowLimit": "Borrow limit is the maximum sum you can borrow. It is calculated as 80% of your deposited funds.\n\nIf you deposit 100$ you won’t be able to borrow more than 80$ which is 80% of 100$.",
-    "balance": "Here is your funds on your crypto wallet which is not yet deposited.You can deposit them and use as collateral to borrow funds later.",
+    "deposits": "Here is your funds on your crypto wallet which is not yet deposited.You can deposit them and use as collateral to borrow funds later.",
     "borrowAvailable": "Here is a list of coins you can borrow and repay later. But you can borrow them only after deposit funds.\nYour deposit will be used as collateral. You won’t be able to borrow more than 80% of your deposited funds.",
-    "deposits": "Here is your crypto that you have deposited. You can use them as collateral to borrow funds."
+    "balance": "Here is your crypto that you have deposited. You can use them as collateral to borrow funds."
   },
   "transactionMessage": {
     "pending": "Transaction is pending",

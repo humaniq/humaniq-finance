@@ -127,10 +127,22 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           </View>
         </MainInfoHeader>
         <div className="content">
-          <Deposits data={view.userSuppliedMarket}
-                    onClick={onBorrowOrSupplyClick}/>
-          <Borrows data={view.borrowMarket}
-                   onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
+          {view.userSuppliedMarket.length > 0 && (
+            <Deposits
+              isWithdraw={true}
+              hintText={t("hints.balance")}
+              title={t("home.walletBalance")}
+              data={view.userSuppliedMarket}
+              onClick={onBorrowOrSupplyClick}/>
+          )}
+          <Deposits
+            hintText={t("hints.deposits")}
+            title={t("deposits.title")}
+            data={view.supplyMarket}
+            onClick={onBorrowOrSupplyClick}/>
+          <Borrows
+            data={view.borrowMarket}
+            onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
         </div>
       </div>
     </>

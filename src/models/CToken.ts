@@ -37,7 +37,7 @@ export class Ctoken {
 
   withdraw = (value: any) => {
     const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig.redeemUnderlying(value).send({from: this.account})
+    return contractSig.redeemUnderlying(value, {from: this.account})
   }
 
   supplyRatePerBlock = () => {

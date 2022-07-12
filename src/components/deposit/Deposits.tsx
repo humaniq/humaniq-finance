@@ -1,20 +1,27 @@
-import React from "react";
-import { Text } from "../ui/text/Text";
-import colors from "../../utils/colors";
-import { InfoButton, PLACEMENT } from "../info-button/InfoButton";
-import { useTranslation } from "react-i18next";
-import "./Deposits.style.sass";
-import {COLLATERAL_STATUS, SupplyItem} from "components/main/supply/SupplyItem"
-import { BorrowSupplyItem } from "models/types";
+import React from "react"
+import {Text} from "../ui/text/Text"
+import colors from "../../utils/colors"
+import {InfoButton, PLACEMENT} from "../info-button/InfoButton"
+import "./Deposits.style.sass"
+import {SupplyItem} from "components/main/supply/SupplyItem"
+import {BorrowSupplyItem} from "models/types"
+import {TRANSACTION_TYPE} from "models/contracts/types"
 
 export interface DepositsProps {
   data: BorrowSupplyItem[]
-  onClick?: (item: BorrowSupplyItem) => void
+  onClick?: (item: BorrowSupplyItem, type: TRANSACTION_TYPE) => void
+  title: string
+  hintText: string
+  isWithdraw?: boolean
 }
 
-export const Deposits: React.FC<DepositsProps> = ({ data = [], onClick }) => {
-  const { t } = useTranslation();
-
+export const Deposits: React.FC<DepositsProps> = ({
+                                                    data = [],
+                                                    onClick,
+                                                    title,
+                                                    hintText,
+                                                    isWithdraw = false
+                                                  }) => {
   return (
     <div className="deposits">
       <div className="title">
@@ -22,10 +29,10 @@ export const Deposits: React.FC<DepositsProps> = ({ data = [], onClick }) => {
           size={16}
           className="label"
           color={colors.blackText}
-          text={t("deposits.title")}
+          text={title}
         />
         <InfoButton
-          message={t("hints.balance")}
+          message={hintText}
           placement={PLACEMENT.BOTTOM}
           color={colors.blackText}
         />
@@ -33,11 +40,12 @@ export const Deposits: React.FC<DepositsProps> = ({ data = [], onClick }) => {
       <div className="deposits--list">
         {data.map((item, index) => (
           <SupplyItem
-            onSupplyClick={() => onClick?.(item)}
+            isWithdraw={isWithdraw}
+            onSupplyClick={() => onClick?.(item, isWithdraw ? TRANSACTION_TYPE.WITHDRAW : TRANSACTION_TYPE.DEPOSIT)}
             key={`supply_item_${item.symbol}_${index}`}
-            item={item} />
+            item={item}/>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

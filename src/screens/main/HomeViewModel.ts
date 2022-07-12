@@ -61,7 +61,7 @@ export class HomeViewModel {
   }
 
   get getNetApyLabel() {
-    return `${this.netApy ? this.netApy : "--/--"}`
+    return `${this.netApy ? this.netApy : "..."}`
   }
 
   get getBorrowBalance() {
