@@ -99,14 +99,10 @@ export class HomeViewModel {
       0
     )
 
-    console.log("totalSupply", totalSupply)
-
     const totalBorrow = market.reduce(
       (acc: any, current: any) => acc + current.fiatBorrow,
       0
     )
-
-    console.log("totalBorrow", totalBorrow)
 
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
@@ -115,8 +111,6 @@ export class HomeViewModel {
           : acc + (current.fiatSupply * current.supplyApy) / 100,
       0
     )
-
-    console.log("totalEarning", totalEarning)
 
     const totalSpending = market.reduce(
       (acc: any, current: any) =>
@@ -130,9 +124,6 @@ export class HomeViewModel {
       totalSupply === 0
         ? 0
         : ((totalEarning - totalSpending) * 100) / totalSupply
-    console.log("totalEarning", totalEarning)
-    console.log("totalSpending", totalSpending)
-    console.log("netApy", netApy)
     netApy = Math.round((netApy + Number.EPSILON) * 100) / 100
 
     this.totalBorrow = totalBorrow
@@ -170,14 +161,12 @@ export class HomeViewModel {
       cTokenData.isEnteredTheMarket = await this.comptroller.checkMembership(
         data.cToken
       )
-
       cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
         data.cToken
       ));
       cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
         data.cToken
       ));
-
       cTokenData.underlyingPrice = price.underlyingPrice
       cTokenData.tokenBalance = balance.tokenBalance
       cTokenData.tokenAllowance = balance.tokenAllowance
@@ -332,7 +321,9 @@ export class HomeViewModel {
     this.borrowLimit = liquidity + this.totalBorrow
     this.liquidity = liquidity
 
-    market = market.sort((a: any, b: any) => a.symbol.localeCompare(b.symbol))
+    market = market
+      .sort((a: any, b: any) => a.symbol.localeCompare(b.symbol))
+      .filter((item: any) => item.cName !== "Savy BUSD" && item.cName !== "Savy WBGL") // TODO remove filter after new contracts deployment
 
     this.supplyMarket = market.filter(
       (market: any) => market.supplyAllowed && market.supplyBalance == 0

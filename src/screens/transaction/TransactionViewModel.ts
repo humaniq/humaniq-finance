@@ -61,9 +61,9 @@ export class TransactionViewModel {
   lastVal: string
   inputRef?: any
   transactionInProgress = false
-  transactionMessageVisible = false;
-  transactionMessageStatus = TRANSACTION_STATUS.PENDING;
-  transactionMessage = "";
+  transactionMessageVisible = false
+  transactionMessageStatus = TRANSACTION_STATUS.PENDING
+  transactionMessage = ""
 
   selectedToken: WBGL | BUSD
 
@@ -149,6 +149,10 @@ export class TransactionViewModel {
     return this.transactionType === TRANSACTION_TYPE.WITHDRAW
   }
 
+  get isRepay() {
+    return this.transactionType === TRANSACTION_TYPE.REPAY
+  }
+
   get isWBGL() {
     return this.item.symbol === 'TWBGL'
   }
@@ -203,6 +207,8 @@ export class TransactionViewModel {
       title = "home.borrow"
     } else if (this.isWithdraw) {
       title = "transaction.withdraw"
+    } else if (this.isRepay) {
+      title = "transaction.repay"
     }
 
     return t(title)
@@ -360,15 +366,15 @@ export class TransactionViewModel {
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
             runInAction(() => this.transactionMessageStatus = TRANSACTION_STATUS.SUCCESS)
-            this.transactionMessageVisible = true;
+            this.transactionMessageVisible = true
           }
         }
       } else if (this.isBorrow) {
-        const isMarketExists = await this.isMarketExists();
+        const isMarketExists = await this.isMarketExists()
 
         if (!isMarketExists) {
           console.log("Market is not available!!")
-          return;
+          return
         }
         // for borrow
         const {hash} = await this.cTokenContract.borrow(inputValue)
@@ -384,10 +390,15 @@ export class TransactionViewModel {
             .lt(1)
         ) {
           console.log("error")
-          return;
+          return
         }
 
         const {hash} = await this.cTokenContract.withdraw(inputValue)
+        if (hash) {
+          await this.comptroller.waitForTransaction(hash)
+        }
+      } else if (this.isRepay) {
+        const {hash} = await this.cTokenContract.repayBorrow(inputValue)
         if (hash) {
           await this.comptroller.waitForTransaction(hash)
         }
@@ -398,23 +409,23 @@ export class TransactionViewModel {
         runInAction(() => this.transactionMessage = t("transactionMessage.denied"))
       }
       runInAction(() => {
-        this.transactionMessageStatus = TRANSACTION_STATUS.ERROR;
-        this.transactionMessageVisible = true;
+        this.transactionMessageStatus = TRANSACTION_STATUS.ERROR
+        this.transactionMessageVisible = true
       })
-      } finally {
+    } finally {
       setTimeout(() => {
         runInAction(() => {
-          this.transactionMessageVisible = false;
-          this.transactionMessage = "";
+          this.transactionMessageVisible = false
+          this.transactionMessage = ""
         })
-      }, 3000);
+      }, 3000)
       runInAction(() => this.transactionInProgress = false)
     }
   }
 
   isMarketExists = async () => {
-    const markets = await this.comptroller.getAllMarkets();
-    return markets.includes(this.item.cToken);
+    const markets = await this.comptroller.getAllMarkets()
+    return markets.includes(this.item.cToken)
   }
 
   setInputValue = (value: string) => {

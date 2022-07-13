@@ -44,12 +44,12 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
             <Text className="title" text={item.name}/>
             <Text
               className="title"
-              text={`$${item.tokenUsdValue.toFixed(2)}`}
+              text={`$${isWithdraw ? Big(item.tokenUsdValue).mul(item.supply).toFixed(2) : item.tokenUsdValue.toFixed(2)}`}
             />
           </div>
           <div className="row-2">
             <Text className="title" text={item.symbol}/>
-            <Text className="title" text={`${Big(item.balance).toFixed(2)}`}/>
+            <Text className="title" text={`${Big(isWithdraw ? item.supply : item.balance).toFixed(2)}`}/>
           </div>
           <Divider marginT={10}/>
           <Button

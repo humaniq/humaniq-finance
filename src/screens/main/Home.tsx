@@ -128,20 +128,33 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           </View>
         </MainInfoHeader>
         <div className="content">
-          {view.userSuppliedMarket.length > 0 && (
-            <Deposits
-              isWithdraw={true}
-              hintText={t("hints.balance")}
-              title={t("home.walletBalance")}
-              data={view.userSuppliedMarket}
-              onClick={onBorrowOrSupplyClick}/>
-          )}
+          {/*{view.userSuppliedMarket.length > 0 && (*/}
+          {/*  <Deposits*/}
+          {/*    isWithdraw={true}*/}
+          {/*    hintText={t("hints.balance")}*/}
+          {/*    title={t("home.walletBalance")}*/}
+          {/*    data={view.userSuppliedMarket}*/}
+          {/*    onClick={onBorrowOrSupplyClick}/>*/}
+          {/*)}*/}
           <Deposits
-            hintText={t("hints.deposits")}
-            title={t("deposits.title")}
+            isWithdraw={true}
+            hintText={t("hints.balance")}
+            title={t("home.deposits")}
             data={view.userSuppliedMarket}
             onClick={onBorrowOrSupplyClick}/>
+          {view.userBorrowedMarket.length > 0 && (
+            <Borrows
+              isRepay={true}
+              showLiquidityButton={false}
+              infoText={t("hints.borrows")}
+              title={t("home.borrows")}
+              data={view.userBorrowedMarket}
+              onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.REPAY)}/>
+          )}
           <Borrows
+            hintMessage={t("home.borrowHint")}
+            infoText={t("hints.borrowAvailable")}
+            title={t("home.availableToBorrow")}
             onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
             data={view.borrowMarket}
             onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
