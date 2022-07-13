@@ -1,4 +1,5 @@
 import {WBGLTestContract} from "models/contracts/WBGLTestContract"
+import {MAX_UINT_256} from "models/constants/constants"
 
 export class WBGL {
   account: any
@@ -12,10 +13,10 @@ export class WBGL {
   }
 
   allowance = async (cToken: any) => {
-    return this.contract.allowance(this.account, cToken)
+    return this.contract.allowance(this.account, cToken, {from: this.account})
   }
 
-  approve = async (cToken: any, amount: any) => {
-    return this.contract.approve(cToken, amount)
+  approve = async (cToken: any) => {
+    return this.contract.approve(cToken, MAX_UINT_256, {from: this.account})
   }
 }

@@ -139,7 +139,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           <Deposits
             hintText={t("hints.deposits")}
             title={t("deposits.title")}
-            data={view.supplyMarket}
+            data={view.userSuppliedMarket}
             onClick={onBorrowOrSupplyClick}/>
           <Borrows
             onLiquidityClick={() => view.setLiquidityModalVisibility(true)}

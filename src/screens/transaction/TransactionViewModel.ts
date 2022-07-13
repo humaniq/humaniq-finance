@@ -350,7 +350,7 @@ export class TransactionViewModel {
         } else {
           // need to approve
           approvedResult = !!await this.selectedToken.approve(
-            this.item.cToken, inputValue
+            this.item.cToken
           )
         }
         if (approvedResult) {

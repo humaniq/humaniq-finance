@@ -1,4 +1,5 @@
 import {BUSDTestContract} from "models/contracts/BUSDTestContract"
+import {MAX_UINT_256} from "models/constants/constants"
 
 export class BUSD {
   account: any
@@ -12,10 +13,10 @@ export class BUSD {
   }
 
   allowance = async (cToken: any) => {
-    return this.contract.allowance(this.account, cToken)
+    return this.contract.allowance(this.account, cToken, {from: this.account})
   }
 
-  approve = async (cToken: any, amount: any) => {
-    return this.contract.approve(cToken, amount)
+  approve = async (cToken: any) => {
+    return this.contract.approve(cToken, MAX_UINT_256, {from: this.account})
   }
 }
