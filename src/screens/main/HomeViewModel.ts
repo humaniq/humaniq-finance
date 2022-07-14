@@ -334,7 +334,7 @@ export class HomeViewModel {
     )
 
     this.userBalanceMarket = market.filter(
-      (market: any) => +market.balance >= 0
+      (market: any) => +market.balance > 0
     )
 
     this.userSuppliedMarket = market.filter(
