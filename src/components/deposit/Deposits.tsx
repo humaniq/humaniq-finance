@@ -13,6 +13,7 @@ export interface DepositsProps {
   title: string
   hintText: string
   isWithdraw?: boolean
+  isBalance?: boolean
 }
 
 export const Deposits: React.FC<DepositsProps> = ({
@@ -20,7 +21,8 @@ export const Deposits: React.FC<DepositsProps> = ({
                                                     onClick,
                                                     title,
                                                     hintText,
-                                                    isWithdraw = false
+                                                    isWithdraw = false,
+                                                    isBalance = false
                                                   }) => {
   return (
     <div className="deposits">
@@ -40,6 +42,7 @@ export const Deposits: React.FC<DepositsProps> = ({
       <div className="deposits--list">
         {data.map((item, index) => (
           <SupplyItem
+            isBalance={isBalance}
             isWithdraw={isWithdraw}
             onSupplyClick={() => onClick?.(item, isWithdraw ? TRANSACTION_TYPE.WITHDRAW : TRANSACTION_TYPE.DEPOSIT)}
             key={`supply_item_${item.symbol}_${index}`}

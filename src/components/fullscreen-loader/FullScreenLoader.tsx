@@ -1,4 +1,3 @@
-import {t} from "translations/translate"
 import "./style.sass"
 
 interface FullScreenLoaderProps {

@@ -19,6 +19,7 @@ export interface TokenItemProps {
   disabled?: boolean
   item: BorrowSupplyItem
   isWithdraw?: boolean
+  isBalance?: boolean
 }
 
 export const SupplyItem: React.FC<TokenItemProps> = ({
@@ -27,6 +28,7 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
                                                        disabled,
                                                        item,
                                                        isWithdraw = false,
+                                                       isBalance = false,
                                                        ...rest
                                                      }) => {
   return (
@@ -44,7 +46,7 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
             <Text className="title" text={item.name}/>
             <Text
               className="title"
-              text={`$${isWithdraw ? Big(item.tokenUsdValue).mul(item.supply).toFixed(2) : item.tokenUsdValue.toFixed(2)}`}
+              text={`$${isWithdraw || isBalance ? Big(item.tokenUsdValue).mul(isBalance ? item.balance : item.supply).toFixed(2) : item.tokenUsdValue.toFixed(2)}`}
             />
           </div>
           <div className="row-2">
@@ -53,7 +55,7 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
           </div>
           <Divider marginT={10}/>
           <Button
-            disabled={disabled}
+            disabled={disabled || +item.balance === 0}
             className="token-button"
             onClick={onSupplyClick}
             text={isWithdraw ? `${t("transaction.withdraw")}` : `${t("home.deposit")} ${item.supplyApy}%`}

@@ -13,6 +13,7 @@ import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
 export class HomeViewModel {
   supplyMarket: BorrowSupplyItem[] = []
   userSuppliedMarket: BorrowSupplyItem[] = []
+  userBalanceMarket: BorrowSupplyItem[] = []
   borrowMarket: BorrowSupplyItem[] = []
   userBorrowedMarket: BorrowSupplyItem[] = []
   cl: any = null
@@ -80,6 +81,10 @@ export class HomeViewModel {
     return `${this.borrowLimit.toFixed(2)}$`
   }
 
+  get hasCollateral() {
+    return this.totalSupply > 0
+  }
+
   calculateAPY = (ratePerBlock: any) => {
     // todo: ethMantissa for everything or not
     const apy =
@@ -95,28 +100,28 @@ export class HomeViewModel {
 
   calculateTotals = (market: any) => {
     const totalSupply = market.reduce(
-      (acc: any, current: any) => acc + current.fiatSupply,
+      (acc: any, current: any) => acc + (+current.fiatSupply),
       0
     )
 
     const totalBorrow = market.reduce(
-      (acc: any, current: any) => acc + current.fiatBorrow,
+      (acc: any, current: any) => acc + (+current.fiatBorrow),
       0
     )
 
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
-        current.supplyBalance === 0
+        +current.supplyBalance === 0
           ? acc
-          : acc + (current.fiatSupply * current.supplyApy) / 100,
+          : acc + (+current.fiatSupply * +current.supplyApy) / 100,
       0
     )
 
     const totalSpending = market.reduce(
       (acc: any, current: any) =>
-        current.borrowBalance === 0
+        +current.borrowBalance === 0
           ? acc
-          : acc + (current.fiatBorrow * current.borrowApy) / 100,
+          : acc + (+current.fiatBorrow * +current.borrowApy) / 100,
       0
     )
 
@@ -138,7 +143,6 @@ export class HomeViewModel {
     totalEarned: any
   ) => {
     return metadata.map(async (data: any) => {
-      // const isEth = await isEther(data.cToken)
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
       const cTokenContract = new Ctoken(data.cToken, this.account, data.symbol === "TWBGL")
@@ -207,7 +211,7 @@ export class HomeViewModel {
     )
 
     item.fiatSupply =
-      item.underlyingPrice == 0
+      item.underlyingPrice === 0
         ? 0
         : this.convertToUSD(
           item.supplyBalance,
@@ -216,7 +220,7 @@ export class HomeViewModel {
         )
 
     item.fiatBorrow =
-      item.underlyingPrice == 0
+      item.underlyingPrice === 0
         ? 0
         : this.convertToUSD(
           item.borrowBalance,
@@ -326,19 +330,23 @@ export class HomeViewModel {
       .filter((item: any) => item.cName !== "Savy BUSD" && item.cName !== "Savy WBGL") // TODO remove filter after new contracts deployment
 
     this.supplyMarket = market.filter(
-      (market: any) => market.supplyAllowed && market.supplyBalance == 0
+      (market: any) => market.supplyAllowed && +market.supplyBalance === 0
+    )
+
+    this.userBalanceMarket = market.filter(
+      (market: any) => +market.balance >= 0
     )
 
     this.userSuppliedMarket = market.filter(
-      (market: any) => market.supplyBalance > 0
+      (market: any) => +market.supplyBalance > 0
     )
 
     this.borrowMarket = market.filter(
-      (market: any) => market.borrowAllowed && market.borrowBalance == 0
+      (market: any) => market.borrowAllowed && +market.borrowBalance === 0
     )
 
     this.userBorrowedMarket = market.filter(
-      (market: any) => market.borrowBalance > 0
+      (market: any) => +market.borrowBalance > 0
     )
 
     this.tokensGeneratingRewards = market
@@ -367,7 +375,7 @@ export class HomeViewModel {
         await this.comptroller.waitForTransaction(hash);
       } else {
         const {hash} = await this.comptroller.exitMarket(item.cToken)
-        const res = await this.comptroller.waitForTransaction(hash);
+        await this.comptroller.waitForTransaction(hash);
       }
     } catch (e: any) {
     }
