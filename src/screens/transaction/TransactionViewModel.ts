@@ -343,7 +343,9 @@ export class TransactionViewModel {
     }
     try {
       if (this.isDeposit) {
-        let approvedResult: boolean
+        let approvedResult: any
+
+        runInAction(() => this.transactionInProgress = true)
 
         const allowanceAmount = await this.selectedToken.allowance(
           this.item.cToken
@@ -355,12 +357,13 @@ export class TransactionViewModel {
           approvedResult = true
         } else {
           // need to approve
-          approvedResult = !!await this.selectedToken.approve(
+          approvedResult = await this.selectedToken.approve(
             this.item.cToken
           )
+          // wait for transaction to be mined in order to proceed with mint
+          await approvedResult.wait()
         }
         if (approvedResult) {
-          runInAction(() => this.transactionInProgress = true)
           const {hash} = await this.cTokenContract.supply(inputValue)
 
           if (hash) {

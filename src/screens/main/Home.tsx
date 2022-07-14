@@ -153,13 +153,15 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
               data={view.userBorrowedMarket}
               onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.REPAY)}/>
           )}
-          <Borrows
-            hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
-            infoText={t("hints.borrowAvailable")}
-            title={t("home.availableToBorrow")}
-            onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
-            data={view.borrowMarket}
-            onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
+          {view.borrowMarket.length > 0 && (
+            <Borrows
+              hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
+              infoText={t("hints.borrowAvailable")}
+              title={t("home.availableToBorrow")}
+              onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
+              data={view.borrowMarket}
+              onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
+          )}
         </div>
       </div>
       <LiquidityBottomSheet
