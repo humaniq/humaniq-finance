@@ -16,7 +16,7 @@ export class Ctoken {
       svBUSDDelegatorContract(cToken, getProviderStore.currentProvider)
   }
 
-  supply = async (value: any, gas?: any) => {
+  supply = async (value: any) => {
     const contractSig = this.contract.connect(getProviderStore.signer)
     return contractSig.mint(value, {from: this.account})
   }

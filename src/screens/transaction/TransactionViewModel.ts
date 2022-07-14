@@ -3,7 +3,7 @@ import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/typ
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
+import {formatToCurrency, formatToNumber} from "utils/utils"
 import {ethers, utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
@@ -255,10 +255,6 @@ export class TransactionViewModel {
     return 0
   }
 
-  get isNative() {
-    return this.item.symbol === getProviderStore.currentNetwork.nativeSymbol
-  }
-
   get getInputValue() {
     return this.inputValue
   }
@@ -336,21 +332,15 @@ export class TransactionViewModel {
   handleTransaction = async () => {
     const input = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValue
     let inputValue = this.getValue(input)
-    this.txPrice = this.txData.gasPrice.mul(this.txData.gasLimit)
+    this.transactionInProgress = true
 
-    if (this.isNative) {
-      inputValue = this.txPrice.sub(inputValue)
-    }
     try {
       if (this.isDeposit) {
         let approvedResult: any
 
-        runInAction(() => this.transactionInProgress = true)
-
         const allowanceAmount = await this.selectedToken.allowance(
           this.item.cToken
         )
-
         // check if supply is allowed, otherwise it should be approved
         if (+allowanceAmount >= +inputValue) {
           // can proceed with supply
@@ -361,6 +351,7 @@ export class TransactionViewModel {
             this.item.cToken
           )
           // wait for transaction to be mined in order to proceed with mint
+          this.txData.gasLimit = +approvedResult.gasLimit
           await approvedResult.wait()
         }
         if (approvedResult) {
@@ -466,10 +457,7 @@ export class TransactionViewModel {
   }
 
   getValue = (value: any) => {
-    const tokenDecimals = this.isNative
-      ? 18
-      : this.item.underlyingDecimals
-
+    const tokenDecimals = this.item.underlyingDecimals
     return ethers.utils.parseUnits(value, tokenDecimals)
   }
 
@@ -494,9 +482,10 @@ export class TransactionViewModel {
     }
   }
 
-  estimateGasLimit = async () => {
+  estimateGasLimit = async (amount: any = 0) => {
     try {
-      this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 0)
+      this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, amount)
+      console.log("success", this.txData.gasLimit)
     } catch (e) {
       Logger.info("Gas limit estimation error: ", e)
     }
