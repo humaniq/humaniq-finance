@@ -47,7 +47,7 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
           <Divider marginT={10}/>
           <Button
             disabled={disabled}
-            className={`token-button ${isRepay ? "repay" : ""}`}
+            className={`token-button repay`}
             onClick={onBorrowClick}
             text={isRepay ? `${t("transaction.repay")}` : `${t("home.borrow")} ${item.borrowApy}%`}
           />

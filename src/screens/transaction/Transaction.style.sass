@@ -61,7 +61,7 @@
   padding-bottom: 1px
   background-color: $white
   border-radius: 12px
-  box-shadow: 1px 3px 1px $grey-divider
+  box-shadow: rgba($primary, 0.05) 0 8px 24px
   &-insufficient-balance
     display: flex
     font-style: normal
@@ -141,6 +141,10 @@
     padding: 12px
     border-radius: 12px
     margin-top: 20px
+    &.borrow
+      background-color: $purple-heart
+      &:hover
+        background-color: rgba($purple-heart, 0.7)
     &:hover
       background-color: rgba($primary, 0.7)
     &:disabled
@@ -233,9 +237,8 @@
       height: 50px
       align-items: center
       justify-content: center
-      box-shadow: 1px 3px 1px $grey-divider
+      box-shadow: rgba($primary, 0.05) 0 8px 24px
       &-icon
-
       &:hover
         background-color: $primary-light
 

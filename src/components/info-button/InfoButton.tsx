@@ -39,8 +39,6 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
   const arrowRef = useRef<any>(50)
   const containerRef = useRef<any>(0)
 
-  const ifString = typeof message === "string";
-
   return (
     <div className={"infoBtn"}>
       <Tooltip
@@ -59,7 +57,7 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
         visible={visible}
         onVisibleChange={setVisible}
         overlay={
-          ifString ? (
+          typeof message === "string" ? (
             <div
               ref={containerRef}
               className={"messageContainer"}

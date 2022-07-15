@@ -18,6 +18,7 @@ import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
 import {transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
+import colors from "utils/colors"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -485,6 +486,14 @@ export class TransactionViewModel {
 
   get supplyTitle() {
     return this.isEnoughBalance ? "home.deposit" : "transaction.insufficientWalletBalance"
+  }
+
+  get buttonColor() {
+    if (this.isBorrow || this.isRepay) {
+      return "borrow"
+    }
+
+    return ""
   }
 
   setInputRef = (ref: any) => {

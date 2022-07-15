@@ -367,8 +367,8 @@ export class HomeViewModel {
   handleCollateral = async (item: any, collateralStatus: COLLATERAL_STATUS) => {
     try {
       if (collateralStatus === COLLATERAL_STATUS.EXITED_MARKET) {
-        const isMarketExists = await this.isMarketExists(item);
-        if (!isMarketExists) {
+        const isMarketExist = await this.isMarketExist(item);
+        if (!isMarketExist) {
           return;
         }
         const {hash} = await this.comptroller.enterMarkets([item.cToken])
@@ -381,7 +381,7 @@ export class HomeViewModel {
     }
   }
 
-  isMarketExists = async (item: any) => {
+  isMarketExist = async (item: any) => {
     const markets = await this.comptroller.getAllMarkets();
     return markets.includes(item.cToken);
   }
