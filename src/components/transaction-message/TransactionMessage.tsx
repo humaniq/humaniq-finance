@@ -9,6 +9,7 @@ import "./styles.sass"
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded"
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded"
 import {t} from "translations/translate"
+import colors from "utils/colors"
 
 export enum TRANSACTION_STATUS {
   PENDING = "pending",
@@ -33,6 +34,9 @@ export const TransactionMessage: React.FC<TransactionMessageProps> = ({
       anchorOrigin={{vertical: "bottom", horizontal: "center"}}
     >
       <SnackbarContent
+        style={{
+          backgroundColor: colors.bg
+        }}
         message={
           <div className={"message-content"}>
             {status === TRANSACTION_STATUS.PENDING && (

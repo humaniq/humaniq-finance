@@ -15,6 +15,8 @@ import {ConnectDialog} from "components/dialogs/ConnectDialog"
 import {DisconnectDialog} from "components/dialogs/DisconnectDialog"
 import {ConnectWallet} from "components/modals/ConnectWallet"
 import {Loader} from "components/loader/Loader"
+import {TransactionMessage} from "components/transaction-message/TransactionMessage"
+import {transactionStore} from "stores/app/transactionStore"
 
 window.Buffer = b.Buffer
 
@@ -76,6 +78,11 @@ export const App = observer(() => {
             </Alert>
           </Snackbar>
         </div>
+        <TransactionMessage
+          isOpen={transactionStore.transactionMessageVisible}
+          status={transactionStore.transactionMessageStatus}
+          message={transactionStore.transactionMessage}
+        />
       </SharedDataProvider>
       <ConnectDialog />
       <DisconnectDialog />

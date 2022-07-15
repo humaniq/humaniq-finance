@@ -6,7 +6,6 @@ import {Header} from "components/header/Header"
 import {useNavigate} from "react-router-dom"
 import {Loader} from "components/loader/Loader"
 import {icons} from "utils/icons"
-import {View, ViewDirections} from "components/ui/view/View"
 import {Text} from "components/ui/text/Text"
 import {ReactComponent as MaxIcon} from "assets/icons/ic_max.svg"
 import {ReactComponent as ChangeIcon} from "assets/icons/ic_change.svg"
@@ -14,14 +13,12 @@ import {ReactComponent as ArrowRightIcon} from "assets/icons/ic_arrow_right.svg"
 import {Button} from "components/ui/button/Button"
 import {t} from "translations/translate"
 import {Divider} from "components/ui/divider/Divider"
-import {formatToCurrency} from "utils/utils"
 import {useSharedData} from "hooks/useSharedData"
 import {BorrowSupplyItem} from "models/types"
 import AutosizeInput from 'react-input-autosize'
 import "./Transaction.style.sass"
 import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
 import {TRANSACTION_TYPE} from "models/contracts/types"
-import {TransactionMessage} from "components/transaction-message/TransactionMessage"
 import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
 
 export type TransactionState = {
@@ -49,6 +46,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
       if (data) {
         await view.mounted(data as TransactionState)
         view.setInputRef(inputRef.current)
+        view.setNavigation(navigate)
       }
       return () => {
         setData(null)
@@ -78,21 +76,20 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 alt="logo"
                 className="v-supply--avatar"
               />
-              <View
-                className="v-supply-content--right"
-                direction={ViewDirections.COLUMN}>
-                <View className="v-supply-content--row">
+              <div
+                className="v-supply-content--right">
+                <div className="v-supply-content--row">
                   <Text className="v-supply-content--row-title" text={view.item.name}/>
                   <Text
                     className="v-supply-content--row-title"
                     text={view.getTokenUsdValue}
                   />
-                </View>
-                <View className="v-supply-content-row-second">
+                </div>
+                <div className="v-supply-content-row-second">
                   <Text className="v-supply-content-row-second-title" text={view.getTokenSymbol}/>
                   <Text className="v-supply-content-row-second-title" text={view.getTokenBalance}/>
-                </View>
-              </View>
+                </div>
+              </div>
             </div>
             {!view.isEnoughBalance && <>
               <Divider/>
@@ -129,6 +126,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <span className="v-form-row-title">{view.getApyTitle}</span>
               <span className="v-form-row-value">{view.getApyValue}</span>
             </div>
+
             <div className="v-form-row">
               <span className="v-form-row-title">{view.getBorrowLimitTitle}</span>
               <div className="v-form-arrow-row">
@@ -136,18 +134,28 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 {
                   view.newBorrowLimit !== 0 && <>
                     <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
-                    <span className="v-form-row-value">{formatToCurrency(view.newBorrowLimit)}</span>
+                    <span className="v-form-row-value">{view.getNewBorrowLimit}</span>
                   </>
                 }
               </div>
             </div>
+
             <div className="valuation-borrow-limit">
               <div className="valuation-borrow-limit-row">
                 <span className="valuation-borrow-limit-row-title">{t("home.borrowLimitUsed")}</span>
-                <span className="valuation-borrow-limit-row-value">{view.getBorrowLimitUsed}</span>
+                <div className="v-form-arrow-row">
+                  <span className="valuation-borrow-limit-row-value">{view.getBorrowLimitUsedValue}</span>
+                  {
+                    view.getNewBorrowLimitUsed !== 0 && <>
+                      <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
+                      <span className="valuation-borrow-limit-row-value">{view.getNewBorrowLimitUsedFormatted}</span>
+                    </>
+                  }
+                </div>
               </div>
               <TransactionLinearProgress progress={view.borrowLimitUsed}/>
             </div>
+
             <Button
               className="v-form-btn"
               onClick={view.handleTransaction}
@@ -160,11 +168,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
           </div>
         </div>
       </div>
-      <TransactionMessage
-        isOpen={view.transactionMessageVisible}
-        status={view.transactionMessageStatus}
-        message={view.transactionMessage}
-      />
       <FullScreenLoader isVisible={view.transactionInProgress}/>
     </>
   )

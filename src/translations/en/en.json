@@ -33,12 +33,19 @@
   },
   "transaction": {
     "insufficientBalance": "Insufficient balance",
+    "insufficientWalletBalance": "Insufficient wallet balance",
+    "valueCannotExceedBorrow": "Value can't exceed borrowed amount",
+    "valueCannotExceedSupply": "Value can't exceed supplied amount",
     "borrowBalance": "Borrow balance",
     "withdraw": "Withdraw",
     "repay": "Repay",
     "transactionSubmitted": "Transaction submitted",
     "currentlySupplying": "Currently Supplying",
-    "currentlyBorrowing": "Currently Borrowing"
+    "currentlyBorrowing": "Currently Borrowing",
+    "borrowLimitReached": "Borrowing limit reached",
+    "notEnoughLiquidity": "Not enough tokens available on the market",
+    "insufficientCollateral": "Insufficient collateral",
+    "wait": "Please wait for the transaction..."
   },
   "hints": {
     "borrowLimit": "Borrow limit is the maximum sum you can borrow. It is calculated as 80% of your deposited funds.\n\nIf you deposit 100$ you won’t be able to borrow more than 80$ which is 80% of 100$.",

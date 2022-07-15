@@ -1,6 +1,6 @@
 import React, {useMemo} from "react"
 import colors from "utils/colors"
-import "./TransactionLinearProgress.style.sass";
+import "./TransactionLinearProgress.style.sass"
 
 export interface TransactionLinearProgressProps {
   progress: number;
@@ -15,8 +15,8 @@ export interface TransactionLinearProgressProps {
  * @constructor
  */
 export const TransactionLinearProgress: React.FC<TransactionLinearProgressProps> = ({
-  progress = 0,
-}) => {
+                                                                                      progress = 0
+                                                                                    }) => {
 
   const progressColor = useMemo(() => {
     if (progress > 0 && progress < 30) {
@@ -40,5 +40,5 @@ export const TransactionLinearProgress: React.FC<TransactionLinearProgressProps>
         />
       </div>
     </div>
-  );
-};
+  )
+}
