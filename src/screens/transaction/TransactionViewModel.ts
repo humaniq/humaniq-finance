@@ -7,12 +7,9 @@ import {formatToCurrency, formatToNumber} from "utils/utils"
 import {ethers, utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
-import {Token} from "models/Token"
 import {getProviderStore} from "App"
-import {isEther} from "models/ContractsAPI"
 import {Comptroller} from "models/Comptroller"
 import {Ctoken} from "models/CToken"
-import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
@@ -29,11 +26,9 @@ export class TransactionViewModel {
   borrowLimit = 0
   totalBorrow = 0
   inputValue = ""
-  tokenContract: any
   comptroller: any
   account?: string | null = null
   cTokenContract: Ctoken
-  faucetContract: any
   gasEstimating = false
   txPrice: any = 0
 
@@ -103,26 +98,8 @@ export class TransactionViewModel {
     })
 
     if (this.account) {
-      const isEth = await isEther(this.item.cToken)
-
       this.comptroller = new Comptroller(this.account)
-
-      this.tokenContract = new Token(
-        this.item.token,
-        this.item.cToken,
-        this.account,
-        isEth
-      )
-
       this.cTokenContract = new Ctoken(this.item.cToken, this.account, this.isWBGL)
-
-      this.faucetContract = new FaucetToken(
-        this.item.token,
-        this.item.cToken,
-        this.account,
-        true
-      )
-
       this.gasEstimating = true
 
       try {
@@ -132,6 +109,7 @@ export class TransactionViewModel {
           this.getNativeCoinCost()
         ])
       } catch (e) {
+        Logger.error('Init error', e)
       } finally {
         this.gasEstimating = false
       }
@@ -397,7 +375,7 @@ export class TransactionViewModel {
 
   get depositText() {
     if (this.balance.lt(this.inputValueTOKEN)) return t('transaction.insufficientWalletBalance')
-    return t("home.deposit")
+    return `${t("home.deposit")} ${formatToCurrency(this.inputValueUSD)}`
   }
 
   get isRepayDisabled() {
@@ -411,7 +389,7 @@ export class TransactionViewModel {
 
   get withdrawText() {
     if (Big(this.item.supply).lt(this.inputValueTOKEN)) return t('transaction.valueCannotExceedSupply')
-    return t("transaction.withdraw")
+    return `${t("transaction.withdraw")} ${formatToCurrency(this.inputValueUSD)}`
   }
 
   get borrowText() {
@@ -483,7 +461,6 @@ export class TransactionViewModel {
         this.borrowLimitUsed >= 100 ||
         this.hypotheticalBorrowLimitUsed >= 100
     }
-
     return false
   }
 
@@ -555,7 +532,7 @@ export class TransactionViewModel {
         const isMarketExist = await this.isMarketExist()
 
         if (!isMarketExist) {
-          console.log("Market is not available!!") // TODO show toast
+          Logger.info("Market is not available!!") // TODO show toast
           return
         }
         // for borrow
@@ -576,7 +553,7 @@ export class TransactionViewModel {
             .div(this.item.exchangeRateCurrent)
             .lt(1)
         ) {
-          console.log("error")
+          Logger.info("error")
           return
         }
         const {hash} = await this.cTokenContract.withdraw(inputValue)
@@ -600,7 +577,7 @@ export class TransactionViewModel {
         }
       }
     } catch (e: any) {
-      console.error(e)
+      Logger.error(e)
       this.showMessage(TRANSACTION_STATUS.ERROR, t("transactionMessage.denied"))
     } finally {
       setTimeout(() => {
@@ -652,7 +629,7 @@ export class TransactionViewModel {
         18
       )
     } catch (e) {
-      console.log("Transaction Fee Error: ", e)
+      Logger.info("Transaction Fee Error: ", e)
       return 0
     }
   }
