@@ -295,6 +295,10 @@ export class TransactionViewModel {
     return `${this.getNewBorrowLimitUsed}%`
   }
 
+  get maxBorrowLimitUsed() {
+    return Math.max(this.borrowLimitUsed, +this.getNewBorrowLimitUsed)
+  }
+
   get borrowLimitUsed() {
     if (this.borrowLimit) {
       const limit = (this.totalBorrow / this.borrowLimit) * 100
