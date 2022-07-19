@@ -147,6 +147,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           {view.userBorrowedMarket.length > 0 && (
             <Borrows
               isRepay={true}
+              infoButtonBackgroundColor={colors.purpleHeart}
               showLiquidityButton={false}
               infoText={t("hints.borrows")}
               title={t("home.borrows")}
@@ -155,6 +156,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           )}
           {view.borrowMarket.length > 0 && (
             <Borrows
+              infoButtonBackgroundColor={colors.purpleHeart}
               hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
               infoText={t("hints.borrowAvailable")}
               title={t("home.availableToBorrow")}

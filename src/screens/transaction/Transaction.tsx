@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from "react"
+import React, {useEffect, useRef} from "react"
 import {TransactionViewModel} from "./TransactionViewModel"
 import {withStore} from "utils/hoc"
 import {observer} from "mobx-react"
@@ -37,10 +37,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   const {data, setData} = useSharedData()
   const inputRef = useRef<any>(null)
 
-  const onClose = useCallback(() => {
-    navigate(-1)
-  }, [navigate])
-
   useEffect(() => {
     ;(async () => {
       if (data) {
@@ -58,7 +54,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   if (!data) return (
     <div className="no-data">
       <span className="no-data-title">{t("noData")}</span>
-      <a onClick={onClose} className="no-data-description">{t("returnToMain")}</a>
+      <a onClick={view.navigateBack} className="no-data-description">{t("returnToMain")}</a>
     </div>
   )
 
@@ -67,7 +63,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   return (
     <>
       <div className="valuation">
-        <Header title={view.getTitle} onClose={onClose}/>
+        <Header title={view.getTitle} onClose={view.navigateBack}/>
         <div className="valuation-content">
           <div className={`v-supply`}>
             <div className="v-supply-content">
@@ -162,7 +158,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               text={view.getDepositButtonText}/>
             <div className="v-wallet-balance">
               <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.tokensFiatPrice})`}</span>
+              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.tokensFiatPrice.toFixed(4)})`}</span>
             </div>
           </div>
         </div>

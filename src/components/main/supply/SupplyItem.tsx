@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useMemo} from "react"
 import {Text} from "../../ui/text/Text"
 import {Divider} from "../../ui/divider/Divider"
 import {Button} from "../../ui/button/Button"
@@ -31,6 +31,37 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
                                                        isBalance = false,
                                                        ...rest
                                                      }) => {
+
+  const buttonDisabled = useMemo(() => {
+    return disabled || +item.balance === 0 || !isWithdraw && +item.borrow > 0
+  }, [item, disabled, isWithdraw])
+
+  const title = useMemo(() => {
+    let text
+
+    if (isWithdraw || isBalance) {
+      text = Big(item.tokenUsdValue).mul(isBalance ? item.balance : item.supply).toFixed(2)
+    } else {
+      text = item.tokenUsdValue.toFixed(2)
+    }
+
+    return `$${text}`
+  }, [item, isWithdraw, isBalance])
+
+  const buttonTitle = useMemo(() => {
+    let text
+    if (isWithdraw) {
+      text = t("transaction.withdraw")
+    } else {
+      text = t("home.deposit")
+    }
+    return `${text} ${item.supplyApy}%`
+  }, [item, isWithdraw, t])
+
+  const subTitle = useMemo(() => {
+    return Big(isWithdraw ? item.supply : item.balance).toFixed(2)
+  }, [])
+
   return (
     <div className={`supply-item ${className}`} {...rest}>
       <div className="supply-item--content">
@@ -46,19 +77,19 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
             <Text className="title" text={item.name}/>
             <Text
               className="title"
-              text={`$${isWithdraw || isBalance ? Big(item.tokenUsdValue).mul(isBalance ? item.balance : item.supply).toFixed(2) : item.tokenUsdValue.toFixed(2)}`}
+              text={title}
             />
           </div>
           <div className="row-2">
             <Text className="title" text={item.symbol}/>
-            <Text className="title" text={`${Big(isWithdraw ? item.supply : item.balance).toFixed(2)}`}/>
+            <Text className="title" text={subTitle}/>
           </div>
           <Divider marginT={10}/>
           <Button
-            disabled={disabled || +item.balance === 0}
+            disabled={buttonDisabled}
             className="token-button"
             onClick={onSupplyClick}
-            text={isWithdraw ? `${t("transaction.withdraw")}` : `${t("home.deposit")} ${item.supplyApy}%`}
+            text={buttonTitle}
           />
         </div>
       </div>

@@ -341,9 +341,7 @@ export class HomeViewModel {
       (market: any) => +market.supplyBalance > 0
     )
 
-    this.borrowMarket = market.filter(
-      (market: any) => market.borrowAllowed && +market.borrowBalance === 0
-    )
+    this.borrowMarket = market
 
     this.userBorrowedMarket = market.filter(
       (market: any) => +market.borrowBalance > 0

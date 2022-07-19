@@ -18,6 +18,7 @@ export interface BorrowsProps {
   showLiquidityButton?: boolean
   hintMessage?: string
   isRepay?: boolean
+  infoButtonBackgroundColor?: string
 }
 
 export const Borrows: React.FC<BorrowsProps> = ({
@@ -28,7 +29,8 @@ export const Borrows: React.FC<BorrowsProps> = ({
                                                   infoText,
                                                   showLiquidityButton = true,
                                                   hintMessage,
-                                                  isRepay = false
+                                                  isRepay = false,
+                                                  infoButtonBackgroundColor
                                                 }) => {
   return (
     <div className="available-borrow">
@@ -44,6 +46,7 @@ export const Borrows: React.FC<BorrowsProps> = ({
             message={infoText}
             placement={PLACEMENT.BOTTOM}
             color={colors.blackText}
+            backgroundColor={infoButtonBackgroundColor}
           />
         </div>
         {showLiquidityButton && (

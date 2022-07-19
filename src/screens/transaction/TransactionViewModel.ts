@@ -92,8 +92,8 @@ export class TransactionViewModel {
 
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
       this.inputValue = !val ?
-        this.inputValueToken ? this.inputValueToken.toFixed(2) : "" :
-        this.inputValueFiat ? this.inputValueFiat.toFixed(2) : ""
+        this.inputValueToken ? this.inputValueToken.toFixed(4) : "" :
+        this.inputValueFiat ? this.inputValueFiat.toFixed(4) : ""
 
       this.inputRef?.focus()
     })
@@ -173,7 +173,7 @@ export class TransactionViewModel {
     }
 
     if (this.isBorrow) {
-      return this.balance.mul(0.8)
+      return this.item.supply // TODO check
     }
 
     if (this.isRepay) {
@@ -185,7 +185,7 @@ export class TransactionViewModel {
 
   get tokensFiatPrice() {
     let balance = this.isBorrow ? this.item.borrow : this.tokenBalance
-    return formatToCurrency(Big(this.item.tokenUsdValue).mul(balance))
+    return Big(this.item.tokenUsdValue).mul(balance)
   }
 
   get getFormattedBalance() {
@@ -232,10 +232,8 @@ export class TransactionViewModel {
   }
 
   get getTokenUsdValue() {
-    if (this.isDeposit || this.isWithdraw) return this.tokensFiatPrice
-    if (this.isBorrow || this.isRepay) return formatToCurrency(
-      Big(this.item.tokenUsdValue).mul(this.tokenBalance)
-    )
+    if (this.isDeposit || this.isWithdraw) return this.tokensFiatPrice.toFixed(4)
+    if (this.isBorrow || this.isRepay) return Big(this.item.tokenUsdValue).mul(this.tokenBalance).toFixed(4)
     return formatToCurrency(parseFloat(this.item.tokenUsdValue).toFixed(4))
   }
 
@@ -443,7 +441,7 @@ export class TransactionViewModel {
   }
 
   get borrowBalance() {
-    if (this.isBorrow || this.isRepay) {
+    if (this.isBorrow) {
       return !this.inputValue ? 0 : this.inputValueUSD + this.totalBorrow
     }
 
@@ -627,22 +625,6 @@ export class TransactionViewModel {
     this.inputValue = value
   }
 
-  get transactionTotalAmount() {
-    return this.txData.gasPrice ? +this.inputValueToken + this.transactionFee : 0
-  }
-
-  get transactionFee() {
-    try {
-      return +ethers.utils.formatUnits(
-        (+this.txData.gasPrice * this.txData.gasLimit).toString(),
-        18
-      )
-    } catch (e) {
-      Logger.info("Transaction Fee Error: ", e)
-      return 0
-    }
-  }
-
   navigateBack = () => {
     this.nav?.(-1)
   }
@@ -661,15 +643,37 @@ export class TransactionViewModel {
 
   setMaxValue = () => {
     let maxValue = this.balance
-    if (this.inputFiat) {
-      maxValue = Big(this.item.tokenUsdValue).mul(this.balance)
+
+    if (this.isDeposit) {
+      maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.balance) : this.balance
     }
 
     if (this.isBorrow) {
-      maxValue = maxValue.mul(0.8)
+      if (!this.borrowLimit) {
+        maxValue = 0
+      } else {
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+
+        if (!this.inputFiat) {
+          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
+        }
+      }
     }
 
-    this.setInputValue(maxValue.toFixed(2))
+    if (this.isWithdraw) {
+      maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.item.supply) : this.item.supply
+    }
+
+    if (this.isRepay) {
+      maxValue = +this.item.borrow ? +this.item.borrow : 0
+
+      if (this.inputFiat) {
+        maxValue = Big(maxValue).mul(this.item.tokenUsdValue)
+      }
+    }
+
+    this.setInputValue(maxValue.toFixed(4))
     this.inputRef?.focus()
   }
 

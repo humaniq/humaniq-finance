@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useMemo} from "react"
 import {Text} from "../../ui/text/Text"
 import {Divider} from "../../ui/divider/Divider"
 import {Button} from "../../ui/button/Button"
@@ -24,6 +24,38 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
                                                         isRepay = false,
                                                         ...rest
                                                       }) => {
+  const buttonDisabled = useMemo(() => {
+    return disabled || !isRepay && item.supply > 0
+  }, [disabled])
+
+  const subTitle = useMemo(() => {
+    return Big(isRepay ? item.borrow : item.balance).toFixed(2)
+  }, [item, isRepay])
+
+  const title = useMemo(() => {
+    let text
+
+    if (isRepay) {
+      text = Big(item.tokenUsdValue).mul(item.borrow).toFixed(2)
+    } else {
+      text = item.tokenUsdValue.toFixed(2)
+    }
+
+    return `$${text}`
+  }, [item, isRepay])
+
+  const buttonTitle = useMemo(() => {
+    let text
+
+    if (isRepay) {
+      text = t("transaction.repay")
+    } else {
+      text = t("home.borrow")
+    }
+
+    return `${text} ${item.borrowApy}%`
+  }, [isRepay, t])
+
   return (
     <div className={`borrow-item ${className}`} {...rest}>
       <div className="borrow-item--content">
@@ -37,19 +69,19 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
             <Text className="title" text={item.name}/>
             <Text
               className="title"
-              text={`$${isRepay ? Big(item.tokenUsdValue).mul(item.borrow).toFixed(2) : item.tokenUsdValue.toFixed(2)}`}
+              text={title}
             />
           </div>
           <div className="row-2">
             <Text className="title" text={item.symbol}/>
-            <Text className="title" text={`${Big(isRepay ? item.borrow : item.balance).toFixed(2)}`}/>
+            <Text className="title" text={subTitle}/>
           </div>
           <Divider marginT={10}/>
           <Button
-            disabled={disabled}
+            disabled={buttonDisabled}
             className={`token-button repay`}
             onClick={onBorrowClick}
-            text={isRepay ? `${t("transaction.repay")}` : `${t("home.borrow")} ${item.borrowApy}%`}
+            text={buttonTitle}
           />
         </div>
       </div>
