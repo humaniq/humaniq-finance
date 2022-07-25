@@ -19,15 +19,18 @@ export class Comptroller {
   };
 
   getAllMarkets = async (): Promise<string[]> => {
-    return this.contract.getAllMarkets();
+    const contractSig = this.contract.connect(getProviderStore.currentProvider)
+    return contractSig.getAllMarkets();
   };
 
-  enterMarkets = (params: any) => {
-    return this.contract.enterMarkets(params);
+  enterMarkets = async (token: any) => {
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.enterMarkets(token, {from: this.account});
   };
 
   exitMarket = (cToken: any) => {
-    return this.contract.exitMarket(cToken);
+    const contractSig = this.contract.connect(getProviderStore.signer)
+    return contractSig.exitMarket(cToken, {from: this.account});
   };
 
   checkMembership = (cToken: any) => {
@@ -59,11 +62,11 @@ export class Comptroller {
     return this.contract.compSpeeds(cToken);
   };
 
-  mintGuardianPaused = (data: any) => {
-    return this.contract.mintGuardianPaused(data.cToken);
+  mintGuardianPaused = (cToken: any) => {
+    return this.contract.mintGuardianPaused(cToken);
   };
 
-  borrowGuardianPaused = (data: any) => {
-    return this.contract.borrowGuardianPaused(data.cToken);
+  borrowGuardianPaused = (cToken: any) => {
+    return this.contract.borrowGuardianPaused(cToken);
   };
 }

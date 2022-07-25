@@ -2,17 +2,18 @@ import {makeAutoObservable} from "mobx"
 import {Comptroller} from "models/Comptroller"
 import {CompoundLens} from "models/CompoundLens"
 import {Ctoken} from "models/CToken"
-import {isEther} from "models/ContractsAPI"
 import {Token} from "models/Token"
 import Big from "big.js"
 import {getProviderStore} from "App"
 import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
+import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
 
 export class HomeViewModel {
   supplyMarket: BorrowSupplyItem[] = []
   userSuppliedMarket: BorrowSupplyItem[] = []
+  userBalanceMarket: BorrowSupplyItem[] = []
   borrowMarket: BorrowSupplyItem[] = []
   userBorrowedMarket: BorrowSupplyItem[] = []
   cl: any = null
@@ -23,11 +24,9 @@ export class HomeViewModel {
   ersdlBalance = 0
   comptroller: any = null
   cTokenAddressList: string[] = []
-  ethAccount?: string | null = null
+  account?: string | null = null
   market = []
   isRefreshing = true
-  networkId = 4
-  chainId = 4
   ersdlPrice = 0
   totalBorrow = 0
   totalSupply = 0
@@ -35,13 +34,11 @@ export class HomeViewModel {
   liquidity = 0
   netApy = 0
   tokensGeneratingRewards: any
-  modalVisible = false
+  liquidityModalVisible = false
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
-    this.networkId = getProviderStore.networkId
-    this.chainId = getProviderStore.chainId
-    this.ethAccount = getProviderStore.currentAccount
+    this.account = getProviderStore.currentAccount
   }
 
   get isUserMarketShown() {
@@ -53,16 +50,19 @@ export class HomeViewModel {
   }
 
   get getBorrowLimitPercentage() {
-    const limit = (this.totalBorrow / this.borrowLimit) * 100
-    return parseFloat(limit.toFixed(2))
+    return this.totalBorrow === 0 ? 0 : (this.totalBorrow / this.borrowLimit) * 100
   }
 
   get getAccount() {
-    return renderShortAddress(this.ethAccount) || t("wallet.notConnected")
+    return renderShortAddress(this.account) || t("wallet.notConnected")
   }
 
   get getNetApy() {
     return this.netApy
+  }
+
+  get getNetApyLabel() {
+    return `${this.netApy ? this.netApy : "..."}`
   }
 
   get getBorrowBalance() {
@@ -74,18 +74,15 @@ export class HomeViewModel {
   }
 
   get isConnectionSupported() {
-    return (
-      getProviderStore.currentNetwork.networkID === this.networkId
-      && getProviderStore.currentNetwork.chainID === this.chainId
-    )
+    return getProviderStore.isConnectionSupported
   }
 
   get getBorrowLimit() {
     return `${this.borrowLimit.toFixed(2)}$`
   }
 
-  setModalVisible = (visible: boolean) => {
-    this.modalVisible = visible
+  get hasCollateral() {
+    return this.totalSupply > 0
   }
 
   calculateAPY = (ratePerBlock: any) => {
@@ -103,28 +100,28 @@ export class HomeViewModel {
 
   calculateTotals = (market: any) => {
     const totalSupply = market.reduce(
-      (acc: any, current: any) => acc + current.fiatSupply,
+      (acc: any, current: any) => acc + (+current.fiatSupply),
       0
     )
 
     const totalBorrow = market.reduce(
-      (acc: any, current: any) => acc + current.fiatBorrow,
+      (acc: any, current: any) => acc + (+current.fiatBorrow),
       0
     )
 
     const totalEarning = market.reduce(
       (acc: any, current: any) =>
-        current.supplyBalance == 0
+        +current.supplyBalance === 0
           ? acc
-          : acc + (current.fiatSupply * current.supplyApy) / 100,
+          : acc + (+current.fiatSupply * +current.supplyApy) / 100,
       0
     )
 
     const totalSpending = market.reduce(
       (acc: any, current: any) =>
-        current.borrowBalance == 0
+        +current.borrowBalance === 0
           ? acc
-          : acc + (current.fiatBorrow * current.borrowApy) / 100,
+          : acc + (+current.fiatBorrow * +current.borrowApy) / 100,
       0
     )
 
@@ -146,25 +143,17 @@ export class HomeViewModel {
     totalEarned: any
   ) => {
     return metadata.map(async (data: any) => {
-      const isEth = await isEther(data.cToken)
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
-      const cTokenContract = new Ctoken(data.cToken, this.ethAccount, isEth)
+      const cTokenContract = new Ctoken(data.cToken, this.account, data.symbol === "TWBGL")
       const cTokenData = Object.assign({}, data)
 
-      let token: any = null
+      let token: any
 
-      if (!isEth) {
-        cTokenData.token = data.underlyingAssetAddress
-        token = new Token(cTokenData.token)
-        cTokenData.symbol = await token.getSymbol()
-        cTokenData.name = await token.getName()
-      } else {
-        // For eth cToken = tokenun
-        cTokenData.token = data.cToken
-        cTokenData.symbol = "ETH"
-        cTokenData.name = "ETH"
-      }
+      cTokenData.token = data.underlyingAssetAddress
+      token = new Token(cTokenData.token)
+      cTokenData.symbol = await token.getSymbol()
+      cTokenData.name = await token.getName()
 
       cTokenData.cName = await cTokenContract.getName()
       cTokenData.totalBorrows = await cTokenContract.getTotalBorrows()
@@ -176,25 +165,20 @@ export class HomeViewModel {
       cTokenData.isEnteredTheMarket = await this.comptroller.checkMembership(
         data.cToken
       )
-
-      cTokenData.supplyAllowed = true
-      cTokenData.borrowAllowed = true
-
-      // cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
-      //   data.cToken
-      // ));// TODO check what's the problem
-      // cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
-      //   data.cToken
-      // )); // TODO check what's the problem
-
+      cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
+        data.cToken
+      ));
+      cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
+        data.cToken
+      ));
       cTokenData.underlyingPrice = price.underlyingPrice
       cTokenData.tokenBalance = balance.tokenBalance
       cTokenData.tokenAllowance = balance.tokenAllowance
       cTokenData.borrowBalance = balance.borrowBalanceCurrent
       cTokenData.supplyBalance = balance.balanceOfUnderlying
       cTokenData.balanceOf = balance.balanceOf
-      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 400 // TODO 0 default
-      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 400 // TODO 0 default
+      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || balance.tokenBalance // TODO 0 default, totalEarned should come from server??
+      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || balance.tokenBalance // TODO 0 default, totalEarned should come from server??
 
       return cTokenData
     })
@@ -219,14 +203,15 @@ export class HomeViewModel {
       item.underlyingPrice,
       item.underlyingDecimals
     )
+
     item.tokenUsdValue = this.convertToUSD(
-      Math.pow(10, item.underlyingDecimals),
+      Math.pow(10, +item.underlyingDecimals),
       item.underlyingPrice,
       item.underlyingDecimals
     )
 
     item.fiatSupply =
-      item.underlyingPrice == 0
+      item.underlyingPrice === 0
         ? 0
         : this.convertToUSD(
           item.supplyBalance,
@@ -235,7 +220,7 @@ export class HomeViewModel {
         )
 
     item.fiatBorrow =
-      item.underlyingPrice == 0
+      item.underlyingPrice === 0
         ? 0
         : this.convertToUSD(
           item.borrowBalance,
@@ -245,15 +230,15 @@ export class HomeViewModel {
   }
 
   convertToUSD = (value: any, underlyingPrice: any, tokenDecimals: any) => {
-    const oracleMantissa = Big(10).pow(18)
+    let oracleMantissa = Big(10).pow(18)
     const decimalValue = Big(10).pow(+tokenDecimals)
-    const mantisa = Big(10).pow(18 - tokenDecimals)
+    const mantissa = Big(10).pow(18 - (+tokenDecimals))
 
     const usdValue = Big(value)
       .times(underlyingPrice)
       .div(decimalValue)
       .div(oracleMantissa)
-      .div(mantisa)
+      .div(mantissa)
 
     return usdValue.toNumber()
   }
@@ -266,6 +251,9 @@ export class HomeViewModel {
     const ersdl: any = this.market.find(
       (token: any) => token.symbol === "eRSDL"
     )
+
+    if (!ersdl) return
+
     const balance = await this.cl.getCompoundBalance(ersdl.token)
 
     this.ersdlPrice = ersdl.underlyingPrice
@@ -337,22 +325,26 @@ export class HomeViewModel {
     this.borrowLimit = liquidity + this.totalBorrow
     this.liquidity = liquidity
 
-    market = market.sort((a: any, b: any) => a.symbol.localeCompare(b.symbol))
+    market = market
+      .sort((a: any, b: any) => a.symbol.localeCompare(b.symbol))
+      .filter((item: any) => item.cName !== "Savy BUSD" && item.cName !== "Savy WBGL") // TODO remove filter after new contracts deployment
 
     this.supplyMarket = market.filter(
-      (market: any) => market.supplyAllowed && market.supplyBalance == 0
+      (market: any) => market.supplyAllowed && +market.supplyBalance === 0
+    )
+
+    this.userBalanceMarket = market.filter(
+      (market: any) => +market.balance > 0
     )
 
     this.userSuppliedMarket = market.filter(
-      (market: any) => market.supplyBalance > 0
+      (market: any) => +market.supplyBalance > 0
     )
 
-    this.borrowMarket = market.filter(
-      (market: any) => market.borrowAllowed && market.borrowBalance == 0
-    )
+    this.borrowMarket = market
 
     this.userBorrowedMarket = market.filter(
-      (market: any) => market.borrowBalance > 0
+      (market: any) => +market.borrowBalance > 0
     )
 
     this.tokensGeneratingRewards = market
@@ -370,11 +362,37 @@ export class HomeViewModel {
     this.isRefreshing = state
   }
 
+  handleCollateral = async (item: any, collateralStatus: COLLATERAL_STATUS) => {
+    try {
+      if (collateralStatus === COLLATERAL_STATUS.EXITED_MARKET) {
+        const isMarketExist = await this.isMarketExist(item);
+        if (!isMarketExist) {
+          return;
+        }
+        const {hash} = await this.comptroller.enterMarkets([item.cToken])
+        await this.comptroller.waitForTransaction(hash);
+      } else {
+        const {hash} = await this.comptroller.exitMarket(item.cToken)
+        await this.comptroller.waitForTransaction(hash);
+      }
+    } catch (e: any) {
+    }
+  }
+
+  isMarketExist = async (item: any) => {
+    const markets = await this.comptroller.getAllMarkets();
+    return markets.includes(item.cToken);
+  }
+
+  setLiquidityModalVisibility = (visibility: boolean) => {
+    this.liquidityModalVisible = visibility
+  }
+
   mounted = async () => {
-    if (this.ethAccount) {
+    if (this.account) {
       this.setLoader(true)
-      this.comptroller = new Comptroller(this.ethAccount)
-      this.cl = new CompoundLens(this.ethAccount)
+      this.comptroller = new Comptroller(this.account)
+      this.cl = new CompoundLens(this.account)
       await this.init()
       this.setLoader(false)
     }

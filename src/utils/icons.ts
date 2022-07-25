@@ -35,6 +35,7 @@ import YFI from "assets/icons/YFI.svg";
 import yUSD from "assets/icons/yUSD.svg";
 import ZRX from "assets/icons/ZRX.svg";
 import MATIC from "assets/icons/MATIC.svg";
+import TWBGL from "assets/icons/TWBGL.svg";
 
 export const icons: any = {
   AAVE,
@@ -74,4 +75,5 @@ export const icons: any = {
   yUSD,
   ZRX,
   MATIC,
+  TWBGL
 };

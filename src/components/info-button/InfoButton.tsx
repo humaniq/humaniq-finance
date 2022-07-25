@@ -18,6 +18,7 @@ export interface InfoButtonProps {
   placement?: PLACEMENT;
   color?: string;
   size?: number;
+  backgroundColor?: string
 }
 
 /**
@@ -27,6 +28,7 @@ export interface InfoButtonProps {
  * @param placement
  * @param color
  * @param size
+ * @param backgroundColor
  * @constructor
  */
 export const InfoButton: React.FC<InfoButtonProps> = ({
@@ -34,12 +36,11 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
                                                         placement = PLACEMENT.RIGHT,
                                                         color = "white",
                                                         size = 15,
+                                                        backgroundColor,
                                                       }) => {
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<any>(50)
   const containerRef = useRef<any>(0)
-
-  const ifString = typeof message === "string";
 
   return (
     <div className={"infoBtn"}>
@@ -48,6 +49,13 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
           const arrowElement = node.querySelector<any>(".rc-tooltip-arrow")
           const width = arrowRef.current?.getBoundingClientRect().width
           const containerWidth = containerRef.current?.getBoundingClientRect().width
+
+          if (backgroundColor) {
+            const innerElement = node.querySelector<any>(".rc-tooltip-inner")
+            innerElement.style.backgroundColor = backgroundColor
+            arrowElement.style.borderTopColor = backgroundColor
+            arrowElement.style.borderBottomColor = backgroundColor
+          }
 
           const xOffset = arrowRef.current?.getBoundingClientRect().x + width / 2
           if (xOffset >= containerWidth / 2) {
@@ -59,14 +67,14 @@ export const InfoButton: React.FC<InfoButtonProps> = ({
         visible={visible}
         onVisibleChange={setVisible}
         overlay={
-          ifString ? (
+          typeof message === "string" ? (
             <div
               ref={containerRef}
               className={"messageContainer"}
             >
               <span className={"message"}>{message}</span>
               <View className={"right"}>
-                <span onClick={() => setVisible(false)} className="okBtn">
+                <span onClick={() => setVisible(false)} className={`okBtn ${backgroundColor ? "borrow" : ""}`}>
                   {t("common.clear")}
                 </span>
               </View>

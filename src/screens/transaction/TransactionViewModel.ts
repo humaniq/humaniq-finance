@@ -1,21 +1,23 @@
-import {makeAutoObservable} from "mobx"
+import {IReactionDisposer, makeAutoObservable, reaction} from "mobx"
 import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/types"
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
-import {utils} from "ethers"
+import {formatToCurrency, formatToNumber} from "utils/utils"
+import {ethers, utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
-import {Token} from "models/Token"
 import {getProviderStore} from "App"
-import {isEther} from "models/ContractsAPI"
 import {Comptroller} from "models/Comptroller"
 import {Ctoken} from "models/CToken"
-import {FaucetToken} from "models/FaucetToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
+import {TRANSACTION_STATUS} from "components/transaction-message/TransactionMessage"
+import {WBGL} from "models/WBGL"
+import {BUSD} from "models/BUSD"
+import {transactionStore} from "stores/app/transactionStore"
+import {NavigateFunction} from "react-router-dom"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -24,37 +26,95 @@ export class TransactionViewModel {
   borrowLimit = 0
   totalBorrow = 0
   inputValue = ""
-  isSwap = false
-  tokenContract: any
   comptroller: any
-  ethAccount?: string | null = null
+  account?: string | null = null
   cTokenContract: Ctoken
-  faucetContract: any
   gasEstimating = false
   txPrice: any = 0
-
-  gasPrice: any = Big(0)
-  gasLimit: any = 21000
 
   fastGas: any = 0
   fastestGas: any = 0
   safeLowGas: any = 0
 
-  showTransactionFeeModal = false
   nativeCoinPrice: FinanceCurrency = {
     currency: "",
     price: 0,
     source: "",
     time: ""
   }
+  inputFiat = true
+
+  txData = {
+    data: undefined,
+    chainId: 0,
+    gasLimit: 21000,
+    gasPrice: Big(0),
+    nonce: 0,
+    value: "0",
+    to: "",
+    from: ""
+  }
+  lastVal: string
+  inputRef?: any
+  transactionInProgress = false
+  selectedToken: WBGL | BUSD
+  nav?: NavigateFunction
+
+  swapReaction?: IReactionDisposer
 
   protected readonly api: ApiService
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
-    this.ethAccount = getProviderStore.currentAccount
+    this.account = getProviderStore.currentAccount
     this.api = new ApiService()
     this.api.init(API_FINANCE)
+  }
+
+  setNavigation = (nav: NavigateFunction) => {
+    this.nav = nav
+  }
+
+  mounted = async (state: TransactionState) => {
+    const {transactionType, item, borrowLimit, totalBorrow} = state
+
+    this.item = item
+    this.borrowLimit = borrowLimit
+    this.totalBorrow = totalBorrow
+    this.transactionType = transactionType
+
+    if (this.isWBGL) {
+      this.selectedToken = new WBGL(getProviderStore.signer, this.account)
+    } else {
+      this.selectedToken = new BUSD(getProviderStore.signer, this.account)
+    }
+
+    this.swapReaction = reaction(() => this.inputFiat, (val) => {
+      this.inputValue = !val ?
+        this.inputValueToken ? this.inputValueToken.toFixed(4) : "" :
+        this.inputValueFiat ? this.inputValueFiat.toFixed(4) : ""
+
+      this.inputRef?.focus()
+    })
+
+    if (this.account) {
+      this.comptroller = new Comptroller(this.account)
+      this.cTokenContract = new Ctoken(this.item.cToken, this.account, this.isWBGL)
+      this.gasEstimating = true
+
+      try {
+        await Promise.all([
+          this.estimateGasLimit(),
+          this.getGasFee(),
+          this.getNativeCoinCost()
+        ])
+      } catch (e) {
+        Logger.error('Init error', e)
+      } finally {
+        this.gasEstimating = false
+      }
+    }
+    this.isRefreshing = false
   }
 
   get isDeposit() {
@@ -69,8 +129,27 @@ export class TransactionViewModel {
     return this.transactionType === TRANSACTION_TYPE.WITHDRAW
   }
 
+  get isRepay() {
+    return this.transactionType === TRANSACTION_TYPE.REPAY
+  }
+
+  get isWBGL() {
+    return this.item.symbol === 'TWBGL'
+  }
+
+  get isBUSD() {
+    return this.item.symbol === 'BUSD'
+  }
+
   get isEnoughBalance() {
-    return this.isSwap ? this.balance.mul(this.item.tokenUsdValue).gte(+this.getInputValue) : this.balance.gte(+this.getInputValue)
+    if (this.isDeposit) {
+      if (this.inputFiat) {
+        return this.balance.mul(this.item.tokenUsdValue).gte(+this.getInputValue)
+      }
+      return this.balance.gte(+this.getInputValue)
+    }
+
+    return true
   }
 
   get getInputFontSize() {
@@ -87,40 +166,120 @@ export class TransactionViewModel {
     return this.item.balance
   }
 
+  get tokenBalance() {
+    if (this.isWithdraw) {
+      return this.item.supply
+    }
+
+    if (this.isBorrow) {
+      return this.item.supply // TODO check
+    }
+
+    if (this.isRepay) {
+      return this.item.borrow
+    }
+
+    return this.balance
+  }
+
+  get tokensFiatPrice() {
+    let balance = this.isBorrow ? this.item.borrow : this.tokenBalance
+    return Big(this.item.tokenUsdValue).mul(balance)
+  }
+
   get getFormattedBalance() {
-    return `${formatBalance(this.balance)} ${this.getTokenSymbol}`
+    let balance = this.tokenBalance
+
+    if (this.isBorrow) {
+      balance = this.item.borrow
+    } else if (this.isRepay) {
+      balance = this.balance
+    }
+
+    return `${balance.toFixed(2)} ${this.getTokenSymbol}`
+  }
+
+  get titleBasedOnType() {
+    let title = t("home.deposit")
+
+    if (this.isBorrow) {
+      title = t("home.borrow")
+    } else if (this.isWithdraw) {
+      title = t("transaction.withdraw")
+    } else if (this.isRepay) {
+      title = t("transaction.repay")
+    }
+
+    return title
+  }
+
+  get buttonTitleBasedOnType() {
+    let title: string
+
+    if (this.isBorrow) {
+      title = this.borrowText
+    } else if (this.isWithdraw) {
+      title = this.withdrawText
+    } else if (this.isRepay) {
+      title = this.repayText
+    } else {
+      title = this.depositText
+    }
+
+    return title
   }
 
   get getTitle() {
-    return `${t(this.isDeposit ? "home.deposit" : "home.borrow")} ${this.getTokenSymbol}`
+    return `${this.titleBasedOnType} ${this.getTokenSymbol}`
   }
 
   get getTokenBalance() {
-    return `${this.balance.toFixed(4)}`
+    return `${this.tokenBalance.toFixed(4)}`
   }
 
   get getTokenUsdValue() {
+    if (this.isDeposit || this.isWithdraw) return this.tokensFiatPrice.toFixed(4)
+    if (this.isBorrow || this.isRepay) return Big(this.item.tokenUsdValue).mul(this.tokenBalance).toFixed(4)
     return formatToCurrency(parseFloat(this.item.tokenUsdValue).toFixed(4))
   }
 
   get getApyTitle() {
-    return `${t(this.isDeposit ? "home.deposit" : "home.borrow")} ${t("home.netApy")}`
+    return `${t(this.isDeposit || this.isWithdraw ? "home.deposit" : "home.borrow")} ${t("home.netApy")}`
   }
 
   get getApyValue() {
-    return `${this.isDeposit ? this.item.supplyApy : this.item.borrowApy}%`
+    return `${this.isDeposit || this.isWithdraw ? this.item.supplyApy : this.item.borrowApy}%`
   }
 
   get getBorrowLimitTitle() {
-    return `${t(this.isDeposit ? "home.borrowLimit" : "transaction.borrowBalance")}`
+    return `${t(this.isDeposit || this.isWithdraw ? "home.borrowLimit" : "transaction.borrowBalance")}`
   }
 
   get getBorrowLimitValue() {
-    return formatToCurrency(this.isDeposit ? this.borrowLimit : this.totalBorrow)
+    return formatToCurrency(this.isDeposit || this.isWithdraw ? this.borrowLimit : this.totalBorrow)
   }
 
-  get getBorrowLimitUsed() {
+  get getBorrowLimitUsedValue() {
     return `${formatToNumber(this.borrowLimitUsed)}%`
+  }
+
+  get getNewBorrowLimitUsed() {
+    if (this.isDeposit || this.isWithdraw) {
+      return this.hypotheticalBorrowLimitUsedForDeposit
+        ? formatToNumber(this.hypotheticalBorrowLimitUsedForDeposit)
+        : 0
+    } else if (this.isBorrow || this.isRepay) {
+      return this.inputValue ? formatToNumber(this.hypotheticalBorrowLimitUsed) : 0
+    }
+    return 0
+  }
+
+  get getNewBorrowLimitUsedFormatted() {
+    return `${this.getNewBorrowLimitUsed}%`
+  }
+
+  get maxBorrowLimitUsed() {
+    return Math.max(this.borrowLimitUsed, +this.getNewBorrowLimitUsed)
   }
 
   get borrowLimitUsed() {
@@ -128,24 +287,38 @@ export class TransactionViewModel {
       const limit = (this.totalBorrow / this.borrowLimit) * 100
       return parseFloat(limit.toFixed(2))
     }
-
     return 0
-  }
-
-  get isNative() {
-    return this.item.symbol === "ETH" // TODO replace with bnb
   }
 
   get getInputValue() {
     return this.inputValue
   }
 
-  get newBorrowLimit() {
-    if (!this.getInputValue) return 0
-    if (!this.item.isEnteredTheMarket) return this.borrowLimit
+  get inputValueUSD() {
+    return this.inputFiat ? +this.inputValue : +this.inputValueFiat
+  }
 
-    // @ts-ignore
-    return this.borrowLimit + (this.isSwap ? this.inputValueToken : this.inputValueFiat) * this.collateralMantissa
+  get inputValueTOKEN() {
+    return this.inputFiat ? +this.inputValueToken : +this.inputValue
+  }
+
+  get getNewBorrowLimit() {
+    return formatToCurrency(this.newBorrowLimit)
+  }
+
+  get newBorrowLimit() {
+    if (this.isDeposit || this.isWithdraw) {
+      if (!this.getInputValue) return 0
+      if (!this.item.isEnteredTheMarket) return this.borrowLimit
+
+      if (this.isWithdraw) {
+        return this.borrowLimit - this.inputValueUSD * +this.collateralMantissa
+      }
+
+      return this.borrowLimit + this.inputValueUSD * +this.collateralMantissa
+    }
+
+    return this.borrowBalance ? this.borrowBalance : 0
   }
 
   get collateralMantissa() {
@@ -154,75 +327,315 @@ export class TransactionViewModel {
 
   get inputValueFiat() {
     if (!this.getInputValue) return 0
-
     return Big(this.getInputValue).mul(this.item.tokenUsdValue)
   }
 
   get inputValueToken() {
     if (!this.getInputValue) return 0
-
     return Big(this.getInputValue).div(this.item.tokenUsdValue)
   }
 
   get getTokenOrFiat() {
-    return this.isSwap ? "USD" : this.getTokenSymbol
+    return this.inputFiat ? "USD" : this.getTokenSymbol
   }
 
   get getFiatOrTokenInput() {
-    return this.isSwap ? `${this.inputValueToken.toFixed(2)} ${this.getTokenSymbol}` : formatToCurrency(this.inputValueFiat)
+    if (this.inputFiat) {
+      return `${this.inputValueToken.toFixed(2)} ${this.getTokenSymbol}`
+    }
+    return formatToCurrency(this.inputValueFiat)
   }
 
   get isButtonDisabled() {
-    return isEmpty(this.getInputValue)
+    return isEmpty(this.getInputValue) ||
+      !this.isEnoughBalance ||
+      this.isRepayDisabled ||
+      this.isBorrowDisabled ||
+      this.isWithdrawDisabled
   }
 
   get getDepositButtonText() {
-    return `${t(this.isDeposit ? "home.deposit" : "home.borrow")} ${formatToCurrency(this.inputValueFiat)}`
+    return this.buttonTitleBasedOnType
   }
 
   get getTransactionFiatFee() {
-    return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.gasPrice).mul(this.gasLimit), 18) * this.nativeCoinPrice.price).toFixed(2)}`
+    return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.txData.gasPrice).mul(this.txData.gasLimit), 18) * this.nativeCoinPrice.price).toFixed(2)}`
   }
 
-  setTransactionFeeModalVisible = (state: boolean = false) => {
-    this.showTransactionFeeModal = state
-  }
-
-  handleTransactionFee = () => {
-    this.showTransactionFeeModal = true
-  }
-
-  handleButtonClick = async () => {
-    let gas = 0
-    let inputValue = await this.getValue(this.getInputValue)
-
-    this.gasEstimating = true
-    this.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, inputValue)
-    this.txPrice = this.gasPrice.mul(this.gasLimit)
-
-    this.gasEstimating = false
-
-    if (this.isNative) {
-      inputValue = this.txPrice.sub(inputValue)
+  get balanceTitle() {
+    if (this.isWithdraw) {
+      return t("transaction.currentlySupplying")
+    } else if (this.isBorrow) {
+      return t("transaction.currentlyBorrowing")
     }
+
+    return t("home.walletBalance")
+  }
+
+  get repayText() {
+    if (Big(this.item.borrow).lt(this.inputValueTOKEN)) return t('transaction.valueCannotExceedBorrow')
+    if (this.balance.lt(this.inputValueTOKEN)) return t('transaction.insufficientWalletBalance')
+    return `${t('transaction.repay')} ${formatToCurrency(this.inputValueUSD)}`
+  }
+
+  get depositText() {
+    if (this.balance.lt(this.inputValueTOKEN)) return t('transaction.insufficientWalletBalance')
+    return `${t("home.deposit")} ${formatToCurrency(this.inputValueUSD)}`
+  }
+
+  get isRepayDisabled() {
+    if (this.isRepay) {
+      return !Boolean(this.inputValueTOKEN) ||
+        this.balance.lt(this.inputValueTOKEN) ||
+        Big(this.item.borrow).lt(this.inputValueTOKEN)
+    }
+    return false
+  }
+
+  get withdrawText() {
+    if (Big(this.item.supply).lt(this.inputValueTOKEN)) return t('transaction.valueCannotExceedSupply')
+    return `${t("transaction.withdraw")} ${formatToCurrency(this.inputValueUSD)}`
+  }
+
+  get borrowText() {
+    if (this.borrowLimitUsed >= 100) {
+      return t('transaction.borrowLimitReached')
+    }
+
+    if (!this.isEnoughLiquidity) {
+      return t('transaction.notEnoughLiquidity')
+    }
+
+    if (
+      !this.borrowLimit ||
+      this.borrowLimitUsed >= 100 ||
+      this.hypotheticalBorrowLimitUsed >= 100
+    ) {
+      return t('transaction.insufficientCollateral')
+    } else {
+      return `${t('home.borrow')} ${formatToCurrency(this.inputValueUSD)}`
+    }
+  }
+
+  // FOR DEPOSIT
+  get hypotheticalBorrowLimitUsedForDeposit() {
+    if (!this.hypotheticalCollateralSupply || !this.totalBorrow) return 0
+    if (this.hypotheticalCollateralSupply < 0) return 100
+    if (!this.item.isEnteredTheMarket) return this.borrowLimitUsed
+
+    const limit =
+      (this.totalBorrow / this.hypotheticalCollateralSupply) * 100
+
+    return limit > 100 ? 100 : parseFloat(limit.toFixed(2))
+  }
+
+  // FOR DEPOSIT
+  get hypotheticalCollateralSupply() {
+    if (!this.inputValue) return 0
+
+    if (this.isDeposit) {
+      return this.borrowLimit + this.inputValueUSD
+    }
+
+    return this.borrowLimit - this.inputValueUSD
+  }
+
+  get hypotheticalBorrowLimitUsed() {
+    if (!this.borrowLimit) return 0
+    const limit = (this.borrowBalance / this.borrowLimit) * 100
+    return limit > 100 ? 100 : parseFloat(limit.toFixed(2))
+  }
+
+  get borrowBalance() {
+    if (this.isBorrow) {
+      return !this.inputValue ? 0 : this.inputValueUSD + this.totalBorrow
+    }
+
+    return !this.inputValue ? 0 : this.totalBorrow - this.inputValueUSD
+  }
+
+  get isEnoughLiquidity() {
+    return this.inputValueUSD <= this.item.liquidity
+  }
+
+  get isBorrowDisabled() {
+    if (this.isBorrow) {
+      return !this.inputValueTOKEN ||
+        !this.borrowLimit ||
+        !this.isEnoughLiquidity ||
+        this.borrowLimitUsed >= 100 ||
+        this.hypotheticalBorrowLimitUsed >= 100
+    }
+    return false
+  }
+
+  get isWithdrawDisabled() {
+    if (this.isWithdraw) {
+      if (!this.item.isEnteredTheMarket) return true
+
+      return (
+        !this.isSupplyDisabled ||
+        !Boolean(this.inputValueTOKEN) ||
+        Big(this.item.supply).lt(this.inputValueTOKEN)
+        // this.hypotheticalBorrowLimitUsedForDeposit >= 100
+      )
+    }
+
+    return false
+  }
+
+  get isSupplyDisabled() {
+    return Big(this.item.tokenAllowance).gt(0)
+  }
+
+  get supplyTitle() {
+    return this.isEnoughBalance ? "home.deposit" : "transaction.insufficientWalletBalance"
+  }
+
+  get buttonColor() {
+    if (this.isBorrow || this.isRepay) {
+      return "borrow"
+    }
+
+    return ""
+  }
+
+  setInputRef = (ref: any) => {
+    this.inputRef = ref
+  }
+
+  handleTransaction = async () => {
+    const input = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValue
+    let inputValue = this.getValue(input)
+    this.transactionInProgress = true
 
     try {
       if (this.isDeposit) {
-        const supplyHash = await this.cTokenContract.supply(inputValue, gas)
+        let approvedResult: any
 
-        if (supplyHash) {
-          await this.comptroller.waitForTransaction(supplyHash)
+        const allowanceAmount = await this.selectedToken.allowance(
+          this.item.cToken
+        )
+
+        this.showMessage(TRANSACTION_STATUS.PENDING)
+
+        // check if supply is allowed, otherwise it should be approved
+        if (+allowanceAmount >= +inputValue) {
+          // can proceed with supply
+          approvedResult = true
+        } else {
+          // need to approve
+          approvedResult = await this.selectedToken.approve(
+            this.item.cToken
+          )
+          this.txData.gasLimit = +approvedResult.gasLimit
+          // wait for transaction to be mined in order to proceed with mint
+          await approvedResult.wait()
         }
-      } else {
-        const borrowHash = await this.cTokenContract.borrow(inputValue)
+        if (approvedResult) {
+          const {hash} = await this.cTokenContract.supply(inputValue)
 
-        if (borrowHash) {
-          await this.comptroller.waitForTransaction(borrowHash)
+          if (hash) {
+            await this.comptroller.waitForTransaction(hash)
+            this.showMessage(TRANSACTION_STATUS.SUCCESS)
+            this.navigateBack()
+          }
+        }
+      } else if (this.isBorrow) {
+        const isMarketExist = await this.isMarketExist()
+
+        if (!isMarketExist) {
+          Logger.info("Market is not available!!") // TODO show toast
+          return
+        }
+        // for borrow
+        const {hash} = await this.cTokenContract.borrow(inputValue)
+
+        this.showMessage(TRANSACTION_STATUS.PENDING)
+
+        if (hash) {
+          await this.comptroller.waitForTransaction(hash)
+          this.showMessage(TRANSACTION_STATUS.SUCCESS)
+          this.navigateBack()
+        }
+      } else if (this.isWithdraw) {
+        // check if number is too small for transaction
+        if (
+          Big(+inputValue)
+            .times(1e18)
+            .div(this.item.exchangeRateCurrent)
+            .lt(1)
+        ) {
+          Logger.info("error")
+          return
+        }
+        const {hash} = await this.cTokenContract.withdraw(inputValue)
+
+        this.showMessage(TRANSACTION_STATUS.PENDING)
+
+        if (hash) {
+          await this.comptroller.waitForTransaction(hash)
+          this.showMessage(TRANSACTION_STATUS.SUCCESS)
+          this.navigateBack()
+        }
+      } else if (this.isRepay) {
+        let approvedResult: any
+
+        const allowanceAmount = await this.selectedToken.allowance(
+          this.item.cToken
+        )
+
+        this.showMessage(TRANSACTION_STATUS.PENDING)
+
+        // check if spending token is allowed, otherwise it should be approved
+        if (+allowanceAmount >= +inputValue) {
+          // can proceed with supply
+          approvedResult = true
+        } else {
+          // need to approve
+          approvedResult = await this.selectedToken.approve(
+            this.item.cToken
+          )
+          this.txData.gasLimit = +approvedResult.gasLimit
+          // wait for transaction to be mined in order to proceed with mint
+          await approvedResult.wait()
+        }
+
+        const {hash} = await this.cTokenContract.repayBorrow(inputValue)
+
+        if (hash) {
+          await this.comptroller.waitForTransaction(hash)
+          this.showMessage(TRANSACTION_STATUS.SUCCESS)
+          this.navigateBack()
         }
       }
-    } catch (e) {
-      Logger.log("ERR", e)
+    } catch (e: any) {
+      Logger.error(e)
+      this.showMessage(TRANSACTION_STATUS.ERROR, t("transactionMessage.denied"))
+    } finally {
+      setTimeout(() => {
+        this.clearMessage()
+      }, 3000)
+      this.transactionInProgress = false
     }
+  }
+
+  showMessage = (status: TRANSACTION_STATUS, message?: string) => {
+    if (typeof message === 'string') {
+      transactionStore.transactionMessage = message
+    }
+    transactionStore.transactionMessageStatus = status
+    transactionStore.transactionMessageVisible = true
+  }
+
+  clearMessage = () => {
+    transactionStore.transactionMessageVisible = false
+    transactionStore.transactionMessage = ""
+  }
+
+  isMarketExist = async () => {
+    const markets = await this.comptroller.getAllMarkets()
+    return markets.includes(this.item.cToken)
   }
 
   setInputValue = (value: string) => {
@@ -238,90 +651,73 @@ export class TransactionViewModel {
     this.inputValue = value
   }
 
-  mounted = async (state: TransactionState) => {
-    const {transactionType, item, borrowLimit, totalBorrow} = state
-
-    this.item = item
-    this.borrowLimit = borrowLimit
-    this.totalBorrow = totalBorrow
-    this.transactionType = transactionType
-
-    if (this.ethAccount) {
-      const isEth = await isEther(this.item.cToken)
-
-      this.comptroller = new Comptroller(this.ethAccount)
-
-      this.tokenContract = new Token(
-        this.item.token,
-        this.item.cToken,
-        this.ethAccount,
-        isEth
-      )
-
-      this.cTokenContract = new Ctoken(this.item.cToken, this.ethAccount, isEth)
-
-      this.faucetContract = new FaucetToken(
-        this.item.token,
-        this.item.cToken,
-        this.ethAccount,
-        true
-      )
-
-      this.gasEstimating = true
-
-      try {
-        await Promise.all([
-          this.estimateGasLimit(),
-          this.getGasFee(),
-          this.getNativeCoinCost()
-        ])
-      } catch (e) {
-      } finally {
-        this.gasEstimating = false
-      }
-    }
-
-    this.isRefreshing = false
+  navigateBack = () => {
+    this.nav?.(-1)
   }
 
-  getValue = async (value: any) => {
-    const tokenDecimals = this.isNative
-      ? 18
-      : await this.tokenContract.getDecimals()
+  unMounted = () => {
+    this.swapReaction?.()
+    this.inputRef = null
+  }
 
-    const decimals = Big(10).pow(+tokenDecimals)
-
-    return Big(value)
-      .times(decimals)
-      .toFixed()
+  getValue = (value: any) => {
+    return ethers.utils.parseUnits(
+      value,
+      this.item.underlyingDecimals
+    )
   }
 
   setMaxValue = () => {
     let maxValue = this.balance
 
-    if (this.isSwap) {
-      maxValue = Big(this.item.tokenUsdValue).mul(this.balance)
+    if (this.isDeposit) {
+      maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.balance) : this.balance
     }
 
-    this.setInputValue(maxValue.toString())
+    if (this.isBorrow) {
+      if (!this.borrowLimit) {
+        maxValue = 0
+      } else {
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+
+        if (!this.inputFiat) {
+          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
+        }
+      }
+    }
+
+    if (this.isWithdraw) {
+      maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.item.supply) : this.item.supply
+    }
+
+    if (this.isRepay) {
+      maxValue = +this.item.borrow ? +this.item.borrow : 0
+
+      if (this.inputFiat) {
+        maxValue = Big(maxValue).mul(this.item.tokenUsdValue)
+      }
+    }
+
+    this.setInputValue(maxValue.toFixed(4))
+    this.inputRef?.focus()
   }
 
   onSwap = () => {
-    this.isSwap = !this.isSwap
+    this.inputFiat = !this.inputFiat
   }
 
   getGasFee = async () => {
     try {
-      this.gasPrice = await getProviderStore.currentProvider.getGasPrice()
+      this.txData.gasPrice = await getProviderStore.currentProvider.getGasPrice()
     } catch (e) {
       Logger.log("Gas price fetching error: ", e)
-    } finally {
     }
   }
 
-  estimateGasLimit = async () => {
+  estimateGasLimit = async (amount: any = 0) => {
     try {
-      this.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, 1)
+      this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, amount)
     } catch (e) {
       Logger.info("Gas limit estimation error: ", e)
     }

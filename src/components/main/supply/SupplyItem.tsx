@@ -1,27 +1,67 @@
-import React from "react";
-import { View, ViewDirections } from "../../ui/view/View";
-import { Text } from "../../ui/text/Text";
-import { Divider } from "../../ui/divider/Divider";
-import { Button } from "../../ui/button/Button";
-import { BorrowSupplyItem } from "models/types";
-import Big from "big.js";
-import { icons } from "utils/icons";
-import "./SupplyItem.style.sass";
+import React, {useMemo} from "react"
+import {Text} from "../../ui/text/Text"
+import {Divider} from "../../ui/divider/Divider"
+import {Button} from "../../ui/button/Button"
+import {BorrowSupplyItem} from "models/types"
+import Big from "big.js"
+import {icons} from "utils/icons"
+import "./SupplyItem.style.sass"
+import {t} from "translations/translate"
+
+export enum COLLATERAL_STATUS {
+  ENTERED_MARKET,
+  EXITED_MARKET
+}
 
 export interface TokenItemProps {
-  onSupplyClick?: () => void;
-  className?: string;
-  disabled?: boolean;
-  item: BorrowSupplyItem;
+  onSupplyClick?: () => void
+  className?: string
+  disabled?: boolean
+  item: BorrowSupplyItem
+  isWithdraw?: boolean
+  isBalance?: boolean
 }
 
 export const SupplyItem: React.FC<TokenItemProps> = ({
-  onSupplyClick,
-  className,
-  disabled,
-  item,
-  ...rest
-}) => {
+                                                       onSupplyClick,
+                                                       className,
+                                                       disabled,
+                                                       item,
+                                                       isWithdraw = false,
+                                                       isBalance = false,
+                                                       ...rest
+                                                     }) => {
+
+  const buttonDisabled = useMemo(() => {
+    return disabled || +item.balance === 0 || !isWithdraw && +item.borrow > 0
+  }, [item, disabled, isWithdraw])
+
+  const title = useMemo(() => {
+    let text
+
+    if (isWithdraw || isBalance) {
+      text = Big(item.tokenUsdValue).mul(isBalance ? item.balance : item.supply).toFixed(2)
+    } else {
+      text = item.tokenUsdValue.toFixed(2)
+    }
+
+    return `$${text}`
+  }, [item, isWithdraw, isBalance])
+
+  const buttonTitle = useMemo(() => {
+    let text
+    if (isWithdraw) {
+      text = t("transaction.withdraw")
+    } else {
+      text = t("home.deposit")
+    }
+    return `${text} ${item.supplyApy}%`
+  }, [item, isWithdraw, t])
+
+  const subTitle = useMemo(() => {
+    return Big(isWithdraw ? item.supply : item.balance).toFixed(2)
+  }, [])
+
   return (
     <div className={`supply-item ${className}`} {...rest}>
       <div className="supply-item--content">
@@ -30,36 +70,29 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
           alt="logo"
           className="supply-item--avatar"
         />
-        <View
+        <div
           className="supply-item--content--right"
-          direction={ViewDirections.COLUMN}
         >
-          <View className="supply-item--content--row">
-            <Text className="title" text={item.name} />
+          <div className="supply-item--content--row">
+            <Text className="title" text={item.name}/>
             <Text
               className="title"
-              text={`$${item.tokenUsdValue.toFixed(2)}`}
+              text={title}
             />
-          </View>
-          <View className="row-2">
-            <Text className="title" text={item.symbol} />
-            <Text className="title" text={`${Big(item.balance).toFixed(2)}`} />
-          </View>
-          <Divider marginT={10} />
+          </div>
+          <div className="row-2">
+            <Text className="title" text={item.symbol}/>
+            <Text className="title" text={subTitle}/>
+          </div>
+          <Divider marginT={10}/>
           <Button
-            disabled={disabled}
+            disabled={buttonDisabled}
             className="token-button"
             onClick={onSupplyClick}
-            text={`Deposit ${item.supplyApy}%`}
+            text={buttonTitle}
           />
-          {/*{ (*/}
-          {/*  <>*/}
-          {/*    <Divider marginT={10} />*/}
-          {/*    <span className="insufficient">{t("insufficientBalance")}</span>*/}
-          {/*  </>*/}
-          {/*)}*/}
-        </View>
+        </div>
       </div>
     </div>
-  );
-};
+  )
+}

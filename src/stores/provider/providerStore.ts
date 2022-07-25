@@ -2,7 +2,7 @@ import {makeAutoObservable, runInAction} from "mobx"
 import {Logger} from "utils/logger"
 import {ConnectInfo, ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import {ethers} from "ethers"
+import {ethers, Signer} from "ethers"
 import {EVM_NETWORKS, EVM_NETWORKS_NAMES, rpc} from "constants/network"
 
 export enum PROVIDERS {
@@ -14,18 +14,15 @@ export class ProviderStore {
   initialized = false
   currentAccount?: string | null = null
   hasProvider = false
-  chainId: number = 4
-  networkId: number = 4
-
-  signer: any
-  currentProvider: any
-
+  chainId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID
+  networkId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].networkID
+  signer: Signer
+  currentProvider: any // ethers.providers.Web3Provider | WalletConnectProvider
   connectDialog = false
   disconnectDialog = false
   connectedProvider: PROVIDERS
-
-  isConnecting = false
   currentNetworkName = EVM_NETWORKS_NAMES.BSC_TESTNET
+  isConnecting = false
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
@@ -40,7 +37,8 @@ export class ProviderStore {
   }
 
   get isConnectionSupported() {
-    return this.chainId === 4 && this.networkId === 4
+    return (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID && this.networkId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].networkID)
+      || (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID && this.networkId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].networkID)
   }
 
   setProvider = async (type: PROVIDERS) => {
@@ -49,19 +47,25 @@ export class ProviderStore {
         case PROVIDERS.WC:
           const provider = new WalletConnectProvider({rpc})
           const result = await provider.enable()
-          this.currentAccount = result[0]
-          this.currentProvider = provider
+          runInAction(() => {
+            this.currentAccount = result[0]
+          })
+          this.currentProvider = new ethers.providers.Web3Provider(provider)
           this.initProvider()
           break
         case PROVIDERS.WEB3:
         default:
-          this.currentProvider = new ethers.providers.Web3Provider(window.ethereum)
+          this.currentProvider = new ethers.providers.Web3Provider(
+            window.ethereum
+          )
           this.initProvider()
           await this.connect()
       }
       this.connectedProvider = type
       localStorage.setItem("connected", type)
-      this.connectDialog = false
+      runInAction(() => {
+        this.connectDialog = false
+      })
     } catch (e) {
       Logger.error("ERROR", e)
     }
@@ -78,11 +82,13 @@ export class ProviderStore {
   initProvider = () => {
     if (!this.currentProvider) return
 
-    this.currentProvider.on("accountsChanged", this.handleAccountsChange)
-    this.currentProvider.on("disconnect", this.handleDisconnect)
-    this.currentProvider.on("message", this.handleMessage)
-    this.currentProvider.on("chainChanged", this.handleChainChange)
-    this.currentProvider.on("connect", this.handleChainChange)
+    const {provider: ethereum} = this.currentProvider
+
+    ethereum.on("accountsChanged", this.handleAccountsChange)
+    ethereum.on("disconnect", this.handleDisconnect)
+    ethereum.on("message", this.handleMessage)
+    ethereum.on("chainChanged", this.handleChainChange)
+    ethereum.on("connect", this.handleChainChange)
 
     this.signer = this.currentProvider.getSigner()
   }
@@ -90,14 +96,16 @@ export class ProviderStore {
   removeListeners = () => {
     if (!this.currentProvider) return
 
-    this.currentProvider.removeListener(
+    const {provider: ethereum} = this.currentProvider
+
+    ethereum.removeListener(
       "accountsChanged",
       this.handleAccountsChange
     )
-    this.currentProvider.removeListener("disconnect", this.handleDisconnect)
-    this.currentProvider.removeListener("message", this.handleMessage)
-    this.currentProvider.removeListener("chainChanged", this.handleChainChange)
-    this.currentProvider.removeListener("connect", this.handleChainChange)
+    ethereum.removeListener("disconnect", this.handleDisconnect)
+    ethereum.removeListener("message", this.handleMessage)
+    ethereum.removeListener("chainChanged", this.handleChainChange)
+    ethereum.removeListener("connect", this.handleChainChange)
   }
 
   handleAccountsChange = (accounts: string[]) => {
@@ -112,9 +120,13 @@ export class ProviderStore {
 
   handleMessage = (message: ProviderMessage) => {
     // handle message
+    console.info("message", message);
   }
 
-  handleChainChange = (chainId: string) => {
+  handleChainChange = async (chainId: string) => {
+    if (parseInt(chainId, 16) === this.currentNetwork.chainID) return;
+    this.chainId = parseInt(chainId, 16);
+    await this.init();
   }
 
   handleConnect = (connectInfo: ConnectInfo) => {

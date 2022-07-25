@@ -12,14 +12,12 @@
   flex-direction: column
   padding: 10px 15px
   max-width: 320px
-
   .message
     margin-bottom: 10px
     white-space: pre-line
     font-style: normal
     font-weight: 500
     font-size: 14px
-
   .right
     justify-content: right
     font-weight: 500
@@ -31,5 +29,7 @@
       border-radius: 4px
       cursor: pointer
       padding: 5px
+      &.borrow:hover
+        background-color: darken($purple-heart, 10)
       &:hover
         background-color: darken($primary, 10)

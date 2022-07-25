@@ -61,7 +61,7 @@
   padding-bottom: 1px
   background-color: $white
   border-radius: 12px
-  box-shadow: 1px 3px 1px $grey-divider
+  box-shadow: rgba($primary, 0.05) 0 8px 24px
   &-insufficient-balance
     display: flex
     font-style: normal
@@ -76,13 +76,16 @@
     flex-direction: row
     background-color: $white
     border-radius: 12px
-    align-items: flex-start
-    margin-top: 10px
+    align-items: center
     padding: 12px 8px
     &--right
+      display: flex
+      flex-direction: column
       flex: 1
       margin-left: 12px
     &--row
+      display: flex
+      flex-direction: row
       justify-content: space-between
       margin-bottom: 5px
       margin-right: 10px
@@ -93,6 +96,8 @@
         letter-spacing: 0.5px
         color: $textBlack
     &-row-second
+      display: flex
+      flex-direction: row
       justify-content: space-between
       margin-top: 5px
       margin-right: 10px
@@ -104,8 +109,8 @@
         color: $grey-text
   &--avatar
     margin-left: 2px
-    width: 30px
-    height: 30px
+    width: 33px
+    height: 33px
   .token-button
     margin-top: 11px
     margin-right: 8px
@@ -135,6 +140,10 @@
     padding: 12px
     border-radius: 12px
     margin-top: 20px
+    &.borrow
+      background-color: $purple-heart
+      &:hover
+        background-color: rgba($purple-heart, 0.7)
     &:hover
       background-color: rgba($primary, 0.7)
     &:disabled
@@ -181,16 +190,13 @@
     font-weight: 500
     font-style: normal
     letter-spacing: 0.5px
-    color: $primary
+    color: $textBlack
     background-color: transparent
     padding-left: 8px
     padding-right: 8px
     margin-top: 20px
     margin-bottom: 20px
     align-self: center
-    &:hover
-      background-color: $primary-light
-      border-radius: 12px
   &-title
     font-style: normal
     font-weight: 500
@@ -230,9 +236,8 @@
       height: 50px
       align-items: center
       justify-content: center
-      box-shadow: 1px 3px 1px $grey-divider
+      box-shadow: rgba($primary, 0.05) 0 8px 24px
       &-icon
-
       &:hover
         background-color: $primary-light
 
@@ -240,7 +245,7 @@
   display: flex
   flex-direction: row
   align-items: center
-  justify-content: space-around
+  justify-content: space-between
   margin-top: 22px
   &-title
     font-style: normal

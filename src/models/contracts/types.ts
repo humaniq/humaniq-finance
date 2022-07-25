@@ -43,5 +43,6 @@ export type GasFeeData = {
 export enum TRANSACTION_TYPE {
   DEPOSIT = "deposit",
   BORROW = "borrow",
-  WITHDRAW = "withdraw"
+  WITHDRAW = "withdraw",
+  REPAY = "repay"
 }

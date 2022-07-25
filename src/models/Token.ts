@@ -19,8 +19,7 @@ export class Token {
   }
 
   approve = () => {
-    const contractSig = this.contract.connect(getProviderStore.signer)
-    return contractSig
+    return this.contract
       .approve(this.cToken, MAX_UINT_256)
       .send({ from: this.account });
   };

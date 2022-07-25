@@ -28,9 +28,9 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
       return colors.redAlert
     }
     return ""
-  }, [progress, amount])
+  }, [progress])
 
-  const handleProgress = useMemo(() => Math.min(progress, 100), [progress, amount])
+  const handleProgress = useMemo(() => progress === 0 ? 0 : Math.min(progress, 100).toFixed(2), [progress])
 
   return (
     <div className="progress-container">

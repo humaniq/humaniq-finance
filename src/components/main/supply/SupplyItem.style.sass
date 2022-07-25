@@ -12,8 +12,10 @@
     margin-top: 10px
     padding: 12px 8px
     &--right
+      display: flex
+      flex-direction: column
       flex: 1
-      margin-left: 12px
+      margin-left: 14px
       .insufficient
         font-style: normal
         font-weight: 400
@@ -22,6 +24,8 @@
         align-self: center
         margin-top: 14px
     &--row
+      display: flex
+      flex-direction: row
       justify-content: space-between
       margin-bottom: 5px
       margin-right: 10px
@@ -32,6 +36,8 @@
         letter-spacing: 0.5px
         color: $textBlack
     .row-2
+      display: flex
+      flex-direction: row
       justify-content: space-between
       margin-top: 5px
       margin-right: 10px
@@ -52,6 +58,8 @@
     padding: 9px
     background-color: $primary-light
     color: $primary
+    font-weight: 600
+    font-size: 14px
     &:hover
       color: $white
       background-color: $primary

@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect} from "react"
 import {observer} from "mobx-react"
-import {useTranslation} from "react-i18next"
 import {MainInfoHeader} from "components/main/header/MainInfoHeader"
 import {View, ViewDirections} from "components/ui/view/View"
 import {Text} from "components/ui/text/Text"
@@ -25,13 +24,14 @@ import "react-spring-bottom-sheet/dist/style.css"
 import "../../styles/circular.sass"
 import "./Home.style.sass"
 import {TRANSACTION_TYPE} from "models/contracts/types"
+import {t} from "translations/translate"
+import {LiquidityBottomSheet} from "components/bottom-sheet/LiquidityBottomSheet"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
 }
 
 const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
-  const {t} = useTranslation()
   const navigate = useNavigate()
   const {setData} = useSharedData()
 
@@ -59,13 +59,13 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
     <>
       <div className="main">
         <MainInfoHeader className="header">
-          <View className={"row"}>
-            <Text className={"logoText"} text={t("appName")}/>
+          <div className={"row"}>
+            <span className={"logoText"}>{t("appName")}</span>
             <AddressView
               title={view.getAccount}
               onClick={getProviderStore.toggleDisconnectDialog}
             />
-          </View>
+          </div>
           <View style={{marginTop: 16}}>
             <CircularProgressbarWithChildren
               background={true}
@@ -75,7 +75,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             >
               <EllipseIcon width="100%" height="100%" className="ellipse"/>
               <Text className="circle-title" text={t("home.netApy")}/>
-              <span className="circle-amount">{view.getNetApy}</span>
+              <span className="circle-amount">{view.getNetApyLabel}</span>
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
               <View
@@ -127,11 +127,49 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             <LinearProgress progress={view.getBorrowLimitPercentage} amount={view.getBorrowLimit}/>
           </View>
         </MainInfoHeader>
-        <View className="content" direction={ViewDirections.COLUMN}>
-          <Deposits data={view.userSuppliedMarket} onClick={onBorrowOrSupplyClick}/>
-          <Borrows data={view.borrowMarket} onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
-        </View>
+        <div className="content">
+          {view.userBalanceMarket.length > 0 && (
+            <Deposits
+              isBalance={true}
+              hintText={t("hints.deposits")}
+              title={t("home.walletBalance")}
+              data={view.userBalanceMarket}
+              onClick={onBorrowOrSupplyClick}/>
+          )}
+          {view.userSuppliedMarket.length > 0 && (
+            <Deposits
+              isWithdraw={true}
+              hintText={t("hints.balance")}
+              title={t("home.deposits")}
+              data={view.userSuppliedMarket}
+              onClick={onBorrowOrSupplyClick}/>
+          )}
+          {view.userBorrowedMarket.length > 0 && (
+            <Borrows
+              isRepay={true}
+              infoButtonBackgroundColor={colors.purpleHeart}
+              showLiquidityButton={false}
+              infoText={t("hints.borrows")}
+              title={t("home.borrows")}
+              data={view.userBorrowedMarket}
+              onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.REPAY)}/>
+          )}
+          {view.borrowMarket.length > 0 && (
+            <Borrows
+              infoButtonBackgroundColor={colors.purpleHeart}
+              hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
+              infoText={t("hints.borrowAvailable")}
+              title={t("home.availableToBorrow")}
+              onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
+              data={view.borrowMarket}
+              onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
+          )}
+        </div>
       </div>
+      <LiquidityBottomSheet
+        list={view.borrowMarket}
+        visible={view.liquidityModalVisible}
+        onDismiss={() => view.setLiquidityModalVisibility(false)}/>
     </>
   )
 }

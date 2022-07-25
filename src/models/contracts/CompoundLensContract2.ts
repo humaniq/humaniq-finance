@@ -89,7 +89,14 @@ const abi: ContractInterface = [{
       "internalType": "uint256",
       "name": "underlyingDecimals",
       "type": "uint256"
-    }], "internalType": "struct CompoundLens.CTokenMetadata", "name": "", "type": "tuple"
+    }, {"internalType": "uint256", "name": "compSupplySpeed", "type": "uint256"}, {
+      "internalType": "uint256",
+      "name": "compBorrowSpeed",
+      "type": "uint256"
+    }, {"internalType": "uint256", "name": "borrowCap", "type": "uint256"}],
+    "internalType": "struct CompoundLens.CTokenMetadata",
+    "name": "",
+    "type": "tuple"
   }],
   "payable": false,
   "stateMutability": "view",
@@ -126,7 +133,14 @@ const abi: ContractInterface = [{
       "internalType": "uint256",
       "name": "underlyingDecimals",
       "type": "uint256"
-    }], "internalType": "struct CompoundLens.CTokenMetadata[]", "name": "", "type": "tuple[]"
+    }, {"internalType": "uint256", "name": "compSupplySpeed", "type": "uint256"}, {
+      "internalType": "uint256",
+      "name": "compBorrowSpeed",
+      "type": "uint256"
+    }, {"internalType": "uint256", "name": "borrowCap", "type": "uint256"}],
+    "internalType": "struct CompoundLens.CTokenMetadata[]",
+    "name": "",
+    "type": "tuple[]"
   }],
   "payable": false,
   "stateMutability": "view",
@@ -185,32 +199,7 @@ const abi: ContractInterface = [{
   "stateMutability": "view",
   "type": "function"
 }, {
-  "inputs": [{
-    "internalType": "contract Comp",
-    "name": "comp",
-    "type": "address"
-  }, {
-    "internalType": "contract ComptrollerLensInterface",
-    "name": "comptroller",
-    "type": "address"
-  }, {"internalType": "address", "name": "account", "type": "address"}],
-  "name": "getCompBalance",
-  "outputs": [{
-    "components": [{
-      "internalType": "uint256",
-      "name": "balance",
-      "type": "uint256"
-    }, {"internalType": "uint256", "name": "allocated", "type": "uint256"}],
-    "internalType": "struct CompoundLens.CompBalance",
-    "name": "",
-    "type": "tuple"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{"internalType": "contract Comp", "name": "comp", "type": "address"}, {
+  "inputs": [{"internalType": "address", "name": "comp", "type": "address"}, {
     "internalType": "address",
     "name": "account",
     "type": "address"
@@ -227,13 +216,11 @@ const abi: ContractInterface = [{
       "type": "address"
     }], "internalType": "struct CompoundLens.CompBalanceMetadata", "name": "", "type": "tuple"
   }],
-  "payable": false,
   "stateMutability": "view",
   "type": "function"
 }, {
-  "constant": false,
   "inputs": [{
-    "internalType": "contract Comp",
+    "internalType": "address",
     "name": "comp",
     "type": "address"
   }, {
@@ -256,12 +243,10 @@ const abi: ContractInterface = [{
     "name": "",
     "type": "tuple"
   }],
-  "payable": false,
   "stateMutability": "nonpayable",
   "type": "function"
 }, {
-  "constant": true,
-  "inputs": [{"internalType": "contract Comp", "name": "comp", "type": "address"}, {
+  "inputs": [{"internalType": "address", "name": "comp", "type": "address"}, {
     "internalType": "address",
     "name": "account",
     "type": "address"
@@ -277,80 +262,8 @@ const abi: ContractInterface = [{
     "name": "",
     "type": "tuple[]"
   }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "internalType": "contract GovernorAlpha",
-    "name": "governor",
-    "type": "address"
-  }, {"internalType": "uint256[]", "name": "proposalIds", "type": "uint256[]"}],
-  "name": "getGovProposals",
-  "outputs": [{
-    "components": [{
-      "internalType": "uint256",
-      "name": "proposalId",
-      "type": "uint256"
-    }, {"internalType": "address", "name": "proposer", "type": "address"}, {
-      "internalType": "uint256",
-      "name": "eta",
-      "type": "uint256"
-    }, {"internalType": "address[]", "name": "targets", "type": "address[]"}, {
-      "internalType": "uint256[]",
-      "name": "values",
-      "type": "uint256[]"
-    }, {"internalType": "string[]", "name": "signatures", "type": "string[]"}, {
-      "internalType": "bytes[]",
-      "name": "calldatas",
-      "type": "bytes[]"
-    }, {"internalType": "uint256", "name": "startBlock", "type": "uint256"}, {
-      "internalType": "uint256",
-      "name": "endBlock",
-      "type": "uint256"
-    }, {"internalType": "uint256", "name": "forVotes", "type": "uint256"}, {
-      "internalType": "uint256",
-      "name": "againstVotes",
-      "type": "uint256"
-    }, {"internalType": "bool", "name": "canceled", "type": "bool"}, {
-      "internalType": "bool",
-      "name": "executed",
-      "type": "bool"
-    }], "internalType": "struct CompoundLens.GovProposal[]", "name": "", "type": "tuple[]"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "internalType": "contract GovernorAlpha",
-    "name": "governor",
-    "type": "address"
-  }, {"internalType": "address", "name": "voter", "type": "address"}, {
-    "internalType": "uint256[]",
-    "name": "proposalIds",
-    "type": "uint256[]"
-  }],
-  "name": "getGovReceipts",
-  "outputs": [{
-    "components": [{
-      "internalType": "uint256",
-      "name": "proposalId",
-      "type": "uint256"
-    }, {"internalType": "bool", "name": "hasVoted", "type": "bool"}, {
-      "internalType": "bool",
-      "name": "support",
-      "type": "bool"
-    }, {"internalType": "uint96", "name": "votes", "type": "uint96"}],
-    "internalType": "struct CompoundLens.GovReceipt[]",
-    "name": "",
-    "type": "tuple[]"
-  }],
-  "payable": false,
   "stateMutability": "view",
   "type": "function"
 }]
 
-export const CompoundLensContract = (address: string, provider: Signer | providers.Provider) => new ethers.Contract(address, abi, provider)
+export const CompoundLensContract2 = (address: string, provider: Signer | providers.Provider) => new ethers.Contract(address, abi, provider)
