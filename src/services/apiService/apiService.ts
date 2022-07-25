@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { BASE_URL } from "../../constants/api";
-import { formatRoute } from "../../utils/network";
+import { formatRoute } from "utils/network";
+import BuildUrl from "build-url"
+import {BASE_URL} from "constants/network"
 
 export interface ApiServiceResponse<T> extends AxiosResponse<T> {
   isOk: boolean;
@@ -22,10 +23,11 @@ export class ApiService {
     );
   };
 
-  get = <T>(path: string, params?: any, config?: AxiosRequestConfig) =>
-    this.axios.get(formatRoute(path, params), config) as Promise<
+  get = <T>(path: string, params?: BuildUrl.BuildUrlOptions, config?: AxiosRequestConfig) => {
+    return this.axios.get(BuildUrl(path, params), config) as Promise<
       ApiServiceResponse<T>
-    >;
+      >;
+  }
 
   post = <T>(
     path: string,

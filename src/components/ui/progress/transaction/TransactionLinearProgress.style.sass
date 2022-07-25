@@ -1,0 +1,29 @@
+@import "../../../../styles/colors"
+
+.tx-progress-container
+  display: flex
+  flex-direction: row
+  align-items: center
+  .amount
+    color: rgba(255, 255, 255, 0.5)
+    margin-left: 10px
+    font-style: normal
+    font-weight: 500
+    font-size: 12px
+    letter-spacing: 0.5px
+
+.tx-progress
+  width: 100%
+  border-radius: 40px
+  background-color: $grey-divider
+  height: 6px
+  margin-left: 10px
+  margin-right: 10px
+  overflow: hidden
+  &-child
+    display: flex
+    height: 100%
+    background-color: $orange-warning
+    border-radius: 40px
+    justify-content: flex-end
+    align-items: center

@@ -1,0 +1,29 @@
+@import 'reset.sass'
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap')
+@import 'vars.sass'
+
+a
+  +font(600)
+  font-size: 15px
+  line-height: 15px
+  letter-spacing: 0.01em
+  color: $textBlack
+  opacity: 0.5
+  display: inline-flex
+  text-decoration: none
+  padding-bottom: 10px
+  border-bottom: 2px solid transparent
+  +mt(.2s)
+  &:hover
+    border-bottom: 2px solid rgba($primary, 0.5)
+    +mt(.2s)
+  &:focus,
+  &.active,
+  &.router-link-active
+    +mt(.2s)
+    opacity: 1
+    border-bottom: 2px solid rgba($primary, 0.76)
+
+.hide-on-mobile
+  @include mq($until: tablet)
+    display: none!important

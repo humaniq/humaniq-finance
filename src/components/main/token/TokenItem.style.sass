@@ -1,0 +1,59 @@
+@import "../../../styles/colors"
+
+.tkn-container
+  flex-direction: column
+  margin-bottom: 8px
+  .tkn-container-content
+    display: flex
+    flex-direction: row
+    background-color: $white
+    border-radius: 12px
+    align-items: flex-start
+    margin-top: 10px
+    padding: 12px 8px
+    .right
+      flex: 1
+      margin-left: 12px
+      .insufficient
+        font-style: normal
+        font-weight: 400
+        font-size: 15px
+        color: $red-alert
+        align-self: center
+        margin-top: 14px
+    .row
+      justify-content: space-between
+      margin-bottom: 5px
+      margin-right: 10px
+      .title
+        font-style: normal
+        font-weight: 500
+        font-size: 17px
+        letter-spacing: 0.5px
+        color: $textBlack
+    .row-2
+      justify-content: space-between
+      margin-top: 5px
+      margin-right: 10px
+      .title
+        font-style: normal
+        font-weight: 400
+        font-size: 15px
+        letter-spacing: 0.5px
+        color: $grey-text
+  .avatar
+    margin-left: 2px
+  .token-button
+    margin-top: 11px
+    margin-right: 8px
+    border-radius: 12px
+    padding: 9px
+    background-color: $primary-light
+    color: $primary
+    &:hover
+      color: $white
+      background-color: $primary
+    &:disabled
+      background-color: $grey-divider
+      color: $white
+      pointer-events: none

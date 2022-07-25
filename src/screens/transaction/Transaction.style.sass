@@ -1,0 +1,261 @@
+@import "../../styles/vars.sass"
+
+.no-data
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  &-title
+    font-size: 1.3em
+    font-style: normal
+    font-weight: 600
+    margin-bottom: 10px
+  &-description
+    cursor: pointer
+    font-size: 1.2em
+    font-style: normal
+    font-weight: 500
+
+.valuation
+  display: flex
+  flex-direction: column
+  background-color: $blue-ozone
+  width: 800px
+  @include mq($until: tablet)
+    width: 100%
+  &-content
+    padding-left: 16px
+    padding-right: 16px
+    padding-bottom: 16px
+  &-borrow-limit
+    display: flex
+    flex-direction: column
+    margin-top: 10px
+    margin-bottom: 10px
+    background-color: $white
+    padding-bottom: 16px
+    border-radius: 12px
+    &-row
+      display: flex
+      flex-direction: row
+      align-items: center
+      padding: 1.3em 1em
+      border-radius: 12px
+      justify-content: space-between
+      &-title
+        font-style: normal
+        font-weight: 400
+        font-size: 1.2em
+        letter-spacing: 0.5px
+        color: $grey-text
+      &-value
+        font-style: normal
+        font-weight: 400
+        font-size: 1.2em
+        letter-spacing: 0.5px
+        color: $textBlack
+
+.v-supply
+  flex-direction: column
+  margin-bottom: 8px
+  padding-bottom: 1px
+  background-color: $white
+  border-radius: 12px
+  box-shadow: rgba($primary, 0.05) 0 8px 24px
+  &-insufficient-balance
+    display: flex
+    font-style: normal
+    font-weight: 400
+    font-size: 15px
+    color: $red-alert
+    justify-content: center
+    margin-top: 6px
+    margin-bottom: 5px
+  &-content
+    display: flex
+    flex-direction: row
+    background-color: $white
+    border-radius: 12px
+    align-items: center
+    padding: 12px 8px
+    &--right
+      display: flex
+      flex-direction: column
+      flex: 1
+      margin-left: 12px
+    &--row
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      margin-bottom: 5px
+      margin-right: 10px
+      &-title
+        font-style: normal
+        font-weight: 500
+        font-size: 16px
+        letter-spacing: 0.5px
+        color: $textBlack
+    &-row-second
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      margin-top: 5px
+      margin-right: 10px
+      &-title
+        font-style: normal
+        font-weight: 400
+        font-size: 14px
+        letter-spacing: 0.5px
+        color: $grey-text
+  &--avatar
+    margin-left: 2px
+    width: 33px
+    height: 33px
+  .token-button
+    margin-top: 11px
+    margin-right: 8px
+    border-radius: 12px
+    padding: 9px
+    background-color: $primary-light
+    color: $primary
+    &:hover
+      color: $white
+      background-color: $primary
+    &:disabled
+      background-color: $grey-divider
+      color: $white
+      pointer-events: none
+
+.v-form
+  display: flex
+  flex-direction: column
+  margin-top: 1.6em
+  &-btn
+    background-color: $primary
+    color: $white
+    font-style: normal
+    font-weight: 500
+    font-size: 16px
+    letter-spacing: 0.5px
+    padding: 12px
+    border-radius: 12px
+    margin-top: 20px
+    &.borrow
+      background-color: $purple-heart
+      &:hover
+        background-color: rgba($purple-heart, 0.7)
+    &:hover
+      background-color: rgba($primary, 0.7)
+    &:disabled
+      background-color: $grey-divider
+      pointer-events: none
+  &-row
+    display: flex
+    flex-direction: row
+    align-items: center
+    background-color: $white
+    padding: 1.3em 1em
+    border-radius: 12px
+    justify-content: space-between
+    margin-bottom: 8px
+    .right-row
+      display: flex
+      flex-direction: row
+      align-items: center
+      align-self: flex-end
+      .arrow-icon
+        margin-left: 2px
+        margin-right: 2px
+    &-title
+      font-style: normal
+      font-weight: 400
+      font-size: 1.2em
+      letter-spacing: 0.5px
+      color: $grey-text
+    &-value
+      font-style: normal
+      font-weight: 400
+      font-size: 1.2em
+      letter-spacing: 0.5px
+      color: $textBlack
+      margin-right: 2px
+      margin-left: 2px
+  &-arrow-row
+    display: flex
+    flex-direction: row
+    align-items: center
+    align-self: flex-end
+  .fee-btn
+    font-size: 1.2em
+    font-weight: 500
+    font-style: normal
+    letter-spacing: 0.5px
+    color: $textBlack
+    background-color: transparent
+    padding-left: 8px
+    padding-right: 8px
+    margin-top: 20px
+    margin-bottom: 20px
+    align-self: center
+  &-title
+    font-style: normal
+    font-weight: 500
+    font-size: 1.3em
+    color: $textBlack
+    letter-spacing: 0.5px
+    align-self: center
+  &-middle-row
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: center
+    margin-top: 4px
+    margin-bottom: 8px
+    &-input
+      margin-left: 22px
+      margin-right: 22px
+      background-color: transparent
+      flex-grow: 0
+      font-style: normal
+      font-weight: 700
+      align-self: center
+      text-align: center
+      letter-spacing: 0.5px
+      border: none
+      min-width: 60px !important
+      max-width: 220px
+      &::placeholder
+        color: $grey-text
+      &:focus
+        outline: none!important
+    .v-form-icon-container
+      display: flex
+      background-color: $white
+      border-radius: 100px
+      width: 50px
+      height: 50px
+      align-items: center
+      justify-content: center
+      box-shadow: rgba($primary, 0.05) 0 8px 24px
+      &-icon
+      &:hover
+        background-color: $primary-light
+
+.v-wallet-balance
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: space-between
+  margin-top: 22px
+  &-title
+    font-style: normal
+    font-weight: 400
+    font-size: 1.2em
+    letter-spacing: 0.5px
+    color: $grey-text
+  &-value
+    font-style: normal
+    font-weight: 500
+    font-size: 1.2em
+    letter-spacing: 0.5px
+    color: $textBlack
