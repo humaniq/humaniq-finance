@@ -18,7 +18,6 @@ import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
 import {transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
-import colors from "utils/colors"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -189,7 +188,14 @@ export class TransactionViewModel {
   }
 
   get getFormattedBalance() {
-    let balance = this.isBorrow ? this.item.borrow : this.tokenBalance
+    let balance = this.tokenBalance
+
+    if (this.isBorrow) {
+      balance = this.item.borrow
+    } else if (this.isRepay) {
+      balance = this.balance
+    }
+
     return `${balance.toFixed(2)} ${this.getTokenSymbol}`
   }
 
@@ -573,9 +579,29 @@ export class TransactionViewModel {
           this.navigateBack()
         }
       } else if (this.isRepay) {
-        const {hash} = await this.cTokenContract.repayBorrow(inputValue)
+        let approvedResult: any
+
+        const allowanceAmount = await this.selectedToken.allowance(
+          this.item.cToken
+        )
 
         this.showMessage(TRANSACTION_STATUS.PENDING)
+
+        // check if spending token is allowed, otherwise it should be approved
+        if (+allowanceAmount >= +inputValue) {
+          // can proceed with supply
+          approvedResult = true
+        } else {
+          // need to approve
+          approvedResult = await this.selectedToken.approve(
+            this.item.cToken
+          )
+          this.txData.gasLimit = +approvedResult.gasLimit
+          // wait for transaction to be mined in order to proceed with mint
+          await approvedResult.wait()
+        }
+
+        const {hash} = await this.cTokenContract.repayBorrow(inputValue)
 
         if (hash) {
           await this.comptroller.waitForTransaction(hash)

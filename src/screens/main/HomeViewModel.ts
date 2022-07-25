@@ -177,8 +177,8 @@ export class HomeViewModel {
       cTokenData.borrowBalance = balance.borrowBalanceCurrent
       cTokenData.supplyBalance = balance.balanceOfUnderlying
       cTokenData.balanceOf = balance.balanceOf
-      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || 0 // TODO 0 default
-      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || 0 // TODO 0 default
+      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || balance.tokenBalance // TODO 0 default, totalEarned should come from server??
+      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || balance.tokenBalance // TODO 0 default, totalEarned should come from server??
 
       return cTokenData
     })
@@ -230,7 +230,7 @@ export class HomeViewModel {
   }
 
   convertToUSD = (value: any, underlyingPrice: any, tokenDecimals: any) => {
-    const oracleMantissa = Big(10).pow(+tokenDecimals)
+    let oracleMantissa = Big(10).pow(18)
     const decimalValue = Big(10).pow(+tokenDecimals)
     const mantissa = Big(10).pow(18 - (+tokenDecimals))
 
