@@ -1,7 +1,7 @@
 import {ethers, providers, Signer} from "ethers"
 
 export const contractWBGLAddress =
-  "0xaE1A1D3f65C88449016f957b4a29969eaae61492"
+  "0xE7465b00430F35a4A859C4750E8Cfee063c90ffF"
 
 const abi = [{
   "inputs": [{"internalType": "address", "name": "_owner", "type": "address"}],
