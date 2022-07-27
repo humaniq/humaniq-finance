@@ -68,7 +68,7 @@ export const EVM_NETWORKS: {[key: string]: EVM_NETWORK} = {
     env: NETWORK_TYPE.TEST,
     nativeCoin: NATIVE_COIN.BINANCECOIN,
     nativeSymbol: NATIVE_COIN_SYMBOL.BNB,
-    comptrollerAddress: "0x75E6E3881ad08Da94091C10c1c8945b7cba2C6B6",
-    compoundLensAddress: "0xCBeCAeA2673065E94e7024fe129a1Cf55Bf9B1DD"
+    comptrollerAddress: "0x2A776F95f6c5B9dd90c35A751ad1625540f586b0",
+    compoundLensAddress: "0xf4E9f10ED605E243edD2a4207D814fEE09bA1288"
   },
 }
