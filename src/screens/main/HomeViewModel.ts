@@ -327,15 +327,12 @@ export class HomeViewModel {
 
     market = market
       .sort((a: any, b: any) => a.symbol.localeCompare(b.symbol))
-      .filter((item: any) => item.cName !== "Savy BUSD" && item.cName !== "Savy WBGL") // TODO remove filter after new contracts deployment
 
     this.supplyMarket = market.filter(
       (market: any) => market.supplyAllowed && +market.supplyBalance === 0
     )
 
-    this.userBalanceMarket = market.filter(
-      (market: any) => +market.balance > 0
-    )
+    this.userBalanceMarket = market
 
     this.userSuppliedMarket = market.filter(
       (market: any) => +market.supplyBalance > 0
