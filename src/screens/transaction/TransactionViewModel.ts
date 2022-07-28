@@ -134,7 +134,7 @@ export class TransactionViewModel {
   }
 
   get isWBGL() {
-    return this.item.symbol === 'TWBGL'
+    return this.item.symbol === 'WBGL'
   }
 
   get isBUSD() {
@@ -185,6 +185,10 @@ export class TransactionViewModel {
   get tokensFiatPrice() {
     let balance = this.isBorrow ? this.item.borrow : this.tokenBalance
     return Big(this.item.tokenUsdValue).mul(balance)
+  }
+
+  get bottomBalanceFiatPrice() {
+    return `$${this.tokensFiatPrice.toFixed(4)}`
   }
 
   get getFormattedBalance() {

@@ -14,14 +14,14 @@ export class ProviderStore {
   initialized = false
   currentAccount?: string | null = null
   hasProvider = false
-  chainId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID
-  networkId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].networkID
+  chainId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID
+  networkId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].networkID
   signer: Signer
   currentProvider: any // ethers.providers.Web3Provider | WalletConnectProvider
   connectDialog = false
   disconnectDialog = false
   connectedProvider: PROVIDERS
-  currentNetworkName = EVM_NETWORKS_NAMES.BSC_TESTNET
+  currentNetworkName = EVM_NETWORKS_NAMES.BSC
   isConnecting = false
 
   constructor() {

@@ -1,7 +1,5 @@
 import {ethers, providers, Signer} from "ethers"
-
-export const contractBUSDAddress =
-  "0x915D6CA12CE5FeC533e6aD0dDdee9C04C4e9470d"
+import {getProviderStore} from "App"
 
 const abi = [{
   "inputs": [{"internalType": "address", "name": "_owner", "type": "address"}],
@@ -138,4 +136,4 @@ const abi = [{
 }]
 
 export const BUSDTestContract = (provider: Signer | providers.Provider) =>
-  new ethers.Contract(contractBUSDAddress, abi, provider)
+  new ethers.Contract(getProviderStore.currentNetwork.bUSDAddress, abi, provider)

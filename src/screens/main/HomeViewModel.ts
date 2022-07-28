@@ -11,7 +11,6 @@ import {BorrowSupplyItem} from "models/types"
 import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
 
 export class HomeViewModel {
-  supplyMarket: BorrowSupplyItem[] = []
   userSuppliedMarket: BorrowSupplyItem[] = []
   userBalanceMarket: BorrowSupplyItem[] = []
   borrowMarket: BorrowSupplyItem[] = []
@@ -39,10 +38,6 @@ export class HomeViewModel {
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
     this.account = getProviderStore.currentAccount
-  }
-
-  get isUserMarketShown() {
-    return this.userSuppliedMarket.length || this.userBorrowedMarket.length
   }
 
   get getAvailableLimit() {
@@ -327,10 +322,6 @@ export class HomeViewModel {
 
     market = market
       .sort((a: any, b: any) => a.symbol.localeCompare(b.symbol))
-
-    this.supplyMarket = market.filter(
-      (market: any) => market.supplyAllowed && +market.supplyBalance === 0
-    )
 
     this.userBalanceMarket = market
 
