@@ -1,7 +1,5 @@
 import {ethers, providers, Signer} from "ethers"
-
-export const contractWBGLAddress =
-  "0xE7465b00430F35a4A859C4750E8Cfee063c90ffF"
+import {getProviderStore} from "App"
 
 const abi = [{
   "inputs": [{"internalType": "address", "name": "_owner", "type": "address"}],
@@ -138,4 +136,4 @@ const abi = [{
 }]
 
 export const WBGLTestContract = (provider: Signer | providers.Provider) =>
-  new ethers.Contract(contractWBGLAddress, abi, provider)
+  new ethers.Contract(getProviderStore.currentNetwork.wBGLAddress, abi, provider)
