@@ -158,7 +158,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               text={view.getDepositButtonText}/>
             <div className="v-wallet-balance">
               <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.tokensFiatPrice.toFixed(4)})`}</span>
+              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.bottomBalanceFiatPrice})`}</span>
             </div>
           </div>
         </div>
