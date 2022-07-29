@@ -11,7 +11,7 @@ export const Loader = () => {
         width="100"
         strokeColor={colors.primary}
         strokeWidth="2" />
-      <span className="loader-container__message">
+      <span className="message">
         {t("common.loading")}...
       </span>
     </div>

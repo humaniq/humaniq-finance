@@ -1,4 +1,4 @@
-import "./style.sass"
+import "components/fullscreen-loader/FullScreenLoader.style.sass"
 import {t} from "translations/translate"
 import {CircularProgress} from "@mui/material"
 import React from "react"
