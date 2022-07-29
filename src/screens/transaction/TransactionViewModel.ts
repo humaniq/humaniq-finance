@@ -30,11 +30,6 @@ export class TransactionViewModel {
   account?: string | null = null
   cTokenContract: Ctoken
   gasEstimating = false
-  txPrice: any = 0
-
-  fastGas: any = 0
-  fastestGas: any = 0
-  safeLowGas: any = 0
 
   nativeCoinPrice: FinanceCurrency = {
     currency: "",
@@ -54,7 +49,6 @@ export class TransactionViewModel {
     to: "",
     from: ""
   }
-  lastVal: string
   inputRef?: any
   transactionInProgress = false
   selectedToken: WBGL | BUSD
@@ -134,11 +128,11 @@ export class TransactionViewModel {
   }
 
   get isWBGL() {
-    return this.item.symbol === 'WBGL'
+    return this.item.symbol === getProviderStore.currentNetwork.WBGLSymbol
   }
 
   get isBUSD() {
-    return this.item.symbol === 'BUSD'
+    return this.item.symbol === getProviderStore.currentNetwork.BUSDSymbol
   }
 
   get isEnoughBalance() {
@@ -187,7 +181,7 @@ export class TransactionViewModel {
     return Big(this.item.tokenUsdValue).mul(balance)
   }
 
-  get bottomBalanceFiatPrice() {
+  get fiatBalanceFormatted() {
     return `$${this.tokensFiatPrice.toFixed(4)}`
   }
 

@@ -4,15 +4,19 @@ import { getProviderStore } from "App";
 import "components/modals/ConnectWallet.style.sass";
 import { t } from "translations/translate";
 
+import ConnectIllustration from "../../assets/images/connect-illustration.svg";
+import {Button} from "components/ui/button/Button"
+
 export const ConnectWallet = observer(() => {
   return (
     <div className="connect-wallet">
-      <span className="connect-wallet__logo">{t("appName")}</span>
-      <div className="wallet-item" onClick={getProviderStore.toggleConnectDialog}>
-        <span className="wallet-item__name">{t("wallet.connect")}</span>
-        <span className="wallet-item__description">
-          {t("wallet.connectDescription")}
-        </span>
+     <img alt="connect-illustration" className="image" src={ConnectIllustration}/>
+      <span className="title">{t("welcomeMessage")}</span>
+      <span className="sub-title">{t("welcomeDescription")}</span>
+      <div className="buttons">
+        <Button className="later" text={t("common.mayBeLater")} />
+        <Button onClick={getProviderStore.toggleConnectDialog}
+                className="proceed" text={t("wallet.connectDescription")} />
       </div>
     </div>
   );

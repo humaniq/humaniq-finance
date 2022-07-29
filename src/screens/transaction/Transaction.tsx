@@ -43,6 +43,8 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         await view.mounted(data as TransactionState)
         view.setInputRef(inputRef.current)
         view.setNavigation(navigate)
+      } else {
+        navigate(-1)
       }
       return () => {
         setData(null)
@@ -51,12 +53,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     })()
   }, [view, data, setData])
 
-  if (!data) return (
-    <div className="no-data">
-      <span className="no-data-title">{t("noData")}</span>
-      <a onClick={view.navigateBack} className="no-data-description">{t("returnToMain")}</a>
-    </div>
-  )
+  if (!data) return null
 
   if (view.isRefreshing) return <Loader/>
 
@@ -122,7 +119,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <span className="v-form-row-title">{view.getApyTitle}</span>
               <span className="v-form-row-value">{view.getApyValue}</span>
             </div>
-
             <div className="v-form-row">
               <span className="v-form-row-title">{view.getBorrowLimitTitle}</span>
               <div className="v-form-arrow-row">
@@ -135,7 +131,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 }
               </div>
             </div>
-
             <div className="valuation-borrow-limit">
               <div className="valuation-borrow-limit-row">
                 <span className="valuation-borrow-limit-row-title">{t("home.borrowLimitUsed")}</span>
@@ -158,7 +153,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               text={view.getDepositButtonText}/>
             <div className="v-wallet-balance">
               <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.bottomBalanceFiatPrice})`}</span>
+              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.fiatBalanceFormatted})`}</span>
             </div>
           </div>
         </div>

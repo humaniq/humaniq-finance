@@ -82,7 +82,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             className={"btn"}
             variant={"text"}
           >
-            {t("common.later")}
+            {t("common.mayBeLater")}
           </Button>
         </div>
       </Box>

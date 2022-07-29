@@ -140,7 +140,7 @@ export class HomeViewModel {
     return metadata.map(async (data: any) => {
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
-      const cTokenContract = new Ctoken(data.cToken, this.account, data.symbol === "TWBGL")
+      const cTokenContract = new Ctoken(data.cToken, this.account, data.symbol === getProviderStore.currentNetwork.WBGLSymbol)
       const cTokenData = Object.assign({}, data)
 
       let token: any
@@ -242,20 +242,6 @@ export class HomeViewModel {
     return await this.cl.getcTokenData(cToken)
   }
 
-  setRewardsInfo = async () => {
-    const ersdl: any = this.market.find(
-      (token: any) => token.symbol === "eRSDL"
-    )
-
-    if (!ersdl) return
-
-    const balance = await this.cl.getCompoundBalance(ersdl.token)
-
-    this.ersdlPrice = ersdl.underlyingPrice
-    this.unclaimedRewards = balance.allocated / this.ethMantissa
-    this.ersdlBalance = balance.balance / this.ethMantissa
-  }
-
   calculateDistributionApy = async (item: any) => {
     const compSpeeds = await this.comptroller.getCompSpeeds(item.cToken)
     const tmp = compSpeeds * 100 * 4 * 60 * 24 * 365 * this.ersdlPrice
@@ -306,8 +292,6 @@ export class HomeViewModel {
     market.forEach(this.convertValues)
 
     this.market = market
-
-    await this.setRewardsInfo()
 
     const apyPromises = market.map(this.calculateDistributionApy)
     await Promise.all(apyPromises)
