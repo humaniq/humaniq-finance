@@ -41,9 +41,9 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"metamask"} src={MetamaskLogo} />
+              <img alt={"humaniq"} src={HumaniqLogo} />
             </Avatar>
-            <span>{t("metamaskName")}</span>
+            <span>{t("hmqName")}</span>
           </Paper>
           <Paper
             elevation={0}
@@ -51,9 +51,9 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"humaniq"} src={HumaniqLogo} />
+              <img alt={"metamask"} src={MetamaskLogo} />
             </Avatar>
-            <span>{t("hmqName")}</span>
+            <span>{t("metamaskName")}</span>
           </Paper>
           <Paper
             elevation={0}

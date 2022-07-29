@@ -30,13 +30,14 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
     return ""
   }, [progress])
 
-  const handleProgress = useMemo(() => progress === 0 ? 0 : Math.min(progress, 100).toFixed(2), [progress])
+  const handleProgress = useMemo(() => progress === 0 ? 0 : Math.min(progress, 100), [progress])
+  const handleProgressPercentage = useMemo(() => progress === 0 ? 0 : Math.max(handleProgress, 6), [progress, handleProgress])
 
   return (
     <div className="progress-container">
-      <div className="progress" style={{ marginLeft: progress > 0 ? 0 : 10 }}>
-        <div className="progress-child" style={{ width: `${handleProgress}%`, backgroundColor: progressColor }}>
-          <span className="progress-text">{`${handleProgress}%`}</span>
+      <div className="progress" style={{ marginLeft: progress > 0 ? 0 : 16 }}>
+        <div className="child" style={{ width: `${handleProgressPercentage.toFixed(1)}%`, backgroundColor: progressColor }}>
+          <span className="text">{`${handleProgress.toFixed(1)}%`}</span>
         </div>
       </div>
       <span className="amount">{amount}</span>

@@ -71,7 +71,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
               background={true}
               strokeWidth={4}
               className="circle"
-              value={view.getNetApy}
+              value={100}
             >
               <EllipseIcon width="100%" height="100%" className="ellipse"/>
               <Text className="circle-title" text={t("home.netApy")}/>
