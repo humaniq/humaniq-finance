@@ -10,19 +10,22 @@ export enum PROVIDERS {
   WC = "WC",
 }
 
+export const WALLET_TYPE_CONNECTED = "wallet_connected_type22"
+
 export class ProviderStore {
   initialized = false
   currentAccount?: string | null = null
   hasProvider = false
-  chainId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.DEFAULT].chainID
-  networkId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.DEFAULT].networkID
+  chainId: number
+  networkId: number
   signer: Signer
   currentProvider: any // ethers.providers.Web3Provider | WalletConnectProvider
   connectDialog = false
   disconnectDialog = false
   connectedProvider: PROVIDERS
-  currentNetworkName = EVM_NETWORKS_NAMES.DEFAULT
+  currentNetworkName = EVM_NETWORKS_NAMES.BSC
   isConnecting = false
+  notSupportedNetwork = false
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
@@ -37,8 +40,8 @@ export class ProviderStore {
   }
 
   get isConnectionSupported() {
-    return (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID && this.networkId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].networkID)
-      || (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID && this.networkId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].networkID)
+    return (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID)
+      || (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID)
   }
 
   setProvider = async (type: PROVIDERS) => {
@@ -47,9 +50,7 @@ export class ProviderStore {
         case PROVIDERS.WC:
           const provider = new WalletConnectProvider({rpc})
           const result = await provider.enable()
-          runInAction(() => {
-            this.currentAccount = result[0]
-          })
+          this.currentAccount = result[0]
           this.currentProvider = new ethers.providers.Web3Provider(provider)
           this.initProvider()
           break
@@ -62,10 +63,8 @@ export class ProviderStore {
           await this.connect()
       }
       this.connectedProvider = type
-      localStorage.setItem("connected", type)
-      runInAction(() => {
-        this.connectDialog = false
-      })
+      localStorage.setItem(WALLET_TYPE_CONNECTED, type)
+      this.connectDialog = false
     } catch (e) {
       Logger.error("ERROR", e)
     }
@@ -73,7 +72,7 @@ export class ProviderStore {
 
   init = async () => {
     this.initialized = true
-    const provider = localStorage.getItem("connected")
+    const provider = localStorage.getItem(WALLET_TYPE_CONNECTED)
     if (provider) {
       await this.setProvider(provider as PROVIDERS)
     }
@@ -108,13 +107,11 @@ export class ProviderStore {
     ethereum.removeListener("connect", this.handleChainChange)
   }
 
-  handleAccountsChange = (accounts: string[]) => {
+  handleAccountsChange = async (accounts: string[]) => {
     if (this.currentAccount && accounts[0] !== this.currentAccount) {
-      this.isConnecting = true
-      setTimeout(() => {
-        this.currentAccount = accounts[0]
-        this.isConnecting = false
-      }, 0)
+      this.currentAccount = accounts[0]
+      this.initialized = false;
+      await this.init()
     }
   }
 
@@ -126,20 +123,31 @@ export class ProviderStore {
     // handle message
   }
 
-  handleChainChange = async (chainId: string) => {
-    // if (parseInt(chainId, 16) === this.currentNetwork.chainID) return
-    //
-    // const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === parseInt(chainId, 16))
-    //
-    // if (chain) {
-    //   this.chainId = chain.chainID
-    //   this.networkId = chain.networkID
-    //   this.currentNetworkName = chain.name
-    //   await this.init()
-    // }
+  handleChainChange = async (info: any) => {
+    let chainId: any
+    if (typeof info === 'object') {
+      chainId = parseInt(info.chainId, 16)
+    } else {
+      chainId = parseInt(info, 16)
+    }
+
+    if (chainId === this.chainId) return
+
+    const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === chainId)
+
+    if (chain) {
+      this.chainId = chain.chainID
+      this.networkId = chain.networkID
+      this.currentNetworkName = chain.name
+      await this.init()
+    } else {
+      // not supported chain
+    }
   }
 
-  handleConnect = (connectInfo: ConnectInfo) => {
+  handleConnect = async (connectInfo: ConnectInfo) => {
+    if (parseInt(connectInfo.chainId, 16) === this.currentNetwork.chainID) return;
+    await this.init();
   }
 
   personalMessageRequest = (message: any): any => {
@@ -155,9 +163,9 @@ export class ProviderStore {
   }
 
   connect = async () => {
-    try {
-      this.isConnecting = true
+    this.isConnecting = true
 
+    try {
       const [chainId, networkId] = await Promise.all<string>([
         await window.ethereum.request({
           method: "eth_chainId"
@@ -170,15 +178,19 @@ export class ProviderStore {
       this.chainId = +chainId
       this.networkId = +networkId
 
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      }) as string[]
+      const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === this.chainId)
 
-      runInAction(() => {
+      if (chain) {
+        this.currentNetworkName = chain.name
+
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts"
+        }) as string[]
+
         if (accounts) {
           this.currentAccount = accounts[0]
         }
-      })
+      }
     } catch (e) {
       Logger.info("ERROR", e)
     } finally {
@@ -186,11 +198,11 @@ export class ProviderStore {
     }
   }
 
-  disconnect = () => {
+  disconnect = async () => {
     this.currentAccount = null
     this.disconnectDialog = false
     try {
-      localStorage.removeItem("connected")
+      localStorage.removeItem(WALLET_TYPE_CONNECTED)
       localStorage.removeItem("walletconnect")
     } catch (e) {
       Logger.error("ERROR", e)

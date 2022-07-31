@@ -37,11 +37,11 @@ export const  LinearProgress: React.FC<LinearProgressProps> = ({
     <div className="progress-container">
       <div className="progress">
         <div className="child" style={{
-          width: `${formatBalance(handleProgressPercentage, 2)}%`,
+          width: `${handleProgressPercentage.toFixed(2)}%`,
           backgroundColor: progressColor,
           justifyContent: progress > 1 ? 'flex-end' : 'flex-start'
         }}>
-          <span className="text">{`${formatBalance(handleProgress, 2)}%`}</span>
+          <span className="text">{`${handleProgress.toFixed(2)}%`}</span>
         </div>
       </div>
       <span className="amount">{amount}</span>

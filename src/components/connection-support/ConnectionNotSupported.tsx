@@ -1,3 +1,9 @@
 export const ConnectionNotSupported = () => {
-  return null
+  return <div>
+    Axaxaxaxaxaxa
+    Axaxaxaxaxaxa
+    Axaxaxaxaxaxa
+    Axaxaxaxaxaxa
+    Axaxaxaxaxaxa
+  </div>
 }

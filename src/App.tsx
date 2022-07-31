@@ -46,13 +46,11 @@ export const App = observer(() => {
     return () => getProviderStore.removeListeners()
   }, [])
 
-  if (getProviderStore.isConnecting) return <Loader />
-
   return (
     <>
       <SharedDataProvider>
         <div className="App">
-          {getProviderStore.currentAccount ? (
+          {getProviderStore.initialized ? (
             <Router>
               <Routes>
                 <Route path={routes.home.path} element={<Home/>}/>
@@ -62,7 +60,7 @@ export const App = observer(() => {
                 />
               </Routes>
             </Router>
-          ) : <ConnectWallet/>}
+          ) : null}
           <Snackbar
             open={app.alert.displayAlert}
             autoHideDuration={6000}

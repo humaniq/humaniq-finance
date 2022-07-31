@@ -5,10 +5,14 @@ import { t } from "translations/translate";
 import "./Loader.style.sass";
 
 interface LoaderProps {
+  visible?: boolean;
   color?: string;
+  message?: string;
 }
 
-export const Loader = ({ color = colors.primary }: LoaderProps) => {
+export const Loader = ({ visible = false, color = colors.primary, message = t("common.loading") }: LoaderProps) => {
+  if (!visible) return null
+
   return (
     <div className="loader-container">
       <RotatingLines
@@ -16,7 +20,7 @@ export const Loader = ({ color = colors.primary }: LoaderProps) => {
         strokeColor={color}
         strokeWidth="2" />
       <span className="message">
-        {t("common.loading")}...
+        {message}
       </span>
     </div>
   );

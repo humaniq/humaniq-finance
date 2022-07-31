@@ -21,6 +21,7 @@ import {TransactionLinearProgress} from "components/ui/progress/transaction/Tran
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
 import colors from "utils/colors"
+import {getProviderStore} from "App"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -52,11 +53,11 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         view.unMounted()
       }
     })()
-  }, [view, data, setData])
+  }, [view, data, setData, getProviderStore.currentAccount, getProviderStore.chainId])
 
   if (!data) return null
 
-  if (view.isRefreshing) return <Loader color={
+  if (view.isRefreshing || getProviderStore.isConnecting) return <Loader visible={view.isRefreshing || getProviderStore.isConnecting} color={
     (data as TransactionState).transactionType === TRANSACTION_TYPE.REPAY ||
     (data as TransactionState).transactionType === TRANSACTION_TYPE.BORROW ? colors.purpleHeart : colors.primary
   }/>

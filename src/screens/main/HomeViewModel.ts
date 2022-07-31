@@ -9,7 +9,6 @@ import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
 import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
-import {formatBalance} from "utils/utils"
 
 export class HomeViewModel {
   userSuppliedMarket: BorrowSupplyItem[] = []
@@ -20,25 +19,19 @@ export class HomeViewModel {
   ethMantissa = 1e18
   blocksPerDay = 4 * 60 * 24
   daysPerYear = 365
-  unclaimedRewards = 0
-  ersdlBalance = 0
   comptroller: any = null
   cTokenAddressList: string[] = []
-  account?: string | null = null
   market = []
   isRefreshing = true
-  ersdlPrice = 0
   totalBorrow = 0
   totalSupply = 0
   borrowLimit = 0
   liquidity = 0
   netApy = 0
-  tokensGeneratingRewards: any
   liquidityModalVisible = false
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
-    this.account = getProviderStore.currentAccount
   }
 
   get getAvailableLimit() {
@@ -50,7 +43,7 @@ export class HomeViewModel {
   }
 
   get getAccount() {
-    return renderShortAddress(this.account) || t("wallet.notConnected")
+    return getProviderStore.currentAccount ? renderShortAddress(getProviderStore.currentAccount) : t("wallet.connectWalletDialog")
   }
 
   get getNetApy() {
@@ -62,11 +55,11 @@ export class HomeViewModel {
   }
 
   get getBorrowBalance() {
-    return `$${formatBalance(this.totalBorrow, 4)}`
+    return `$${this.totalBorrow.toFixed(2)}`
   }
 
   get getSupplyBalance() {
-    return `$${formatBalance(this.totalSupply, 4)}`
+    return `$${this.totalSupply.toFixed(2)}`
   }
 
   get isConnectionSupported() {
@@ -80,6 +73,14 @@ export class HomeViewModel {
   get hasCollateral() {
     return this.totalSupply > 0
   }
+
+  toggleDialogOrDisconnectWallet = () => {
+    if (!getProviderStore.currentAccount) {
+      getProviderStore.connectDialog = !getProviderStore.connectDialog;
+    } else {
+      getProviderStore.toggleDisconnectDialog();
+    }
+  };
 
   calculateAPY = (ratePerBlock: any) => {
     // todo: ethMantissa for everything or not
@@ -141,7 +142,7 @@ export class HomeViewModel {
     return metadata.map(async (data: any) => {
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
-      const cTokenContract = new Ctoken(data.cToken, this.account, data.symbol === getProviderStore.currentNetwork.WBGLSymbol)
+      const cTokenContract = new Ctoken(data.cToken, getProviderStore.currentAccount, data.symbol === getProviderStore.currentNetwork.WBGLSymbol)
       const cTokenData = Object.assign({}, data)
 
       let token: any
@@ -243,26 +244,6 @@ export class HomeViewModel {
     return await this.cl.getcTokenData(cToken)
   }
 
-  calculateDistributionApy = async (item: any) => {
-    const compSpeeds = await this.comptroller.getCompSpeeds(item.cToken)
-    const tmp = compSpeeds * 100 * 4 * 60 * 24 * 365 * this.ersdlPrice
-
-    const supplyDistributionApy = +item.totalSupply
-      ? (tmp * this.ethMantissa) /
-      (item.totalSupply * item.exchangeRateStored * item.underlyingPrice)
-      : 0
-    item.supplyDistributionApy = !supplyDistributionApy
-      ? 0
-      : supplyDistributionApy
-
-    const borrowDistributionApy = +item.totalBorrows
-      ? tmp / (item.totalBorrows * item.underlyingPrice)
-      : 0
-    item.borrowDistributionApy = !borrowDistributionApy
-      ? 0
-      : borrowDistributionApy
-  }
-
   init = async () => {
     if (!this.isConnectionSupported) {
       this.setLoader(false)
@@ -294,9 +275,6 @@ export class HomeViewModel {
 
     this.market = market
 
-    const apyPromises = market.map(this.calculateDistributionApy)
-    await Promise.all(apyPromises)
-
     this.calculateTotals(market)
 
     let {1: liquidity} = await this.comptroller.getAccountLiquidity()
@@ -319,15 +297,6 @@ export class HomeViewModel {
     this.userBorrowedMarket = market.filter(
       (market: any) => +market.borrowBalance > 0
     )
-
-    this.tokensGeneratingRewards = market
-      .filter(
-        (market: any) =>
-          (market.supplyBalance > 0 && market.supplyDistributionApy > 0) ||
-          (market.borrowBalance > 0 && market.borrowDistributionApy > 0)
-      )
-      .map((market: any) => market.cToken)
-
     this.setLoader(false)
   }
 
@@ -362,12 +331,27 @@ export class HomeViewModel {
   }
 
   mounted = async () => {
-    if (this.account) {
+    if (getProviderStore.currentAccount) {
       this.setLoader(true)
-      this.comptroller = new Comptroller(this.account)
-      this.cl = new CompoundLens(this.account)
+      this.comptroller = new Comptroller(getProviderStore.currentAccount)
+      this.cl = new CompoundLens(getProviderStore.currentAccount)
       await this.init()
-      this.setLoader(false)
+    } else {
+      // clear initials
+      this.market = []
+      this.cTokenAddressList = []
+      this.userSuppliedMarket = []
+      this.userBalanceMarket = []
+      this.borrowMarket = []
+      this.userBorrowedMarket = []
+      this.totalBorrow = 0
+      this.totalSupply = 0
+      this.borrowLimit = 0
+      this.liquidity = 0
+      this.netApy = 0
+      this.comptroller = null
+      this.cl = null
     }
+    this.setLoader(false)
   }
 }

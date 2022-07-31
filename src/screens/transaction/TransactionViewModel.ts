@@ -27,7 +27,6 @@ export class TransactionViewModel {
   totalBorrow = 0
   inputValue = ""
   comptroller: any
-  account?: string | null = null
   cTokenContract: Ctoken
   gasEstimating = false
 
@@ -60,7 +59,6 @@ export class TransactionViewModel {
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
-    this.account = getProviderStore.currentAccount
     this.api = new ApiService()
     this.api.init(API_FINANCE)
   }
@@ -78,9 +76,9 @@ export class TransactionViewModel {
     this.transactionType = transactionType
 
     if (this.isWBGL) {
-      this.selectedToken = new WBGL(getProviderStore.signer, this.account)
+      this.selectedToken = new WBGL(getProviderStore.signer, getProviderStore.currentAccount)
     } else {
-      this.selectedToken = new BUSD(getProviderStore.signer, this.account)
+      this.selectedToken = new BUSD(getProviderStore.signer, getProviderStore.currentAccount)
     }
 
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
@@ -90,9 +88,9 @@ export class TransactionViewModel {
       this.inputRef?.focus()
     })
 
-    if (this.account) {
-      this.comptroller = new Comptroller(this.account)
-      this.cTokenContract = new Ctoken(this.item.cToken, this.account, this.isWBGL)
+    if (getProviderStore.currentAccount) {
+      this.comptroller = new Comptroller(getProviderStore.currentAccount)
+      this.cTokenContract = new Ctoken(this.item.cToken, getProviderStore.currentAccount, this.isWBGL)
       this.gasEstimating = true
 
       try {

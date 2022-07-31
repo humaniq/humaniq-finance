@@ -14,19 +14,19 @@ import {LinearProgress} from "components/ui/progress/LinearProgress"
 import {Borrows} from "components/borrow/Borrows"
 import {Deposits} from "components/deposit/Deposits"
 import {getProviderStore} from "App"
-import {Loader} from "components/loader/Loader"
 import {useNavigate} from "react-router-dom"
 import routes from "utils/routes"
 import {BorrowSupplyItem} from "models/types"
 import {useSharedData} from "hooks/useSharedData"
-import {ConnectionNotSupported} from "components/connection-support/ConnectionNotSupported"
 import "react-spring-bottom-sheet/dist/style.css"
 import "../../styles/circular.sass"
 import "./Home.style.sass"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {t} from "translations/translate"
 import {LiquidityBottomSheet} from "components/bottom-sheet/LiquidityBottomSheet"
-import {NETWORK_TYPE} from "constants/network"
+import {EVM_NETWORKS_NAMES, NETWORK_TYPE} from "constants/network"
+import {ConnectWallet} from "components/modals/ConnectWallet"
+import {Loader} from "components/loader/Loader"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -50,11 +50,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
     ;(async () => {
       await view.mounted()
     })()
-  }, [view])
-
-  if (view.isRefreshing) return <Loader/>
-
-  if (!view.isConnectionSupported) return <ConnectionNotSupported/>
+  }, [view, getProviderStore.currentAccount, getProviderStore.chainId])
 
   return (
     <>
@@ -63,11 +59,11 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           <div className={"row"}>
             <span className={"logoText"}>
               {`${t("appName")}`}
-              {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${NETWORK_TYPE.TEST})` : ''}
+              {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${EVM_NETWORKS_NAMES.BSC_TESTNET})` : ''}
             </span>
             <AddressView
               title={view.getAccount}
-              onClick={getProviderStore.toggleDisconnectDialog}
+              onClick={view.toggleDialogOrDisconnectWallet}
             />
           </div>
           <View style={{marginTop: 16}}>
@@ -139,48 +135,54 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           </View>
         </MainInfoHeader>
         <div className="content">
-          {view.userBalanceMarket.length > 0 && (
-            <Deposits
-              isBalance={true}
-              hintText={t("hints.deposits")}
-              title={t("home.walletBalance")}
-              data={view.userBalanceMarket}
-              onClick={onBorrowOrSupplyClick}/>
+          {!getProviderStore.currentAccount ? <ConnectWallet/> : (
+            <>
+              {view.userBalanceMarket.length > 0 && (
+                <Deposits
+                  isBalance={true}
+                  hintText={t("hints.deposits")}
+                  title={t("home.walletBalance")}
+                  data={view.userBalanceMarket}
+                  onClick={onBorrowOrSupplyClick}/>
+              )}
+              {view.userSuppliedMarket.length > 0 && (
+                <Deposits
+                  isWithdraw={true}
+                  hintText={t("hints.balance")}
+                  title={t("home.deposits")}
+                  data={view.userSuppliedMarket}
+                  onClick={onBorrowOrSupplyClick}/>
+              )}
+              {view.userBorrowedMarket.length > 0 && (
+                <Borrows
+                  isRepay={true}
+                  infoButtonBackgroundColor={colors.purpleHeart}
+                  showLiquidityButton={false}
+                  infoText={t("hints.borrows")}
+                  title={t("home.borrows")}
+                  data={view.userBorrowedMarket}
+                  onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.REPAY)}/>
+              )}
+              {view.borrowMarket.length > 0 && (
+                <Borrows
+                  infoButtonBackgroundColor={colors.purpleHeart}
+                  hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
+                  infoText={t("hints.borrowAvailable")}
+                  title={t("home.availableToBorrow")}
+                  onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
+                  data={view.borrowMarket}
+                  onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
+              )}
+            </>
           )}
-          {view.userSuppliedMarket.length > 0 && (
-            <Deposits
-              isWithdraw={true}
-              hintText={t("hints.balance")}
-              title={t("home.deposits")}
-              data={view.userSuppliedMarket}
-              onClick={onBorrowOrSupplyClick}/>
-          )}
-          {view.userBorrowedMarket.length > 0 && (
-            <Borrows
-              isRepay={true}
-              infoButtonBackgroundColor={colors.purpleHeart}
-              showLiquidityButton={false}
-              infoText={t("hints.borrows")}
-              title={t("home.borrows")}
-              data={view.userBorrowedMarket}
-              onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.REPAY)}/>
-          )}
-          {view.borrowMarket.length > 0 && (
-            <Borrows
-              infoButtonBackgroundColor={colors.purpleHeart}
-              hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
-              infoText={t("hints.borrowAvailable")}
-              title={t("home.availableToBorrow")}
-              onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
-              data={view.borrowMarket}
-              onClick={(item) => onBorrowOrSupplyClick(item, TRANSACTION_TYPE.BORROW)}/>
-          )}
+
         </div>
       </div>
       <LiquidityBottomSheet
         list={view.borrowMarket}
         visible={view.liquidityModalVisible}
         onDismiss={() => view.setLiquidityModalVisibility(false)}/>
+      <Loader visible={view.isRefreshing || getProviderStore.isConnecting} />
     </>
   )
 }
