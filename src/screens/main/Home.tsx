@@ -68,6 +68,13 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           </div>
           <View style={{marginTop: 16}}>
             <CircularProgressbarWithChildren
+              styles={
+                {
+                  path: {
+                    stroke: view.getNetApy < 0 ? colors.redAlert : colors.primary
+                  }
+                }
+              }
               background={true}
               strokeWidth={4}
               className="circle"

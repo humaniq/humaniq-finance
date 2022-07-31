@@ -20,6 +20,7 @@ import "./Transaction.style.sass"
 import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
+import colors from "utils/colors"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -55,7 +56,10 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
 
   if (!data) return null
 
-  if (view.isRefreshing) return <Loader/>
+  if (view.isRefreshing) return <Loader color={
+    (data as TransactionState).transactionType === TRANSACTION_TYPE.REPAY ||
+    (data as TransactionState).transactionType === TRANSACTION_TYPE.BORROW ? colors.purpleHeart : colors.primary
+  }/>
 
   return (
     <>
@@ -75,12 +79,12 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                   <Text className="v-supply-content--row-title" text={view.item.name}/>
                   <Text
                     className="v-supply-content--row-title"
-                    text={view.getTokenUsdValue}
+                    text={view.tokenFiatDisplay}
                   />
                 </div>
                 <div className="v-supply-content-row-second">
                   <Text className="v-supply-content-row-second-title" text={view.getTokenSymbol}/>
-                  <Text className="v-supply-content-row-second-title" text={view.getTokenBalance}/>
+                  <Text className="v-supply-content-row-second-title" text={view.tokenBalanceDisplay}/>
                 </div>
               </div>
             </div>
@@ -153,7 +157,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               text={view.getDepositButtonText}/>
             <div className="v-wallet-balance">
               <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.fiatBalanceFormatted})`}</span>
+              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.fiatBalanceDisplay})`}</span>
             </div>
           </div>
         </div>

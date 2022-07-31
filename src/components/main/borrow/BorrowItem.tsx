@@ -4,9 +4,9 @@ import {Divider} from "../../ui/divider/Divider"
 import {Button} from "../../ui/button/Button"
 import {BorrowSupplyItem} from "models/types"
 import Big from "big.js"
-import "./BorrowItem.style.sass"
 import {icons} from "utils/icons"
 import {t} from "translations/translate"
+import "./BorrowItem.style.sass"
 
 export interface BorrowItemProps {
   onBorrowClick?: () => void;
@@ -58,14 +58,14 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
 
   return (
     <div className={`borrow-item ${className}`} {...rest}>
-      <div className="borrow-item--content">
+      <div className="inner">
         <img
           src={icons[item.symbol]}
           alt="logo"
-          className="borrow-item--avatar"
+          className="avatar"
         />
-        <div className="borrow-item--content--right">
-          <div className="borrow-item--content--row">
+        <div className="right">
+          <div className="row">
             <Text className="title" text={item.name}/>
             <Text
               className="title"

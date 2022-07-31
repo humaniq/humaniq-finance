@@ -3,7 +3,7 @@ import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/typ
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatToCurrency, formatToNumber} from "utils/utils"
+import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
 import {ethers, utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
@@ -37,7 +37,7 @@ export class TransactionViewModel {
     source: "",
     time: ""
   }
-  inputFiat = true
+  inputFiat = false
 
   txData = {
     data: undefined,
@@ -85,9 +85,8 @@ export class TransactionViewModel {
 
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
       this.inputValue = !val ?
-        this.inputValueToken ? this.inputValueToken.toFixed(4) : "" :
-        this.inputValueFiat ? this.inputValueFiat.toFixed(4) : ""
-
+        this.inputValueToken ? formatBalance(this.inputValueToken).toString() : "" :
+        this.inputValueFiat ? formatBalance(this.inputValueFiat).toString(): ""
       this.inputRef?.focus()
     })
 
@@ -137,19 +136,15 @@ export class TransactionViewModel {
 
   get isEnoughBalance() {
     if (this.isDeposit) {
-      if (this.inputFiat) {
-        return this.balance.mul(this.item.tokenUsdValue).gte(+this.getInputValue)
-      }
-      return this.balance.gte(+this.getInputValue)
+      return this.inputFiat ? this.item.balance.mul(this.item.tokenUsdValue).gte(+this.inputValue) : this.item.balance.gte(+this.inputValue)
     }
-
     return true
   }
 
   get getInputFontSize() {
-    return this.getInputValue.length < 8
+    return this.getInputValue.length < 7
       ? "50px"
-      : "32px"
+      : "36px"
   }
 
   get getTokenSymbol() {
@@ -162,18 +157,16 @@ export class TransactionViewModel {
 
   get tokenBalance() {
     if (this.isWithdraw) {
+      // Currently supplying
       return this.item.supply
     }
 
     if (this.isBorrow) {
-      return this.item.supply // TODO check
-    }
-
-    if (this.isRepay) {
+      // Currently borrowing
       return this.item.borrow
     }
 
-    return this.balance
+    return this.item.balance
   }
 
   get tokensFiatPrice() {
@@ -181,20 +174,22 @@ export class TransactionViewModel {
     return Big(this.item.tokenUsdValue).mul(balance)
   }
 
-  get fiatBalanceFormatted() {
-    return `$${this.tokensFiatPrice.toFixed(4)}`
+  get fiatBalanceDisplay() {
+    return `$${formatBalance(this.tokensFiatPrice, 4)}`
   }
 
   get getFormattedBalance() {
-    let balance = this.tokenBalance
+    let balance = this.item.balance
 
     if (this.isBorrow) {
       balance = this.item.borrow
     } else if (this.isRepay) {
-      balance = this.balance
+      balance = this.item.balance
+    } else if (this.isWithdraw) {
+      balance = this.item.supply
     }
 
-    return `${balance.toFixed(2)} ${this.getTokenSymbol}`
+    return `${formatBalance(balance)} ${this.getTokenSymbol}`
   }
 
   get titleBasedOnType() {
@@ -231,14 +226,13 @@ export class TransactionViewModel {
     return `${this.titleBasedOnType} ${this.getTokenSymbol}`
   }
 
-  get getTokenBalance() {
-    return `${this.tokenBalance.toFixed(4)}`
+  get tokenBalanceDisplay() {
+    return `${formatBalance(this.tokenBalance)}`
   }
 
-  get getTokenUsdValue() {
-    if (this.isDeposit || this.isWithdraw) return this.tokensFiatPrice.toFixed(4)
-    if (this.isBorrow || this.isRepay) return Big(this.item.tokenUsdValue).mul(this.tokenBalance).toFixed(4)
-    return formatToCurrency(parseFloat(this.item.tokenUsdValue).toFixed(4))
+  get tokenFiatDisplay() {
+    // always show usd value for 1 token
+    return `$${formatBalance(this.item.tokenUsdValue)}`
   }
 
   get getApyTitle() {
@@ -306,7 +300,7 @@ export class TransactionViewModel {
 
   get newBorrowLimit() {
     if (this.isDeposit || this.isWithdraw) {
-      if (!this.getInputValue) return 0
+      if (!this.inputValue) return 0
       if (!this.item.isEnteredTheMarket) return this.borrowLimit
 
       if (this.isWithdraw) {
@@ -324,13 +318,13 @@ export class TransactionViewModel {
   }
 
   get inputValueFiat() {
-    if (!this.getInputValue) return 0
-    return Big(this.getInputValue).mul(this.item.tokenUsdValue)
+    if (!this.inputValue) return 0
+    return Big(this.inputValue).mul(this.item.tokenUsdValue)
   }
 
   get inputValueToken() {
-    if (!this.getInputValue) return 0
-    return Big(this.getInputValue).div(this.item.tokenUsdValue)
+    if (!this.inputValue) return 0
+    return Big(this.inputValue).div(this.item.tokenUsdValue)
   }
 
   get getTokenOrFiat() {
@@ -339,9 +333,9 @@ export class TransactionViewModel {
 
   get getFiatOrTokenInput() {
     if (this.inputFiat) {
-      return `${this.inputValueToken.toFixed(2)} ${this.getTokenSymbol}`
+      return `${formatBalance(this.inputValueToken, 4)} ${this.getTokenSymbol}`
     }
-    return formatToCurrency(this.inputValueFiat)
+    return `$${formatBalance(this.inputValueFiat, 4)}`
   }
 
   get isButtonDisabled() {
@@ -372,13 +366,14 @@ export class TransactionViewModel {
 
   get repayText() {
     if (Big(this.item.borrow).lt(this.inputValueTOKEN)) return t('transaction.valueCannotExceedBorrow')
-    if (this.balance.lt(this.inputValueTOKEN)) return t('transaction.insufficientWalletBalance')
-    return `${t('transaction.repay')} ${formatToCurrency(this.inputValueUSD)}`
+    if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
+    return `${t('transaction.repay')} $${formatBalance(this.inputValueUSD, 4)}`
   }
 
   get depositText() {
-    if (this.balance.lt(this.inputValueTOKEN)) return t('transaction.insufficientWalletBalance')
-    return `${t("home.deposit")} ${formatToCurrency(this.inputValueUSD)}`
+    if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
+    if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
+    return `${t("home.deposit")} $${formatBalance(this.inputValueUSD, 4)}`
   }
 
   get isRepayDisabled() {
@@ -503,8 +498,11 @@ export class TransactionViewModel {
   }
 
   handleTransaction = async () => {
-    const input = this.inputFiat ? this.inputValueToken.toFixed(2) : this.inputValue
-    let inputValue = this.getValue(input)
+    const input = this.inputFiat ? this.inputValueToken.toString() : this.inputValue
+    let inputValue = ethers.utils.parseUnits(
+      input,
+      this.item.underlyingDecimals
+    )
     this.transactionInProgress = true
 
     try {
@@ -595,7 +593,7 @@ export class TransactionViewModel {
             this.item.cToken
           )
           this.txData.gasLimit = +approvedResult.gasLimit
-          // wait for transaction to be mined in order to proceed with mint
+          // wait for transaction to be mined in order to proceed with repay
           await approvedResult.wait()
         }
 
@@ -658,18 +656,15 @@ export class TransactionViewModel {
     this.inputRef = null
   }
 
-  getValue = (value: any) => {
-    return ethers.utils.parseUnits(
-      value,
-      this.item.underlyingDecimals
-    )
-  }
-
   setMaxValue = () => {
-    let maxValue = this.balance
+    let maxValue = this.item.balance
 
     if (this.isDeposit) {
-      maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.balance) : this.balance
+      if (this.item.balance.eq(0)) {
+        maxValue = 0
+      } else {
+        maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.item.balance) : this.item.balance
+      }
     }
 
     if (this.isBorrow) {
@@ -690,14 +685,18 @@ export class TransactionViewModel {
     }
 
     if (this.isRepay) {
-      maxValue = +this.item.borrow ? +this.item.borrow : 0
+      if (this.item.balance.eq(0)) {
+        maxValue = 0
+      } else {
+        maxValue = +this.item.borrow ? +this.item.borrow : 0
 
-      if (this.inputFiat) {
-        maxValue = Big(maxValue).mul(this.item.tokenUsdValue)
+        if (this.inputFiat) {
+          maxValue = Big(maxValue).mul(this.item.tokenUsdValue)
+        }
       }
     }
 
-    this.setInputValue(maxValue.toFixed(4))
+    this.setInputValue(formatBalance(maxValue).toString())
     this.inputRef?.focus()
   }
 

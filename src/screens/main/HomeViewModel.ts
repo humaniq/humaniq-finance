@@ -9,6 +9,7 @@ import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
 import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
+import {formatBalance} from "utils/utils"
 
 export class HomeViewModel {
   userSuppliedMarket: BorrowSupplyItem[] = []
@@ -61,11 +62,11 @@ export class HomeViewModel {
   }
 
   get getBorrowBalance() {
-    return `$${this.totalBorrow.toFixed(2)}`
+    return `$${formatBalance(this.totalBorrow, 4)}`
   }
 
   get getSupplyBalance() {
-    return `$${this.totalSupply.toFixed(2)}`
+    return `$${formatBalance(this.totalSupply, 4)}`
   }
 
   get isConnectionSupported() {

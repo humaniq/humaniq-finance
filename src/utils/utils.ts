@@ -33,9 +33,9 @@ export const preciseRound = (n: any) => {
   );
 }
 
-export const formatBalance = (value: any) => {
+export const formatBalance = (value: any, dec?: number) => {
   let v = Big(value)
-  return v.gte(1) ? parseFloat(v.toFixed(4)) : preciseRound(v);
+  return v.gte(1) ? parseFloat(v.toFixed(dec)) : preciseRound(v);
 }
 
 export const beautifyNumber = (n: number, isCurrency: boolean) => {
