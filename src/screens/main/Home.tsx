@@ -26,6 +26,7 @@ import "./Home.style.sass"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {t} from "translations/translate"
 import {LiquidityBottomSheet} from "components/bottom-sheet/LiquidityBottomSheet"
+import {NETWORK_TYPE} from "constants/network"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -60,7 +61,10 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
       <div className="main">
         <MainInfoHeader className="header">
           <div className={"row"}>
-            <span className={"logoText"}>{t("appName")}</span>
+            <span className={"logoText"}>
+              {`${t("appName")}`}
+              {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${NETWORK_TYPE.TEST})` : ''}
+            </span>
             <AddressView
               title={view.getAccount}
               onClick={getProviderStore.toggleDisconnectDialog}

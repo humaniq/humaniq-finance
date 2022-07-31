@@ -189,7 +189,7 @@ export class TransactionViewModel {
       balance = this.item.supply
     }
 
-    return `${formatBalance(balance)} ${this.getTokenSymbol}`
+    return `${formatBalance(balance, 4)} ${this.getTokenSymbol}`
   }
 
   get titleBasedOnType() {
@@ -227,7 +227,7 @@ export class TransactionViewModel {
   }
 
   get tokenBalanceDisplay() {
-    return `${formatBalance(this.tokenBalance)}`
+    return `${formatBalance(this.tokenBalance, 4)}`
   }
 
   get tokenFiatDisplay() {

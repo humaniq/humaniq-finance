@@ -1,7 +1,7 @@
 import React, {useEffect} from "react"
 import {HashRouter as Router, Route, Routes} from "react-router-dom"
 import routes from "./utils/routes"
-import {ETHProvider} from "stores/provider/providerStore"
+import {EVMProvider} from "stores/provider/providerStore"
 import b from "buffer"
 import {Home} from "screens/main/Home"
 import {Transaction} from "screens/transaction/Transaction"
@@ -20,7 +20,7 @@ import {transactionStore} from "stores/app/transactionStore"
 
 window.Buffer = b.Buffer
 
-export const getProviderStore = ETHProvider
+export const getProviderStore = EVMProvider
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,

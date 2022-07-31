@@ -110,7 +110,11 @@ export class ProviderStore {
 
   handleAccountsChange = (accounts: string[]) => {
     if (this.currentAccount && accounts[0] !== this.currentAccount) {
-      this.currentAccount = accounts[0]
+      this.isConnecting = true
+      setTimeout(() => {
+        this.currentAccount = accounts[0]
+        this.isConnecting = false
+      }, 0)
     }
   }
 
@@ -120,13 +124,19 @@ export class ProviderStore {
 
   handleMessage = (message: ProviderMessage) => {
     // handle message
-    console.info("message", message);
   }
 
   handleChainChange = async (chainId: string) => {
-    if (parseInt(chainId, 16) === this.currentNetwork.chainID) return;
-    this.chainId = parseInt(chainId, 16);
-    await this.init();
+    // if (parseInt(chainId, 16) === this.currentNetwork.chainID) return
+    //
+    // const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === parseInt(chainId, 16))
+    //
+    // if (chain) {
+    //   this.chainId = chain.chainID
+    //   this.networkId = chain.networkID
+    //   this.currentNetworkName = chain.name
+    //   await this.init()
+    // }
   }
 
   handleConnect = (connectInfo: ConnectInfo) => {
@@ -196,4 +206,4 @@ export class ProviderStore {
   }
 }
 
-export const ETHProvider = new ProviderStore()
+export const EVMProvider = new ProviderStore()
