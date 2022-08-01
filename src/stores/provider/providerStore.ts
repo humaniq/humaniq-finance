@@ -10,7 +10,7 @@ export enum PROVIDERS {
   WC = "WC",
 }
 
-export const WALLET_TYPE_CONNECTED = "wallet_connected_type22"
+export const WALLET_TYPE_CONNECTED = "wallet_connected_type_savy"
 
 export class ProviderStore {
   initialized = false
