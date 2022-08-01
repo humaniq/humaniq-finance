@@ -1,4 +1,4 @@
-import {makeAutoObservable, runInAction} from "mobx"
+import {makeAutoObservable} from "mobx"
 import {Logger} from "utils/logger"
 import {ConnectInfo, ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
