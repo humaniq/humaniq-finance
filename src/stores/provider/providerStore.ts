@@ -139,6 +139,7 @@ export class ProviderStore {
       this.chainId = chain.chainID
       this.networkId = chain.networkID
       this.currentNetworkName = chain.name
+      this.initialized = false
       await this.init()
     } else {
       // not supported chain
@@ -167,10 +168,10 @@ export class ProviderStore {
 
     try {
       const [chainId, networkId] = await Promise.all<string>([
-        await window.ethereum.request({
+        window.ethereum.request({
           method: "eth_chainId"
         }),
-        await window.ethereum.request({
+        window.ethereum.request({
           method: "net_version"
         })
       ])

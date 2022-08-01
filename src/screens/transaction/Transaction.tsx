@@ -53,7 +53,13 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         view.unMounted()
       }
     })()
-  }, [view, data, setData, getProviderStore.currentAccount, getProviderStore.chainId])
+  }, [view, data, setData])
+
+  useEffect(() => {
+    if (getProviderStore.isConnecting) {
+      navigate(-1)
+    }
+  }, [getProviderStore.isConnecting])
 
   if (!data) return null
 
