@@ -108,11 +108,8 @@ export class ProviderStore {
   }
 
   handleAccountsChange = async (accounts: string[]) => {
-    if (this.currentAccount && accounts[0] !== this.currentAccount) {
-      this.currentAccount = accounts[0]
-      this.initialized = false;
-      await this.init()
-    }
+    this.currentAccount = accounts[0]
+    await this.init()
   }
 
   handleDisconnect = () => {
@@ -139,7 +136,6 @@ export class ProviderStore {
       this.chainId = chain.chainID
       this.networkId = chain.networkID
       this.currentNetworkName = chain.name
-      this.initialized = false
       await this.init()
     } else {
       // not supported chain
@@ -164,39 +160,22 @@ export class ProviderStore {
   }
 
   connect = async () => {
+    if (!this.currentProvider || this.currentProvider?.provider.currentAccount)
+      return;
+
     this.isConnecting = true
 
     try {
-      const [chainId, networkId] = await Promise.all<string>([
-        window.ethereum.request({
-          method: "eth_chainId"
-        }),
-        window.ethereum.request({
-          method: "net_version"
-        })
-      ])
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts"
+      }) as string[]
 
-      this.chainId = +chainId
-      this.networkId = +networkId
-
-      const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === this.chainId)
-
-      if (chain) {
-        this.currentNetworkName = chain.name
-
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts"
-        }) as string[]
-
-        if (accounts) {
-          this.currentAccount = accounts[0]
-        }
-      }
+      this.currentAccount = accounts[0]
     } catch (e) {
       Logger.info("ERROR", e)
-    } finally {
-      this.isConnecting = false
     }
+
+    this.isConnecting = false
   }
 
   disconnect = async () => {
