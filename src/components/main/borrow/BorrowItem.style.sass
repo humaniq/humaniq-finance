@@ -3,7 +3,7 @@
 .borrow-item
   flex-direction: column
   margin-bottom: 8px
-  &--content
+  .inner
     display: flex
     flex-direction: row
     background-color: $white
@@ -11,11 +11,37 @@
     align-items: flex-start
     margin-top: 10px
     padding: 12px 8px
-    &--right
+    .avatar
+      margin-left: 2px
+      width: 30px
+      height: 30px
+    .right
       display: flex
       flex: 1
       flex-direction: column
       margin-left: 14px
+      .token-button
+        margin-top: 11px
+        margin-right: 8px
+        border-radius: 12px
+        padding: 9px
+        background-color: $primary-light
+        color: $primary
+        font-weight: 600
+        font-size: 14px
+        &.repay
+          background-color: rgba(137, 94, 242, 0.1)
+          color: $purple-heart
+          &:hover
+            color: $white
+            background-color: $purple-heart
+        &:hover
+          color: $white
+          background-color: $primary
+        &:disabled
+          background-color: $grey-divider
+          color: $white
+          pointer-events: none
       .insufficient
         font-style: normal
         font-weight: 400
@@ -23,7 +49,7 @@
         color: $red-alert
         align-self: center
         margin-top: 14px
-    &--row
+    .row
       display: flex
       flex-direction: row
       justify-content: space-between
@@ -47,29 +73,3 @@
         font-size: 14px
         letter-spacing: 0.5px
         color: $grey-text
-  &--avatar
-    margin-left: 2px
-    width: 30px
-    height: 30px
-  .token-button
-    margin-top: 11px
-    margin-right: 8px
-    border-radius: 12px
-    padding: 9px
-    background-color: $primary-light
-    color: $primary
-    font-weight: 600
-    font-size: 14px
-    &.repay
-      background-color: rgba(137, 94, 242, 0.1)
-      color: $purple-heart
-      &:hover
-        color: $white
-        background-color: $purple-heart
-    &:hover
-      color: $white
-      background-color: $primary
-    &:disabled
-      background-color: $grey-divider
-      color: $white
-      pointer-events: none

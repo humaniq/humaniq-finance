@@ -20,6 +20,8 @@ import "./Transaction.style.sass"
 import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
+import colors from "utils/colors"
+import {getProviderStore} from "App"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -43,6 +45,8 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         await view.mounted(data as TransactionState)
         view.setInputRef(inputRef.current)
         view.setNavigation(navigate)
+      } else {
+        navigate(-1)
       }
       return () => {
         setData(null)
@@ -51,14 +55,18 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     })()
   }, [view, data, setData])
 
-  if (!data) return (
-    <div className="no-data">
-      <span className="no-data-title">{t("noData")}</span>
-      <a onClick={view.navigateBack} className="no-data-description">{t("returnToMain")}</a>
-    </div>
-  )
+  useEffect(() => {
+    if (getProviderStore.isConnecting) {
+      navigate(-1)
+    }
+  }, [getProviderStore.isConnecting])
 
-  if (view.isRefreshing) return <Loader/>
+  if (!data) return null
+
+  if (view.isRefreshing || getProviderStore.isConnecting) return <Loader visible={view.isRefreshing || getProviderStore.isConnecting} color={
+    (data as TransactionState).transactionType === TRANSACTION_TYPE.REPAY ||
+    (data as TransactionState).transactionType === TRANSACTION_TYPE.BORROW ? colors.purpleHeart : colors.primary
+  }/>
 
   return (
     <>
@@ -78,12 +86,12 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                   <Text className="v-supply-content--row-title" text={view.item.name}/>
                   <Text
                     className="v-supply-content--row-title"
-                    text={view.getTokenUsdValue}
+                    text={view.tokenFiatDisplay}
                   />
                 </div>
                 <div className="v-supply-content-row-second">
                   <Text className="v-supply-content-row-second-title" text={view.getTokenSymbol}/>
-                  <Text className="v-supply-content-row-second-title" text={view.getTokenBalance}/>
+                  <Text className="v-supply-content-row-second-title" text={view.tokenBalanceDisplay}/>
                 </div>
               </div>
             </div>
@@ -122,7 +130,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <span className="v-form-row-title">{view.getApyTitle}</span>
               <span className="v-form-row-value">{view.getApyValue}</span>
             </div>
-
             <div className="v-form-row">
               <span className="v-form-row-title">{view.getBorrowLimitTitle}</span>
               <div className="v-form-arrow-row">
@@ -135,7 +142,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 }
               </div>
             </div>
-
             <div className="valuation-borrow-limit">
               <div className="valuation-borrow-limit-row">
                 <span className="valuation-borrow-limit-row-title">{t("home.borrowLimitUsed")}</span>
@@ -158,7 +164,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               text={view.getDepositButtonText}/>
             <div className="v-wallet-balance">
               <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.bottomBalanceFiatPrice})`}</span>
+              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.fiatBalanceDisplay})`}</span>
             </div>
           </div>
         </div>

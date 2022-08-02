@@ -1,6 +1,6 @@
-import React from "react";
-import "./AddressView.style.sass";
-import { t } from "translations/translate";
+import React from "react"
+import "./AddressView.style.sass"
+import {observer} from "mobx-react"
 
 export interface AddressViewProps {
   title?: string | null;
@@ -9,20 +9,15 @@ export interface AddressViewProps {
   className?: string;
 }
 
-export const AddressView: React.FC<AddressViewProps> = ({
-  title,
-  onClick,
-  style = {},
-  className,
-}) => {
+export const AddressView: React.FC<AddressViewProps> = observer(({
+                                                                   title,
+                                                                   onClick,
+                                                                   style = {},
+                                                                   className
+                                                                 }) => {
   return (
-    <div className="dropdown">
-      <button className={`address-container ${className}`} style={style}>
-        {title}
-      </button>
-      <div onClick={onClick} className="dropdown-content">
-        <span>{t("wallet.disconnect")}</span>
-      </div>
-    </div>
-  );
-};
+    <button onClick={onClick} className={`address-container ${className}`} style={style}>
+      {title}
+    </button>
+  )
+})

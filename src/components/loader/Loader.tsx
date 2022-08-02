@@ -4,15 +4,23 @@ import colors from "utils/colors";
 import { t } from "translations/translate";
 import "./Loader.style.sass";
 
-export const Loader = () => {
+interface LoaderProps {
+  visible?: boolean;
+  color?: string;
+  message?: string;
+}
+
+export const Loader = ({ visible = false, color = colors.primary, message = t("common.loading") }: LoaderProps) => {
+  if (!visible) return null
+
   return (
     <div className="loader-container">
       <RotatingLines
         width="100"
-        strokeColor={colors.primary}
+        strokeColor={color}
         strokeWidth="2" />
-      <span className="loader-container__message">
-        {t("common.loading")}...
+      <span className="message">
+        {message}
       </span>
     </div>
   );

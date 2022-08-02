@@ -4,6 +4,8 @@
   "metamaskName": "Metamask",
   "noData": "No data",
   "returnToMain": "Return to main page",
+  "welcomeMessage": "Welcome to Savy",
+  "welcomeDescription": "Make your first crypto capital and use it as collateral",
   "common": {
     "low": "Low",
     "slow": "Slow",
@@ -15,7 +17,8 @@
     "clear": "Clear",
     "loading": "Loading",
     "cancel": "Cancel",
-    "later": "Later"
+    "later": "Later",
+    "mayBeLater": "Maybe later"
   },
   "home": {
     "deposit": "Deposit",
@@ -65,7 +68,7 @@
     "notConnected": "Not connected",
     "disconnect": "Disconnect",
     "connect": "Connect",
-    "connectDescription": "Connect your wallet to proceed",
+    "connectDescription": "Connect wallet to proceed",
     "connectWallet": "Connect your Wallet",
     "notFound": "Not Found",
     "connectWalletDialog": "Connect wallet",
