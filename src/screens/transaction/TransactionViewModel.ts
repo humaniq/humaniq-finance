@@ -83,8 +83,8 @@ export class TransactionViewModel {
 
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
       this.inputValue = !val ?
-        this.inputValueToken ? formatBalance(this.inputValueToken).toString() : "" :
-        this.inputValueFiat ? formatBalance(this.inputValueFiat).toString(): ""
+        this.inputValueToken ? this.inputValueToken.toString() : "" :
+        this.inputValueFiat ? this.inputValueFiat.toString(): ""
       this.inputRef?.focus()
     })
 
