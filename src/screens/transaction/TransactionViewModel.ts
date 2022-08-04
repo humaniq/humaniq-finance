@@ -380,7 +380,6 @@ export class TransactionViewModel {
 
   get depositText() {
     if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
-    if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
     return `${t("home.deposit")} $${formatBalance(this.inputValueUSD, 4)}`
   }
 
