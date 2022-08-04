@@ -8,7 +8,7 @@ import {getProviderStore} from "App"
 import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
-import {COLLATERAL_STATUS} from "components/main/supply/SupplyItem"
+import {formatValue} from "utils/utils"
 
 export class HomeViewModel {
   userSuppliedMarket: BorrowSupplyItem[] = []
@@ -39,7 +39,9 @@ export class HomeViewModel {
   }
 
   get getBorrowLimitPercentage() {
-    return this.totalBorrow === 0 ? 0 : (this.totalBorrow / this.borrowLimit) * 100
+    if (this.borrowLimit === 0 || this.totalBorrow === 0) return 0
+
+    return (this.totalBorrow / this.borrowLimit) * 100
   }
 
   get getAccount() {
@@ -55,11 +57,11 @@ export class HomeViewModel {
   }
 
   get getBorrowBalance() {
-    return `$${this.totalBorrow.toFixed(+this.totalBorrow === 0 ? 0 : 4)}`
+    return `${formatValue(this.totalBorrow)}`
   }
 
   get getSupplyBalance() {
-    return `$${this.totalSupply.toFixed(+this.totalSupply === 0 ? 0 : 4)}`
+    return `${formatValue(this.totalSupply)}`
   }
 
   get isConnectionSupported() {
@@ -304,28 +306,6 @@ export class HomeViewModel {
     this.isRefreshing = state
   }
 
-  handleCollateral = async (item: any, collateralStatus: COLLATERAL_STATUS) => {
-    try {
-      if (collateralStatus === COLLATERAL_STATUS.EXITED_MARKET) {
-        const isMarketExist = await this.isMarketExist(item);
-        if (!isMarketExist) {
-          return;
-        }
-        const {hash} = await this.comptroller.enterMarkets([item.cToken])
-        await this.comptroller.waitForTransaction(hash);
-      } else {
-        const {hash} = await this.comptroller.exitMarket(item.cToken)
-        await this.comptroller.waitForTransaction(hash);
-      }
-    } catch (e: any) {
-    }
-  }
-
-  isMarketExist = async (item: any) => {
-    const markets = await this.comptroller.getAllMarkets();
-    return markets.includes(item.cToken);
-  }
-
   setLiquidityModalVisibility = (visibility: boolean) => {
     this.liquidityModalVisible = visibility
   }
@@ -337,7 +317,7 @@ export class HomeViewModel {
       this.cl = new CompoundLens(getProviderStore.currentAccount)
       await this.init()
     } else {
-      // clear initials
+      // clear
       this.market = []
       this.cTokenAddressList = []
       this.userSuppliedMarket = []

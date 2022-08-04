@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx"
 import {Logger} from "utils/logger"
-import {ConnectInfo, ProviderMessage} from "models/contracts/types"
+import {ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import {ethers, Signer} from "ethers"
 import {EVM_NETWORKS, EVM_NETWORKS_NAMES, rpc} from "constants/network"
@@ -19,7 +19,7 @@ export class ProviderStore {
   chainId: number
   networkId: number
   signer: Signer
-  currentProvider: any // ethers.providers.Web3Provider | WalletConnectProvider
+  currentProvider: any
   connectDialog = false
   disconnectDialog = false
   connectedProvider: PROVIDERS
@@ -87,7 +87,6 @@ export class ProviderStore {
     ethereum.on("disconnect", this.handleDisconnect)
     ethereum.on("message", this.handleMessage)
     ethereum.on("chainChanged", this.handleChainChange)
-    ethereum.on("connect", this.handleConnect)
 
     this.signer = this.currentProvider.getSigner()
   }
@@ -104,7 +103,6 @@ export class ProviderStore {
     ethereum.removeListener("disconnect", this.handleDisconnect)
     ethereum.removeListener("message", this.handleMessage)
     ethereum.removeListener("chainChanged", this.handleChainChange)
-    ethereum.removeListener("connect", this.handleConnect)
   }
 
   handleAccountsChange = async (accounts: string[]) => {
@@ -134,18 +132,17 @@ export class ProviderStore {
     const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === chainId)
 
     if (chain) {
+      this.notSupportedNetwork = false
       this.chainId = chain.chainID
       this.networkId = chain.networkID
       this.currentNetworkName = chain.name
       await this.init()
     } else {
       // not supported chain
+      this.chainId = chainId
+      this.notSupportedNetwork = true
+      this.initialized = false
     }
-  }
-
-  handleConnect = async (connectInfo: ConnectInfo) => {
-    if (parseInt(connectInfo.chainId, 16) === this.currentNetwork.chainID) return
-    // await this.init();
   }
 
   personalMessageRequest = (message: any): any => {
@@ -174,6 +171,8 @@ export class ProviderStore {
       const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === +chainId)
 
       if (chain) {
+        this.notSupportedNetwork = false
+
         this.chainId = chain.chainID
         this.networkId = chain.networkID
         this.currentNetworkName = chain.name
@@ -183,6 +182,11 @@ export class ProviderStore {
         }) as string[]
 
         this.currentAccount = accounts[0]
+      } else {
+        // not supported
+        this.chainId = chainId
+        this.notSupportedNetwork = true
+        this.initialized = false
       }
     } catch (e) {
       Logger.info("ERROR", e)

@@ -3,7 +3,7 @@ import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/typ
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatBalance, formatToCurrency, formatToNumber, formatValue} from "utils/utils"
+import {formatToCurrency, formatToNumber, formatValue} from "utils/utils"
 import {utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
@@ -375,12 +375,12 @@ export class TransactionViewModel {
   get repayText() {
     if (Big(this.item.borrow).lt(this.inputValueTOKEN)) return t('transaction.valueCannotExceedBorrow')
     if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
-    return `${t('transaction.repay')} $${formatBalance(this.inputValueUSD, 4)}`
+    return `${t('transaction.repay')} ${formatValue(this.inputValueUSD)}`
   }
 
   get depositText() {
     if (this.item.balance.lt(this.inputValueTOKEN) || this.item.balance.eq(0)) return t('transaction.insufficientWalletBalance')
-    return `${t("home.deposit")} $${formatBalance(this.inputValueUSD, 4)}`
+    return `${t("home.deposit")} ${formatValue(this.inputValueUSD)}`
   }
 
   get isRepayDisabled() {
@@ -733,11 +733,11 @@ export class TransactionViewModel {
 
     const isInvalidValue = !new RegExp(REG.NUMBER).test(maxValue);
 
-    this.setInputValue(formatBalance(
+    this.setInputValue(
       isInvalidValue
         ? String(maxValue).substring(0, 16)
         : maxValue || "0"
-    ).toString())
+    )
     this.inputRef?.focus()
   }
 

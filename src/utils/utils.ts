@@ -4,6 +4,7 @@ const pow = Math.pow,
   floor = Math.floor,
   abs = Math.abs,
   log = Math.log;
+
 const abbrev = "KMB";
 
 const formatOptions = {
@@ -27,19 +28,8 @@ export const formatToNumber = (n: number) => {
   return intlSimple.format(n);
 }
 
-export const preciseRound = (n: any) => {
-  return parseFloat(
-    n.toExponential(~~Math.max(1, 2 + Math.log10(Math.abs(n))))
-  );
-}
-
 export const formatValue = (value: any, dec: number = 4, currency: string = '$') => {
   return `${currency}${Big(value).toFixed(Big(value).eq(0) ? 0 : dec)}`
-}
-
-export const formatBalance = (value: any, dec?: number) => {
-  let v = Big(value)
-  return v.gte(1) ? parseFloat(v.toFixed(dec)) : preciseRound(v);
 }
 
 export const beautifyNumber = (n: number, isCurrency: boolean) => {

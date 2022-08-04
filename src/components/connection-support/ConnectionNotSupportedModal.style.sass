@@ -1,0 +1,89 @@
+@import "src/styles/vars"
+
+.connection-not-supported
+  position: absolute
+  flex: 1
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  align-self: center
+  width: 100%
+  height: 100%
+  background-color: rgba(0, 0, 0, 0.7)
+  padding: 16px
+  .modal
+    position: relative
+    display: flex
+    flex-direction: column
+    align-items: center
+    background-color: $white
+    border-radius: 24px
+    padding: 16px 16px 84px
+    width: 100%
+    max-width: 600px
+    .image
+      width: 90px
+      height: 90px
+    .title
+      font-style: normal
+      font-weight: 600
+      font-size: 20px
+      line-height: 22px
+      display: flex
+      color: $textBlack
+      margin-bottom: 16px
+      align-self: center
+    .message
+      font-style: normal
+      font-weight: 500
+      font-size: 18px
+      line-height: 22px
+      display: flex
+      color: $textBlack
+      margin-top: 16px
+      align-self: center
+    .steps
+      display: flex
+      flex-direction: row
+      align-items: center
+      justify-content: flex-start
+      width: 100%
+      margin-top: 12px
+      .step
+        font-style: normal
+        font-weight: 400
+        font-size: 16px
+        line-height: 22px
+        color: $grey-text
+      .value
+        font-style: normal
+        font-weight: 500
+        font-size: 16px
+        line-height: 22px
+        color: $textBlack
+        margin-left: 4px
+    .button
+      background-color: rgba($primary, 0.1)
+      color: $primary
+      font-style: normal
+      font-weight: 500
+      font-size: 14px
+      letter-spacing: 0.5px
+      padding: 12px
+      border-radius: 12px
+      position: absolute
+      bottom: 16px
+      left: 16px
+      right: 16px
+      &:hover
+        background-color: $primary
+        color: $white
+    .circle-close
+      position: absolute
+      top: 16px
+      right: 16px
