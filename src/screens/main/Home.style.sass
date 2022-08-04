@@ -15,11 +15,13 @@
     flex: 1
     flex-direction: column
     height: 100%
-    background-color: #f5faff
+    background-color: $blue-ozone
     margin-top: 10px
     padding: 16px
     border-top-left-radius: 16px
     border-top-right-radius: 16px
+    &.no-connect
+      background-color: $white
   .row
     display: flex
     flex-direction: row
@@ -28,7 +30,7 @@
     flex: 1
     .logoText
       font-weight: 500
-      font-size: 1.4em
+      font-size: 20px
       margin-right: 10px
       color: $white
 
@@ -85,7 +87,7 @@
     line-height: 26px
     align-items: center
     letter-spacing: 0.5px
-    margin-top: 5px
+    margin-top: 2px
 
 .borrow-limit
   margin-top: 18px

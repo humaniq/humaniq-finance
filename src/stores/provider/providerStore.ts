@@ -87,7 +87,7 @@ export class ProviderStore {
     ethereum.on("disconnect", this.handleDisconnect)
     ethereum.on("message", this.handleMessage)
     ethereum.on("chainChanged", this.handleChainChange)
-    ethereum.on("connect", this.handleChainChange)
+    ethereum.on("connect", this.handleConnect)
 
     this.signer = this.currentProvider.getSigner()
   }
@@ -104,12 +104,13 @@ export class ProviderStore {
     ethereum.removeListener("disconnect", this.handleDisconnect)
     ethereum.removeListener("message", this.handleMessage)
     ethereum.removeListener("chainChanged", this.handleChainChange)
-    ethereum.removeListener("connect", this.handleChainChange)
+    ethereum.removeListener("connect", this.handleConnect)
   }
 
   handleAccountsChange = async (accounts: string[]) => {
     this.currentAccount = accounts[0]
-    await this.init()
+    this.isConnecting = true
+    setTimeout(() => this.isConnecting = false, 0)
   }
 
   handleDisconnect = () => {
@@ -143,8 +144,8 @@ export class ProviderStore {
   }
 
   handleConnect = async (connectInfo: ConnectInfo) => {
-    if (parseInt(connectInfo.chainId, 16) === this.currentNetwork.chainID) return;
-    await this.init();
+    if (parseInt(connectInfo.chainId, 16) === this.currentNetwork.chainID) return
+    // await this.init();
   }
 
   personalMessageRequest = (message: any): any => {
@@ -161,21 +162,33 @@ export class ProviderStore {
 
   connect = async () => {
     if (!this.currentProvider || this.currentProvider?.provider.currentAccount)
-      return;
-
-    this.isConnecting = true
+      return
 
     try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      }) as string[]
+      this.isConnecting = true
 
-      this.currentAccount = accounts[0]
+      const chainId = await window.ethereum.request({
+        method: "eth_chainId"
+      })
+
+      const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === +chainId)
+
+      if (chain) {
+        this.chainId = chain.chainID
+        this.networkId = chain.networkID
+        this.currentNetworkName = chain.name
+
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts"
+        }) as string[]
+
+        this.currentAccount = accounts[0]
+      }
     } catch (e) {
       Logger.info("ERROR", e)
+    } finally {
+      this.isConnecting = false
     }
-
-    this.isConnecting = false
   }
 
   disconnect = async () => {

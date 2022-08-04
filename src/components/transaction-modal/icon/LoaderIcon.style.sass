@@ -1,0 +1,24 @@
+@import "../../../styles/vars.sass"
+
+.loader-icon
+  display: flex
+  align-items: center
+  justify-content: center
+  position: relative
+  margin-right: 8px
+  .icon
+    display: flex
+    align-self: center
+    position: absolute
+  .icon-container
+    display: flex
+    align-self: center
+    justify-content: center
+    position: absolute
+    width: 100%
+    height: 100%
+    border-radius: 30px
+    &.done
+      background: rgba($green-mile, 0.1)
+    &.error
+      background: rgba($red-alert, 0.1)

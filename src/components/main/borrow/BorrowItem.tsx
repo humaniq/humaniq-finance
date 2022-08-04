@@ -26,7 +26,7 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
                                                       }) => {
   const buttonDisabled = useMemo(() => {
     return disabled || !isRepay && item.supply > 0
-  }, [disabled])
+  }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {
     return Big(isRepay ? item.borrow : item.balance).toFixed(2)

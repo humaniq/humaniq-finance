@@ -90,27 +90,27 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
                 direction={ViewDirections.COLUMN}
               >
                 <Text
-                  size={15}
+                  size={12}
                   color={"#0066DA"}
                   className="label"
                   text={t("home.deposited")}
                 />
                 <Text
-                  size={24}
+                  size={22}
                   className="balance"
                   color={"#fff"}
                   text={view.getSupplyBalance}
                 />
               </View>
-              <View style={{marginTop: 8}} direction={ViewDirections.COLUMN}>
+              <View style={{marginTop: 6}} direction={ViewDirections.COLUMN}>
                 <Text
-                  size={15}
+                  size={12}
                   color={"#895EF2"}
                   className="label"
                   text={t("home.borrowed")}
                 />
                 <Text
-                  size={24}
+                  size={22}
                   className="balance"
                   color={"#fff"}
                   text={view.getBorrowBalance}
@@ -121,7 +121,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           <View className="borrow-limit" direction={ViewDirections.COLUMN}>
             <View className="alignH">
               <Text
-                size={15}
+                size={12}
                 color={colors.greyHalf}
                 className="label"
                 text={t("home.borrowLimit")}
@@ -134,7 +134,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             <LinearProgress progress={view.getBorrowLimitPercentage} amount={view.getBorrowLimit}/>
           </View>
         </MainInfoHeader>
-        <div className="content">
+        <div className={`content ${!getProviderStore.currentAccount ? 'no-connect' : ''}`}>
           {!getProviderStore.currentAccount ? <ConnectWallet/> : (
             <>
               {view.userBalanceMarket.length > 0 && (

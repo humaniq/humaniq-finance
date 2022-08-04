@@ -55,11 +55,11 @@ export class HomeViewModel {
   }
 
   get getBorrowBalance() {
-    return `$${this.totalBorrow.toFixed(2)}`
+    return `$${this.totalBorrow.toFixed(+this.totalBorrow === 0 ? 0 : 4)}`
   }
 
   get getSupplyBalance() {
-    return `$${this.totalSupply.toFixed(2)}`
+    return `$${this.totalSupply.toFixed(+this.totalSupply === 0 ? 0 : 4)}`
   }
 
   get isConnectionSupported() {

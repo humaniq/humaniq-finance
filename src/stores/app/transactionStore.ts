@@ -1,13 +1,49 @@
 import { makeAutoObservable } from "mobx";
-import {TRANSACTION_STATUS} from "components/transaction-message/TransactionMessage"
+
+export enum TRANSACTION_STATUS {
+  IDLE = "idle",
+  PENDING = "pending",
+  SUCCESS = "success",
+  ERROR = "error",
+}
+
+export type TRANSACTION_STEP = {
+  firstStep: {
+    message?: string
+    visible: boolean
+    status?: TRANSACTION_STATUS
+  }
+  secondStep: {
+    message?: string
+    visible: boolean
+    status?: TRANSACTION_STATUS
+  }
+}
 
 export class TransactionStore {
   transactionMessageVisible = false
-  transactionMessageStatus = TRANSACTION_STATUS.PENDING
-  transactionMessage = ""
+  transactionMessageStatus: TRANSACTION_STEP = {
+    firstStep: {
+      visible: true
+    },
+    secondStep: {
+      visible: true
+    }
+  }
 
   constructor() {
     makeAutoObservable(this, undefined, { autoBind: true });
+  }
+
+  clearInitials = () => {
+    this.transactionMessageStatus = {
+      firstStep: {
+        visible: true
+      },
+      secondStep: {
+        visible: true
+      }
+    }
   }
 }
 

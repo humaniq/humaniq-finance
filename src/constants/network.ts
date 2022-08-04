@@ -16,6 +16,11 @@ export enum NATIVE_COIN {
   BINANCECOIN = 'binancecoin'
 }
 
+export enum SCAN_URL {
+  BSC = 'https://bscscan.com/tx/',
+  BSC_TESTNET = 'https://testnet.bscscan.com/tx/'
+}
+
 export enum NATIVE_COIN_SYMBOL {
   ETH = "eth",
   BNB = "bnb"
@@ -34,6 +39,7 @@ export enum NETWORK_TYPE {
 
 export interface EVM_NETWORK {
   name: EVM_NETWORKS_NAMES
+  scanUrl: SCAN_URL
   chainID: number
   networkID: number,
   type: EVM_NETWORKS_NAMES,
@@ -53,6 +59,7 @@ export interface EVM_NETWORK {
 export const EVM_NETWORKS: {[key: string]: EVM_NETWORK} = {
   [EVM_NETWORKS_NAMES.BSC]: {
     name: EVM_NETWORKS_NAMES.BSC,
+    scanUrl: SCAN_URL.BSC,
     chainID: 56,
     networkID: 56,
     type: EVM_NETWORKS_NAMES.BSC,
@@ -70,6 +77,7 @@ export const EVM_NETWORKS: {[key: string]: EVM_NETWORK} = {
   },
   [EVM_NETWORKS_NAMES.BSC_TESTNET]: {
     name: EVM_NETWORKS_NAMES.BSC_TESTNET,
+    scanUrl: SCAN_URL.BSC_TESTNET,
     chainID: 97,
     networkID: 97,
     type: EVM_NETWORKS_NAMES.BSC_TESTNET,
@@ -87,6 +95,7 @@ export const EVM_NETWORKS: {[key: string]: EVM_NETWORK} = {
   },
   [EVM_NETWORKS_NAMES.DEFAULT]: {
     name: EVM_NETWORKS_NAMES.BSC,
+    scanUrl: SCAN_URL.BSC,
     chainID: 56,
     networkID: 56,
     type: EVM_NETWORKS_NAMES.BSC,

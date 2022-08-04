@@ -19,7 +19,6 @@ import AutosizeInput from 'react-input-autosize'
 import "./Transaction.style.sass"
 import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
 import {TRANSACTION_TYPE} from "models/contracts/types"
-import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
 import colors from "utils/colors"
 import {getProviderStore} from "App"
 
@@ -45,8 +44,6 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         await view.mounted(data as TransactionState)
         view.setInputRef(inputRef.current)
         view.setNavigation(navigate)
-      } else {
-        navigate(-1)
       }
       return () => {
         setData(null)
@@ -130,27 +127,27 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <span className="v-form-row-title">{view.getApyTitle}</span>
               <span className="v-form-row-value">{view.getApyValue}</span>
             </div>
-            <div className="v-form-row">
-              <span className="v-form-row-title">{view.getBorrowLimitTitle}</span>
-              <div className="v-form-arrow-row">
-                <span className="v-form-row-value">{view.getBorrowLimitValue}</span>
-                {
-                  view.newBorrowLimit !== 0 && <>
-                    <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
-                    <span className="v-form-row-value">{view.getNewBorrowLimit}</span>
-                  </>
-                }
+            <div className="borrow-section">
+              <div className="row">
+                <span className="title">{view.getBorrowLimitTitle}</span>
+                <div className="right">
+                  <span className="value">{view.getBorrowLimitValue}</span>
+                  {
+                    view.newBorrowLimit !== 0 && <>
+                      <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
+                      <span className="value">{view.getNewBorrowLimit}</span>
+                    </>
+                  }
+                </div>
               </div>
-            </div>
-            <div className="valuation-borrow-limit">
-              <div className="valuation-borrow-limit-row">
-                <span className="valuation-borrow-limit-row-title">{t("home.borrowLimitUsed")}</span>
-                <div className="v-form-arrow-row">
-                  <span className="valuation-borrow-limit-row-value">{view.getBorrowLimitUsedValue}</span>
+              <div className="row">
+                <span className="title">{t("home.borrowLimitUsed")}</span>
+                <div className="row">
+                  <span className="value">{view.getBorrowLimitUsedValue}</span>
                   {
                     view.getNewBorrowLimitUsed !== 0 && <>
                       <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
-                      <span className="valuation-borrow-limit-row-value">{view.getNewBorrowLimitUsedFormatted}</span>
+                      <span className="value">{view.getNewBorrowLimitUsedFormatted}</span>
                     </>
                   }
                 </div>
@@ -162,14 +159,9 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               onClick={view.handleTransaction}
               disabled={view.isButtonDisabled}
               text={view.getDepositButtonText}/>
-            <div className="v-wallet-balance">
-              <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.fiatBalanceDisplay})`}</span>
-            </div>
           </div>
         </div>
       </div>
-      <FullScreenLoader isVisible={view.transactionInProgress}/>
     </>
   )
 }
