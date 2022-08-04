@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import {makeAutoObservable} from "mobx"
 
 export enum TRANSACTION_STATUS {
   IDLE = "idle",
@@ -21,6 +21,7 @@ export type TRANSACTION_STEP = {
 }
 
 export class TransactionStore {
+  transactionHash: string = ""
   transactionMessageVisible = false
   transactionMessageStatus: TRANSACTION_STEP = {
     firstStep: {
@@ -32,10 +33,11 @@ export class TransactionStore {
   }
 
   constructor() {
-    makeAutoObservable(this, undefined, { autoBind: true });
+    makeAutoObservable(this, undefined, {autoBind: true})
   }
 
   clear = () => {
+    this.transactionHash = ""
     this.transactionMessageStatus = {
       firstStep: {
         visible: true
@@ -47,4 +49,4 @@ export class TransactionStore {
   }
 }
 
-export const transactionStore = new TransactionStore();
+export const transactionStore = new TransactionStore()

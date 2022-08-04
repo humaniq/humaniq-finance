@@ -8,28 +8,23 @@ import {observer} from "mobx-react"
 import {getProviderStore} from "App"
 import {capitalize} from "utils/textUtils"
 import {ReactComponent as CircleClose} from "assets/icons/ic_circle_close.svg"
-import {noop} from "utils/common"
 import {TRANSACTION_STATUS, TRANSACTION_STEP, transactionStore} from "stores/app/transactionStore"
 
 interface TransactionModalProps {
-  onScanClick?: typeof noop
-  onCloseClick?: typeof noop
   visible?: boolean
   status?: TRANSACTION_STEP
 }
 
 export const TransactionModal = observer(({
-                                            onScanClick,
-                                            onCloseClick,
                                             visible = false,
-  status = {} as TRANSACTION_STEP
+                                            status = {} as TRANSACTION_STEP
                                           }: TransactionModalProps) => {
 
   const showScan = useMemo(() => {
     if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && !status.secondStep.status) {
       return true
     }
-    return status.firstStep.status === TRANSACTION_STATUS.SUCCESS && status.secondStep.status === TRANSACTION_STATUS.SUCCESS;
+    return status.firstStep.status === TRANSACTION_STATUS.SUCCESS && status.secondStep.status === TRANSACTION_STATUS.SUCCESS
   }, [status.firstStep.status, status.secondStep.status])
 
   const showClose = useMemo(() => {
@@ -42,7 +37,7 @@ export const TransactionModal = observer(({
     }
 
     return status.firstStep.status === TRANSACTION_STATUS.ERROR ||
-      status.secondStep.status === TRANSACTION_STATUS.ERROR;
+      status.secondStep.status === TRANSACTION_STATUS.ERROR
   }, [status.firstStep.status, status.secondStep.status])
 
   if (!visible) return null
@@ -102,7 +97,9 @@ export const TransactionModal = observer(({
         </div>
       )}
       {showScan && (
-        <Button onClick={onScanClick} className="button" text={t("transaction.viewOnScan", {
+        <Button onClick={() => {
+          window.location.href = `${getProviderStore.currentNetwork.scanUrl}${transactionStore.transactionHash}`
+        }} className="button" text={t("transaction.viewOnScan", {
           network: capitalize(getProviderStore.currentNetwork.type)
         })}/>
       )}
