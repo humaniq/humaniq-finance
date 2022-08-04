@@ -554,6 +554,7 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
@@ -579,6 +580,7 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
@@ -607,6 +609,7 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
@@ -649,6 +652,7 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }

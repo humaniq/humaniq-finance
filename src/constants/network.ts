@@ -28,7 +28,7 @@ export enum NATIVE_COIN_SYMBOL {
 
 export enum EVM_NETWORKS_NAMES {
   BSC = 'bsc',
-  BSC_TESTNET = 'bsc testnet',
+  BSC_TESTNET = 'bsc Testnet',
   DEFAULT = 'bsc'
 }
 
@@ -93,24 +93,6 @@ export const EVM_NETWORKS: {[key: string]: EVM_NETWORK} = {
     BUSDSymbol: "BUSD",
     WBGLSymbol: "TWBGL"
   },
-  // [EVM_NETWORKS_NAMES.BSC_TESTNET]: {
-  //   name: EVM_NETWORKS_NAMES.BSC_TESTNET,
-  //   scanUrl: SCAN_URL.BSC_TESTNET,
-  //   chainID: 97,
-  //   networkID: 97,
-  //   type: EVM_NETWORKS_NAMES.BSC_TESTNET,
-  //   env: NETWORK_TYPE.TEST,
-  //   nativeCoin: NATIVE_COIN.BINANCECOIN,
-  //   nativeSymbol: NATIVE_COIN_SYMBOL.BNB,
-  //   comptrollerAddress: "0x75E6E3881ad08Da94091C10c1c8945b7cba2C6B6",
-  //   compoundLensAddress: "0xCBeCAeA2673065E94e7024fe129a1Cf55Bf9B1DD",
-  //   bUSDAddress: "0x56ef66120E5e373a364c95039d331aee8c193D1a",
-  //   wBGLAddress: "0xaE1A1D3f65C88449016f957b4a29969eaae61492",
-  //   svBUSDAddress: "0xC41929d16dF3aCcc4f2fd504e6e0f1ac941aD591",
-  //   svWBGLAddress: "0x88Ab2F4Eb09Be66535C66EF2FF11780B8A86d86a",
-  //   BUSDSymbol: "BUSD",
-  //   WBGLSymbol: "TWBGL"
-  // },
   [EVM_NETWORKS_NAMES.DEFAULT]: {
     name: EVM_NETWORKS_NAMES.BSC,
     scanUrl: SCAN_URL.BSC,
