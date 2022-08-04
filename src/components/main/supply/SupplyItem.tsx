@@ -60,7 +60,7 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
 
   const subTitle = useMemo(() => {
     return Big(isWithdraw ? item.supply : item.balance).toFixed(2)
-  }, [])
+  }, [item, isWithdraw])
 
   return (
     <div className={`supply-item ${className}`} {...rest}>

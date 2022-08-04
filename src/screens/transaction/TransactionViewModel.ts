@@ -4,7 +4,7 @@ import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
 import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
-import {ethers, utils} from "ethers"
+import {utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
 import {getProviderStore} from "App"
@@ -17,6 +17,7 @@ import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
 import {TRANSACTION_STATUS, transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
+import {REG} from "models/constants/constants"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -153,12 +154,27 @@ export class TransactionViewModel {
 
   get tokenBalance() {
     if (this.isWithdraw) {
-      // Currently supplying
       return this.item.supply
     }
 
     if (this.isBorrow) {
-      // Currently borrowing
+      let maxValue
+
+      if (!this.borrowLimit) {
+        maxValue = 0
+      } else {
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+
+        if (!this.inputFiat) {
+          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
+        }
+      }
+
+      return maxValue
+    }
+
+    if (this.isRepay) {
       return this.item.borrow
     }
 
@@ -215,6 +231,23 @@ export class TransactionViewModel {
 
     if (this.isWithdraw) {
       return `$${formatBalance(Big(this.item.supply).mul(this.item.tokenUsdValue))}`
+    }
+
+    if (this.isBorrow) {
+      let maxValue
+
+      if (!this.borrowLimit) {
+        maxValue = 0
+      } else {
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+      }
+
+      return `$${formatBalance(maxValue, 4)}`
+    }
+
+    if (this.isRepay) {
+      return `$${formatBalance(Big(this.item.borrow).mul(this.item.tokenUsdValue), 4)}`
     }
 
     return `$${formatBalance(this.item.tokenUsdValue)}`
@@ -461,25 +494,27 @@ export class TransactionViewModel {
   }
 
   get buttonColor() {
-    if (this.isBorrow || this.isRepay) {
-      return "borrow"
-    }
-
-    return ""
+    return this.isBorrow || this.isRepay ? "borrow" : ""
   }
 
   setInputRef = (ref: any) => {
     this.inputRef = ref
   }
 
+  getValue = (value: string) => {
+    const tokenDecimals = 18
+    const decimals = Big(10).pow(+tokenDecimals);
+
+    return Big(value)
+      .times(decimals)
+      .toFixed();
+  }
+
   handleTransaction = async () => {
-    transactionStore.clearInitials()
+    transactionStore.clear()
 
     const input = this.inputFiat ? this.inputValueToken.toString() : this.inputValue
-    let inputValue = ethers.utils.parseUnits(
-      input,
-      this.item.underlyingDecimals
-    )
+    let inputValue = this.getValue(input)
 
     try {
       if (this.isDeposit) {
@@ -632,7 +667,7 @@ export class TransactionViewModel {
   }
 
   setInputValue = (value: string) => {
-    if (!/^([0-9]+)?(\.)?([0-9]+)?$/.test(value)) {
+    if (!REG.DIGITS_INPUT.test(value)) {
       return
     }
 
@@ -693,7 +728,13 @@ export class TransactionViewModel {
       }
     }
 
-    this.setInputValue(formatBalance(maxValue).toString())
+    const isInvalidValue = !new RegExp(REG.NUMBER).test(maxValue);
+
+    this.setInputValue(formatBalance(
+      isInvalidValue
+        ? String(maxValue).substring(0, 16)
+        : maxValue || "0"
+    ).toString())
     this.inputRef?.focus()
   }
 

@@ -14,6 +14,8 @@ export interface BorrowItemProps {
   disabled?: boolean;
   item: BorrowSupplyItem;
   isRepay?: boolean
+  borrowLimit: number
+  totalBorrow: number
 }
 
 export const BorrowItem: React.FC<BorrowItemProps> = ({
@@ -22,6 +24,8 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
                                                         disabled,
                                                         item,
                                                         isRepay = false,
+                                                        borrowLimit,
+                                                        totalBorrow,
                                                         ...rest
                                                       }) => {
   const buttonDisabled = useMemo(() => {
@@ -29,8 +33,9 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
   }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {
-    return Big(isRepay ? item.borrow : item.balance).toFixed(2)
-  }, [item, isRepay])
+    const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0
+    return Big(isRepay ? item.borrow : Big(maxBorrow).div(item.tokenUsdValue)).toFixed(2)
+  }, [item, isRepay, borrowLimit, totalBorrow])
 
   const title = useMemo(() => {
     let text
@@ -38,11 +43,12 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
     if (isRepay) {
       text = Big(item.tokenUsdValue).mul(item.borrow).toFixed(2)
     } else {
-      text = item.tokenUsdValue.toFixed(2)
+      const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0;
+      text = maxBorrow.toFixed(2)
     }
 
     return `$${text}`
-  }, [item, isRepay])
+  }, [item, isRepay, borrowLimit, totalBorrow])
 
   const buttonTitle = useMemo(() => {
     let text

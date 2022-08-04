@@ -26,13 +26,18 @@ export const TransactionModal = observer(({
                                           }: TransactionModalProps) => {
 
   const showScan = useMemo(() => {
-    return status.firstStep.status === TRANSACTION_STATUS.SUCCESS &&
-      (status.secondStep.visible && status.secondStep.status === TRANSACTION_STATUS.SUCCESS);
+    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && !status.secondStep.status) {
+      return true
+    }
+    return status.firstStep.status === TRANSACTION_STATUS.SUCCESS && status.secondStep.status === TRANSACTION_STATUS.SUCCESS;
   }, [status.firstStep.status, status.secondStep.status])
 
   const showClose = useMemo(() => {
-    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS &&
-      (status.secondStep.visible && status.secondStep.status === TRANSACTION_STATUS.SUCCESS)) {
+    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && !status.secondStep.status) {
+      return true
+    }
+
+    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && status.secondStep.status === TRANSACTION_STATUS.SUCCESS) {
       return true
     }
 

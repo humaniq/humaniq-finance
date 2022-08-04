@@ -35,7 +35,7 @@ export class TransactionStore {
     makeAutoObservable(this, undefined, { autoBind: true });
   }
 
-  clearInitials = () => {
+  clear = () => {
     this.transactionMessageStatus = {
       firstStep: {
         visible: true
