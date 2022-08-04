@@ -4,7 +4,7 @@ import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
 import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
-import {ethers, utils} from "ethers"
+import {utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
 import {getProviderStore} from "App"
@@ -13,11 +13,11 @@ import {Ctoken} from "models/CToken"
 import {ApiService} from "services/apiService/apiService"
 import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
-import {TRANSACTION_STATUS} from "components/transaction-message/TransactionMessage"
 import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
-import {transactionStore} from "stores/app/transactionStore"
+import {TRANSACTION_STATUS, transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
+import {REG} from "models/constants/constants"
 
 export class TransactionViewModel {
   item: BorrowSupplyItem = {} as any
@@ -49,7 +49,6 @@ export class TransactionViewModel {
     from: ""
   }
   inputRef?: any
-  transactionInProgress = false
   selectedToken: WBGL | BUSD
   nav?: NavigateFunction
 
@@ -141,8 +140,8 @@ export class TransactionViewModel {
 
   get getInputFontSize() {
     return this.getInputValue.length < 7
-      ? "50px"
-      : "36px"
+      ? "32px"
+      : "26px"
   }
 
   get getTokenSymbol() {
@@ -155,12 +154,27 @@ export class TransactionViewModel {
 
   get tokenBalance() {
     if (this.isWithdraw) {
-      // Currently supplying
       return this.item.supply
     }
 
     if (this.isBorrow) {
-      // Currently borrowing
+      let maxValue
+
+      if (!this.borrowLimit) {
+        maxValue = 0
+      } else {
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+
+        if (!this.inputFiat) {
+          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
+        }
+      }
+
+      return maxValue
+    }
+
+    if (this.isRepay) {
       return this.item.borrow
     }
 
@@ -170,24 +184,6 @@ export class TransactionViewModel {
   get tokensFiatPrice() {
     let balance = this.isBorrow ? this.item.borrow : this.tokenBalance
     return Big(this.item.tokenUsdValue).mul(balance)
-  }
-
-  get fiatBalanceDisplay() {
-    return `$${formatBalance(this.tokensFiatPrice, 4)}`
-  }
-
-  get getFormattedBalance() {
-    let balance = this.item.balance
-
-    if (this.isBorrow) {
-      balance = this.item.borrow
-    } else if (this.isRepay) {
-      balance = this.item.balance
-    } else if (this.isWithdraw) {
-      balance = this.item.supply
-    }
-
-    return `${formatBalance(balance, 4)} ${this.getTokenSymbol}`
   }
 
   get titleBasedOnType() {
@@ -229,7 +225,31 @@ export class TransactionViewModel {
   }
 
   get tokenFiatDisplay() {
-    // always show usd value for 1 token
+    if (this.isDeposit) {
+      return `$${formatBalance(Big(this.item.balance).mul(this.item.tokenUsdValue))}`
+    }
+
+    if (this.isWithdraw) {
+      return `$${formatBalance(Big(this.item.supply).mul(this.item.tokenUsdValue))}`
+    }
+
+    if (this.isBorrow) {
+      let maxValue
+
+      if (!this.borrowLimit) {
+        maxValue = 0
+      } else {
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+      }
+
+      return `$${formatBalance(maxValue, 4)}`
+    }
+
+    if (this.isRepay) {
+      return `$${formatBalance(Big(this.item.borrow).mul(this.item.tokenUsdValue), 4)}`
+    }
+
     return `$${formatBalance(this.item.tokenUsdValue)}`
   }
 
@@ -350,16 +370,6 @@ export class TransactionViewModel {
 
   get getTransactionFiatFee() {
     return `${t("common.fee")} $${(+utils.formatUnits(+Big(this.txData.gasPrice).mul(this.txData.gasLimit), 18) * this.nativeCoinPrice.price).toFixed(2)}`
-  }
-
-  get balanceTitle() {
-    if (this.isWithdraw) {
-      return t("transaction.currentlySupplying")
-    } else if (this.isBorrow) {
-      return t("transaction.currentlyBorrowing")
-    }
-
-    return t("home.walletBalance")
   }
 
   get repayText() {
@@ -484,56 +494,71 @@ export class TransactionViewModel {
   }
 
   get buttonColor() {
-    if (this.isBorrow || this.isRepay) {
-      return "borrow"
-    }
-
-    return ""
+    return this.isBorrow || this.isRepay ? "borrow" : ""
   }
 
   setInputRef = (ref: any) => {
     this.inputRef = ref
   }
 
+  getValue = (value: string) => {
+    const tokenDecimals = 18
+    const decimals = Big(10).pow(+tokenDecimals);
+
+    return Big(value)
+      .times(decimals)
+      .toFixed();
+  }
+
   handleTransaction = async () => {
+    transactionStore.clear()
+
     const input = this.inputFiat ? this.inputValueToken.toString() : this.inputValue
-    let inputValue = ethers.utils.parseUnits(
-      input,
-      this.item.underlyingDecimals
-    )
-    this.transactionInProgress = true
+    let inputValue = this.getValue(input)
 
     try {
       if (this.isDeposit) {
         let approvedResult: any
 
+        transactionStore.transactionMessageVisible = true
+        transactionStore.transactionMessageStatus.firstStep.message = t("transaction.allowance")
+        transactionStore.transactionMessageStatus.secondStep.message = t("transaction.deposit")
+        transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.PENDING
+
         const allowanceAmount = await this.selectedToken.allowance(
           this.item.cToken
         )
 
-        this.showMessage(TRANSACTION_STATUS.PENDING)
-
         // check if supply is allowed, otherwise it should be approved
-        if (+allowanceAmount >= +inputValue) {
+        if (+allowanceAmount < +inputValue) {
           // can proceed with supply
-          approvedResult = true
-        } else {
           // need to approve
-          approvedResult = await this.selectedToken.approve(
-            this.item.cToken
-          )
-          this.txData.gasLimit = +approvedResult.gasLimit
-          // wait for transaction to be mined in order to proceed with mint
-          await approvedResult.wait()
+          try {
+            approvedResult = await this.selectedToken.approve(
+              this.item.cToken
+            )
+            this.txData.gasLimit = +approvedResult.gasLimit
+            // wait for transaction to be mined in order to proceed with mint
+            await approvedResult.wait()
+          } catch (e) {
+            transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
+            return
+          }
         }
-        if (approvedResult) {
+
+        transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
+        transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
+
+        try {
           const {hash} = await this.cTokenContract.supply(inputValue)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
-            this.showMessage(TRANSACTION_STATUS.SUCCESS)
+            transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
+        } catch (e) {
+          transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isBorrow) {
         const isMarketExist = await this.isMarketExist()
@@ -542,15 +567,23 @@ export class TransactionViewModel {
           Logger.info("Market is not available!!") // TODO show toast
           return
         }
+
+        transactionStore.transactionMessageVisible = true
+        transactionStore.transactionMessageStatus.firstStep.message = t("transaction.borrow")
+        transactionStore.transactionMessageStatus.secondStep.visible = false
+        transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.PENDING
+
         // for borrow
-        const {hash} = await this.cTokenContract.borrow(inputValue)
+        try {
+          const {hash} = await this.cTokenContract.borrow(inputValue)
 
-        this.showMessage(TRANSACTION_STATUS.PENDING)
-
-        if (hash) {
-          await this.comptroller.waitForTransaction(hash)
-          this.showMessage(TRANSACTION_STATUS.SUCCESS)
-          this.navigateBack()
+          if (hash) {
+            await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
+            this.navigateBack()
+          }
+        } catch (e) {
+          transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isWithdraw) {
         // check if number is too small for transaction
@@ -563,68 +596,69 @@ export class TransactionViewModel {
           Logger.info("error")
           return
         }
-        const {hash} = await this.cTokenContract.withdraw(inputValue)
 
-        this.showMessage(TRANSACTION_STATUS.PENDING)
+        transactionStore.transactionMessageVisible = true
+        transactionStore.transactionMessageStatus.firstStep.message = t("transaction.withdrawal")
+        transactionStore.transactionMessageStatus.secondStep.visible = false
+        transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.PENDING
 
-        if (hash) {
-          await this.comptroller.waitForTransaction(hash)
-          this.showMessage(TRANSACTION_STATUS.SUCCESS)
-          this.navigateBack()
+        try {
+          const {hash} = await this.cTokenContract.withdraw(inputValue)
+
+          if (hash) {
+            await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
+            this.navigateBack()
+          }
+        } catch (e) {
+          transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isRepay) {
         let approvedResult: any
+
+        transactionStore.transactionMessageVisible = true
+        transactionStore.transactionMessageStatus.firstStep.message = t("transaction.allowance")
+        transactionStore.transactionMessageStatus.secondStep.message = t("transaction.repayBorrow")
+        transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.PENDING
 
         const allowanceAmount = await this.selectedToken.allowance(
           this.item.cToken
         )
 
-        this.showMessage(TRANSACTION_STATUS.PENDING)
-
         // check if spending token is allowed, otherwise it should be approved
-        if (+allowanceAmount >= +inputValue) {
-          // can proceed with supply
-          approvedResult = true
-        } else {
+        if (+allowanceAmount < +inputValue) {
           // need to approve
-          approvedResult = await this.selectedToken.approve(
-            this.item.cToken
-          )
-          this.txData.gasLimit = +approvedResult.gasLimit
-          // wait for transaction to be mined in order to proceed with repay
-          await approvedResult.wait()
+          try {
+            approvedResult = await this.selectedToken.approve(
+              this.item.cToken
+            )
+            this.txData.gasLimit = +approvedResult.gasLimit
+            // wait for transaction to be mined in order to proceed with repay
+            await approvedResult.wait()
+          } catch (e) {
+            transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
+            return
+          }
         }
 
-        const {hash} = await this.cTokenContract.repayBorrow(inputValue)
+        transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
+        transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
-        if (hash) {
-          await this.comptroller.waitForTransaction(hash)
-          this.showMessage(TRANSACTION_STATUS.SUCCESS)
-          this.navigateBack()
+        try {
+          const {hash} = await this.cTokenContract.repayBorrow(inputValue)
+
+          if (hash) {
+            await this.comptroller.waitForTransaction(hash)
+            transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
+            this.navigateBack()
+          }
+        } catch (e) {
+          transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
       }
     } catch (e: any) {
       Logger.error(e)
-      this.showMessage(TRANSACTION_STATUS.ERROR, t("transactionMessage.denied"))
-    } finally {
-      setTimeout(() => {
-        this.clearMessage()
-      }, 3000)
-      this.transactionInProgress = false
     }
-  }
-
-  showMessage = (status: TRANSACTION_STATUS, message?: string) => {
-    if (typeof message === 'string') {
-      transactionStore.transactionMessage = message
-    }
-    transactionStore.transactionMessageStatus = status
-    transactionStore.transactionMessageVisible = true
-  }
-
-  clearMessage = () => {
-    transactionStore.transactionMessageVisible = false
-    transactionStore.transactionMessage = ""
   }
 
   isMarketExist = async () => {
@@ -633,7 +667,7 @@ export class TransactionViewModel {
   }
 
   setInputValue = (value: string) => {
-    if (!/^([0-9]+)?(\.)?([0-9]+)?$/.test(value)) {
+    if (!REG.DIGITS_INPUT.test(value)) {
       return
     }
 
@@ -694,7 +728,13 @@ export class TransactionViewModel {
       }
     }
 
-    this.setInputValue(formatBalance(maxValue).toString())
+    const isInvalidValue = !new RegExp(REG.NUMBER).test(maxValue);
+
+    this.setInputValue(formatBalance(
+      isInvalidValue
+        ? String(maxValue).substring(0, 16)
+        : maxValue || "0"
+    ).toString())
     this.inputRef?.focus()
   }
 

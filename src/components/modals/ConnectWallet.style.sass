@@ -6,10 +6,9 @@
   display: flex
   flex-direction: column
   align-items: center
-  background-color: #f5faff
   .image
-    width: 220px
-    height: 200px
+    width: 180px
+    height: 180px
   .title
     font-style: normal
     font-weight: 700
@@ -20,20 +19,22 @@
     text-align: center
     letter-spacing: 0.5px
     color: #001833
+    margin-top: 16px
   .sub-title
     font-style: normal
     font-weight: 400
     font-size: 16px
     line-height: 22px
-    display: flex
-    align-items: center
-    text-align: center
     color: #001833
     margin-top: 8px
+    white-space: pre-wrap
   .buttons
     display: flex
     flex-direction: column
-    margin: 16px
+    position: absolute
+    left: 16px
+    right: 16px
+    bottom: 16px
     .later
       background-color: transparent
       color: $primary
@@ -53,6 +54,6 @@
       letter-spacing: 0.5px
       padding: 12px
       border-radius: 12px
-      margin-top: 20px
+      margin-top: 60px
       &:hover
         background-color: rgba($primary, 0.7)

@@ -5,39 +5,64 @@
   flex-direction: column
   background-color: $blue-ozone
   width: 800px
+  .borrow-section
+    background-color: $white
+    border-radius: 12px
+    padding-bottom: 12px
+    .row
+      display: flex
+      flex-direction: row
+      align-items: center
+      padding: 10px 8px
+      justify-content: space-between
+      &:nth-child(1)
+        border-bottom: solid $grey-divider 1px !important
+      .arrow-icon
+          margin-left: 2px
+          margin-right: 2px
+      .right
+        display: flex
+        flex-direction: row
+        align-items: center
+        padding: 10px 8px
+        justify-content: space-between
+        .title
+          font-style: normal
+          font-weight: 400
+          font-size: 14px
+          letter-spacing: 0.5px
+          color: $grey-text
+        .value
+          font-style: normal
+          font-weight: 400
+          font-size: 16px
+          letter-spacing: 0.5px
+          color: $textBlack
+          margin-right: 2px
+          margin-left: 2px
+      .title
+        font-style: normal
+        font-weight: 400
+        font-size: 14px
+        letter-spacing: 0.5px
+        color: $grey-text
+      .value
+        font-style: normal
+        font-weight: 400
+        font-size: 16px
+        letter-spacing: 0.5px
+        color: $textBlack
+        margin-right: 2px
+        margin-left: 2px
+    .borrow-limit
+      display: flex
+      flex-direction: column
   @include mq($until: tablet)
     width: 100%
   &-content
     padding-left: 16px
     padding-right: 16px
     padding-bottom: 16px
-  &-borrow-limit
-    display: flex
-    flex-direction: column
-    margin-top: 10px
-    margin-bottom: 10px
-    background-color: $white
-    padding-bottom: 16px
-    border-radius: 12px
-    &-row
-      display: flex
-      flex-direction: row
-      align-items: center
-      padding: 1.3em 1em
-      border-radius: 12px
-      justify-content: space-between
-      &-title
-        font-style: normal
-        font-weight: 400
-        font-size: 1.1em
-        letter-spacing: 0.5px
-        color: $grey-text
-      &-value
-        font-style: normal
-        font-weight: 400
-        font-size: 1.1em
-        letter-spacing: 0.5px
-        color: $textBlack
 
 .v-supply
   flex-direction: column
@@ -45,7 +70,6 @@
   padding-bottom: 1px
   background-color: $white
   border-radius: 12px
-  box-shadow: rgba($primary, 0.05) 0 8px 24px
   &-insufficient-balance
     display: flex
     font-style: normal
@@ -123,7 +147,10 @@
     letter-spacing: 0.5px
     padding: 12px
     border-radius: 12px
-    margin-top: 30px
+    position: absolute
+    bottom: 16px
+    left: 16px
+    right: 16px
     &.borrow
       background-color: $purple-heart
       &:hover
@@ -138,10 +165,10 @@
     flex-direction: row
     align-items: center
     background-color: $white
-    padding: 1.3em 1em
+    padding: 1.3em 10px
     border-radius: 12px
     justify-content: space-between
-    margin-bottom: 8px
+    margin-bottom: 10px
     .right-row
       display: flex
       flex-direction: row
@@ -153,13 +180,13 @@
     &-title
       font-style: normal
       font-weight: 400
-      font-size: 1.1em
+      font-size: 14px
       letter-spacing: 0.5px
       color: $grey-text
     &-value
       font-style: normal
       font-weight: 400
-      font-size: 1.1em
+      font-size: 16px
       letter-spacing: 0.5px
       color: $textBlack
       margin-right: 2px
@@ -170,7 +197,7 @@
     align-items: center
     align-self: flex-end
   .fee-btn
-    font-size: 1.2em
+    font-size: 15px
     font-weight: 500
     font-style: normal
     letter-spacing: 0.5px
@@ -184,7 +211,7 @@
   &-title
     font-style: normal
     font-weight: 500
-    font-size: 1.3em
+    font-size: 15px
     color: $textBlack
     letter-spacing: 0.5px
     align-self: center
@@ -216,30 +243,11 @@
       display: flex
       background-color: $white
       border-radius: 100px
-      width: 50px
-      height: 50px
+      width: 48px
+      height: 48px
       align-items: center
       justify-content: center
       box-shadow: rgba($primary, 0.05) 0 8px 24px
       &-icon
       &:hover
         background-color: $primary-light
-
-.v-wallet-balance
-  display: flex
-  flex-direction: row
-  align-items: center
-  justify-content: space-between
-  margin-top: 22px
-  &-title
-    font-style: normal
-    font-weight: 400
-    font-size: 1em
-    letter-spacing: 0.5px
-    color: $grey-text
-  &-value
-    font-style: normal
-    font-weight: 500
-    font-size: 1em
-    letter-spacing: 0.5px
-    color: $textBlack

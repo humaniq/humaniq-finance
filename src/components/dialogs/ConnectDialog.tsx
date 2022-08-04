@@ -16,6 +16,7 @@ import "./styles.sass";
 import {getProviderStore} from "App"
 import {PROVIDERS} from "stores/provider/providerStore"
 import {t} from "translations/translate"
+import {Puller} from "components/puller/Puller"
 
 export interface ConnectDialogProps {}
 
@@ -28,6 +29,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
       onOpen={getProviderStore.toggleConnectDialog}
       style={{ borderRadius: 16 }}
     >
+      <Puller />
       <Box
         className={"drawer-container"}
         sx={{ width: "auto", minHeight: 300 }}
