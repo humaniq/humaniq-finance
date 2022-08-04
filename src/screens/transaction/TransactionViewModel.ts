@@ -226,11 +226,11 @@ export class TransactionViewModel {
 
   get tokenFiatDisplay() {
     if (this.isDeposit) {
-      return `$${formatBalance(Big(this.item.balance).mul(this.item.tokenUsdValue))}`
+      return `$${formatBalance(Big(this.item.balance).mul(this.item.tokenUsdValue), 4)}`
     }
 
     if (this.isWithdraw) {
-      return `$${formatBalance(Big(this.item.supply).mul(this.item.tokenUsdValue))}`
+      return `$${formatBalance(Big(this.item.supply).mul(this.item.tokenUsdValue), 4)}`
     }
 
     if (this.isBorrow) {
@@ -250,7 +250,7 @@ export class TransactionViewModel {
       return `$${formatBalance(Big(this.item.borrow).mul(this.item.tokenUsdValue), 4)}`
     }
 
-    return `$${formatBalance(this.item.tokenUsdValue)}`
+    return `$${formatBalance(this.item.tokenUsdValue), 4}`
   }
 
   get getApyTitle() {
