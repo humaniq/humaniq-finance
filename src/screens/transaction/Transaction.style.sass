@@ -57,6 +57,28 @@
     .borrow-limit
       display: flex
       flex-direction: column
+  .pay-button
+    background-color: $primary
+    color: $white
+    font-style: normal
+    font-weight: 500
+    font-size: 16px
+    letter-spacing: 0.5px
+    padding: 12px
+    border-radius: 12px
+    position: absolute
+    left: 16px
+    right: 16px
+    bottom: 16px
+    &.borrow
+      background-color: $purple-heart
+      &:hover
+        background-color: rgba($purple-heart, 0.7)
+    &:hover
+      background-color: rgba($primary, 0.7)
+    &:disabled
+      background-color: $grey-divider
+      pointer-events: none
   @include mq($until: tablet)
     width: 100%
   &-content
@@ -138,28 +160,6 @@
   display: flex
   flex-direction: column
   margin-top: 1.6em
-  &-btn
-    background-color: $primary
-    color: $white
-    font-style: normal
-    font-weight: 500
-    font-size: 16px
-    letter-spacing: 0.5px
-    padding: 12px
-    border-radius: 12px
-    position: absolute
-    bottom: 16px
-    left: 16px
-    right: 16px
-    &.borrow
-      background-color: $purple-heart
-      &:hover
-        background-color: rgba($purple-heart, 0.7)
-    &:hover
-      background-color: rgba($primary, 0.7)
-    &:disabled
-      background-color: $grey-divider
-      pointer-events: none
   &-row
     display: flex
     flex-direction: row

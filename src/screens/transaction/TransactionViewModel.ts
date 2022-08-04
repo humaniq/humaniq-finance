@@ -3,7 +3,7 @@ import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/typ
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatBalance, formatToCurrency, formatToNumber} from "utils/utils"
+import {formatBalance, formatToCurrency, formatToNumber, formatValue} from "utils/utils"
 import {utils} from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
@@ -221,16 +221,16 @@ export class TransactionViewModel {
   }
 
   get tokenBalanceDisplay() {
-    return `${formatBalance(this.tokenBalance, 4)}`
+    return `${formatValue(this.tokenBalance, undefined, '')}`
   }
 
   get tokenFiatDisplay() {
     if (this.isDeposit) {
-      return `$${formatBalance(Big(this.item.balance).mul(this.item.tokenUsdValue), 4)}`
+      return `${formatValue(Big(this.item.balance).mul(this.item.tokenUsdValue))}`
     }
 
     if (this.isWithdraw) {
-      return `$${formatBalance(Big(this.item.supply).mul(this.item.tokenUsdValue), 4)}`
+      return `${formatValue(Big(this.item.supply).mul(this.item.tokenUsdValue))}`
     }
 
     if (this.isBorrow) {
@@ -243,14 +243,14 @@ export class TransactionViewModel {
         maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
       }
 
-      return `$${formatBalance(maxValue, 4)}`
+      return `${formatValue(maxValue)}`
     }
 
     if (this.isRepay) {
-      return `$${formatBalance(Big(this.item.borrow).mul(this.item.tokenUsdValue), 4)}`
+      return `${formatValue(Big(this.item.borrow).mul(this.item.tokenUsdValue))}`
     }
 
-    return `$${formatBalance(this.item.tokenUsdValue), 4}`
+    return `${formatValue(this.item.tokenUsdValue)}`
   }
 
   get getApyTitle() {
@@ -351,9 +351,9 @@ export class TransactionViewModel {
 
   get getFiatOrTokenInput() {
     if (this.inputFiat) {
-      return `${formatBalance(this.inputValueToken, 4)} ${this.getTokenSymbol}`
+      return `${formatValue(this.inputValueToken, undefined, '')} ${this.getTokenSymbol}`
     }
-    return `$${formatBalance(this.inputValueFiat, 4)}`
+    return `${formatValue(this.inputValueFiat)}`
   }
 
   get isButtonDisabled() {

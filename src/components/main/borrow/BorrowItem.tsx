@@ -18,18 +18,18 @@ export interface BorrowItemProps {
   totalBorrow: number
 }
 
-export const BorrowItem: React.FC<BorrowItemProps> = ({
-                                                        onBorrowClick,
-                                                        className,
-                                                        disabled,
-                                                        item,
-                                                        isRepay = false,
-                                                        borrowLimit,
-                                                        totalBorrow,
-                                                        ...rest
-                                                      }) => {
+export const BorrowItem = ({
+                             onBorrowClick,
+                             className,
+                             disabled,
+                             item,
+                             isRepay = false,
+                             borrowLimit,
+                             totalBorrow,
+                             ...rest
+                           }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
-    return disabled || !isRepay && item.supply > 0
+    return disabled || (!isRepay && item.supply > 0)
   }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {
@@ -43,7 +43,7 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
     if (isRepay) {
       text = Big(item.tokenUsdValue).mul(item.borrow).toFixed(2)
     } else {
-      const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0;
+      const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0
       text = maxBorrow.toFixed(2)
     }
 
@@ -56,10 +56,10 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
     if (isRepay) {
       text = t("transaction.repay")
     } else {
-      text = t("home.borrow")
+      text = `${t("home.borrow")} ${item.borrowApy}%`
     }
 
-    return `${text} ${item.borrowApy}%`
+    return text
   }, [isRepay, t])
 
   return (

@@ -154,13 +154,13 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               </div>
               <TransactionLinearProgress progress={view.maxBorrowLimitUsed}/>
             </div>
-            <Button
-              className={`v-form-btn ${view.buttonColor}`}
-              onClick={view.handleTransaction}
-              disabled={view.isButtonDisabled}
-              text={view.getDepositButtonText}/>
           </div>
         </div>
+        <Button
+          className={`pay-button ${view.buttonColor}`}
+          onClick={view.handleTransaction}
+          disabled={view.isButtonDisabled}
+          text={view.getDepositButtonText}/>
       </div>
     </>
   )

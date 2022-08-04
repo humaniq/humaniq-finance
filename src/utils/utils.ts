@@ -33,6 +33,10 @@ export const preciseRound = (n: any) => {
   );
 }
 
+export const formatValue = (value: any, dec: number = 4, currency: string = '$') => {
+  return `${currency}${Big(value).toFixed(Big(value).eq(0) ? 0 : dec)}`
+}
+
 export const formatBalance = (value: any, dec?: number) => {
   let v = Big(value)
   return v.gte(1) ? parseFloat(v.toFixed(dec)) : preciseRound(v);

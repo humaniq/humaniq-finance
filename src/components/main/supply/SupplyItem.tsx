@@ -22,18 +22,18 @@ export interface TokenItemProps {
   isBalance?: boolean
 }
 
-export const SupplyItem: React.FC<TokenItemProps> = ({
-                                                       onSupplyClick,
-                                                       className,
-                                                       disabled,
-                                                       item,
-                                                       isWithdraw = false,
-                                                       isBalance = false,
-                                                       ...rest
-                                                     }) => {
+export const SupplyItem = ({
+                             onSupplyClick,
+                             className,
+                             disabled,
+                             item,
+                             isWithdraw = false,
+                             isBalance = false,
+                             ...rest
+                           }: TokenItemProps) => {
 
   const buttonDisabled = useMemo(() => {
-    return disabled || +item.balance === 0 || !isWithdraw && +item.borrow > 0
+    return disabled || (!isWithdraw && +item.balance === 0) || (!isWithdraw && +item.borrow > 0)
   }, [item, disabled, isWithdraw])
 
   const title = useMemo(() => {
@@ -53,9 +53,9 @@ export const SupplyItem: React.FC<TokenItemProps> = ({
     if (isWithdraw) {
       text = t("transaction.withdraw")
     } else {
-      text = t("home.deposit")
+      text = `${t("home.deposit")} ${item.supplyApy}%`
     }
-    return `${text} ${item.supplyApy}%`
+    return text
   }, [item, isWithdraw, t])
 
   const subTitle = useMemo(() => {

@@ -51,7 +51,7 @@ export class HomeViewModel {
   }
 
   get getNetApyLabel() {
-    return `${this.netApy ? this.netApy : "..."}`
+    return `${this.netApy ? Big(this.netApy).toFixed(2) : "..."}`
   }
 
   get getBorrowBalance() {
