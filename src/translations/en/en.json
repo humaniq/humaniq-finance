@@ -18,7 +18,8 @@
     "loading": "Loading",
     "cancel": "Cancel",
     "later": "Later",
-    "mayBeLater": "Maybe later"
+    "mayBeLater": "Maybe later",
+    "error": "Error"
   },
   "home": {
     "deposit": "Deposit",
@@ -72,7 +73,7 @@
   "transactionMessage": {
     "pending": "Transaction is pending",
     "success": "Success",
-    "error": "Error transaction",
+    "error": "Transaction error",
     "denied": "User denied transaction"
   },
   "wallet": {

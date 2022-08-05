@@ -17,7 +17,8 @@ export type TRANSACTION_STEP = {
     message?: string
     visible: boolean
     status?: TRANSACTION_STATUS
-  }
+  },
+  errorMessage?: string
 }
 
 export class TransactionStore {

@@ -1,4 +1,4 @@
-import "components/connection-support/ConnectionNotSupportedModal.style.sass"
+import "./ConnectionNotSupportedModal.style.sass"
 import ConnectIllustration from "assets/images/connect-illustration.svg"
 import React from "react"
 import {t} from "translations/translate"

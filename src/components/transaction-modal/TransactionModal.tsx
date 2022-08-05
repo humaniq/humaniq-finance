@@ -50,6 +50,11 @@ export const TransactionModal = observer(({
       status.secondStep.status === TRANSACTION_STATUS.ERROR
   }, [status.firstStep.status, status.secondStep.status])
 
+  const showError = useMemo(() => {
+    return status.firstStep.status === TRANSACTION_STATUS.ERROR ||
+      status.secondStep.status === TRANSACTION_STATUS.ERROR
+  }, [status.firstStep.status])
+
   if (!visible) return null
 
   return <div className="transaction-modal">
@@ -106,12 +111,22 @@ export const TransactionModal = observer(({
           <span className="value">{status.secondStep.message}</span>
         </div>
       )}
-      {showScan && (
+      {showScan ? (
         <Button onClick={() => {
           window.location.href = `${getProviderStore.currentNetwork.scanUrl}${transactionStore.transactionHash}`
         }} className="button" text={t("transaction.viewOnScan", {
           network: capitalize(getProviderStore.currentNetwork.type)
         })}/>
+      ) : (
+        <>
+          {showError && (
+            <div className="error">
+              <span className="error-title">{`${t("common.error")}:`}</span>
+              <span
+                className="error-message">{transactionStore.transactionMessageStatus.errorMessage || t("transactionMessage.error")}</span>
+            </div>
+          )}
+        </>
       )}
       {showClose && (
         <CircleClose onClick={() => {
