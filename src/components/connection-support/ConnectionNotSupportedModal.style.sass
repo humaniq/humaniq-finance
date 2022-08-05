@@ -1,6 +1,6 @@
-@import "../../styles/vars.sass"
+@import "src/styles/vars"
 
-.transaction-modal
+.connection-not-supported
   position: absolute
   flex: 1
   top: 0
@@ -26,39 +26,27 @@
     padding: 16px 16px 84px
     width: 100%
     max-width: 600px
-    overflow: hidden
     .image
       width: 90px
       height: 90px
     .title
       font-style: normal
+      font-weight: 600
+      font-size: 20px
+      line-height: 22px
+      display: flex
+      color: $textBlack
+      margin-bottom: 16px
+      align-self: center
+    .message
+      font-style: normal
       font-weight: 500
-      font-size: 16px
+      font-size: 18px
       line-height: 22px
       display: flex
       color: $textBlack
       margin-top: 16px
-      align-self: flex-start
-    .steps
-      display: flex
-      flex-direction: row
-      align-items: center
-      justify-content: flex-start
-      width: 100%
-      margin-top: 12px
-      .step
-        font-style: normal
-        font-weight: 400
-        font-size: 16px
-        line-height: 22px
-        color: $grey-text
-      .value
-        font-style: normal
-        font-weight: 500
-        font-size: 16px
-        line-height: 22px
-        color: $textBlack
-        margin-left: 4px
+      align-self: center
     .button
       background-color: rgba($primary, 0.1)
       color: $primary

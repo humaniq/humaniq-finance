@@ -27,6 +27,7 @@ import {LiquidityBottomSheet} from "components/bottom-sheet/LiquidityBottomSheet
 import {EVM_NETWORKS_NAMES, NETWORK_TYPE} from "constants/network"
 import {ConnectWallet} from "components/modals/ConnectWallet"
 import {Loader} from "components/loader/Loader"
+import {capitalize} from "utils/textUtils"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -59,7 +60,9 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
           <div className={"row"}>
             <span className={"logoText"}>
               {`${t("appName")}`}
-              {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${EVM_NETWORKS_NAMES.BSC_TESTNET})` : ''}
+              {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${capitalize(
+                EVM_NETWORKS_NAMES.BSC_TESTNET
+              )})` : ''}
             </span>
             <AddressView
               title={view.getAccount}
@@ -179,7 +182,6 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
               )}
             </>
           )}
-
         </div>
       </div>
       <LiquidityBottomSheet

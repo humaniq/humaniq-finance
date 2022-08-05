@@ -15,6 +15,7 @@ import {ConnectDialog} from "components/dialogs/ConnectDialog"
 import {DisconnectDialog} from "components/dialogs/DisconnectDialog"
 import {TransactionModal} from "components/transaction-modal/TransactionModal"
 import {transactionStore} from "stores/app/transactionStore"
+import {ConnectionNotSupportedModal} from "components/connection-support/ConnectionNotSupportedModal"
 
 window.Buffer = b.Buffer
 
@@ -81,6 +82,9 @@ export const App = observer(() => {
       </SharedDataProvider>
       <ConnectDialog />
       <DisconnectDialog />
+      <ConnectionNotSupportedModal
+        isVisible={getProviderStore.notSupportedNetwork}
+      />
     </>
   )
 })

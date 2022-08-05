@@ -1,4 +1,4 @@
-import "components/transaction-modal/TransactionModal.style.sass"
+import "./TransactionModal.style.sass"
 import ConnectIllustration from "../../assets/images/connect-illustration.svg"
 import React, {useMemo} from "react"
 import {t} from "translations/translate"
@@ -20,25 +20,40 @@ export const TransactionModal = observer(({
                                             status = {} as TRANSACTION_STEP
                                           }: TransactionModalProps) => {
 
-  const showScan = useMemo(() => {
-    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && !status.secondStep.status) {
-      return true
-    }
-    return status.firstStep.status === TRANSACTION_STATUS.SUCCESS && status.secondStep.status === TRANSACTION_STATUS.SUCCESS
-  }, [status.firstStep.status, status.secondStep.status])
+  // const showScan = useMemo(() => {
+  //   if (
+  //     status.firstStep.status === TRANSACTION_STATUS.SUCCESS &&
+  //     !status.secondStep.status
+  //   ) {
+  //     return true
+  //   }
+  //   return status.firstStep.status === TRANSACTION_STATUS.SUCCESS &&
+  //     status.secondStep.status === TRANSACTION_STATUS.SUCCESS
+  // }, [status.firstStep.status, status.secondStep.status])
 
   const showClose = useMemo(() => {
-    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && !status.secondStep.status) {
+    if (
+      status.firstStep.status === TRANSACTION_STATUS.SUCCESS &&
+      !status.secondStep.status
+    ) {
       return true
     }
 
-    if (status.firstStep.status === TRANSACTION_STATUS.SUCCESS && status.secondStep.status === TRANSACTION_STATUS.SUCCESS) {
+    if (
+      status.firstStep.status === TRANSACTION_STATUS.SUCCESS &&
+      status.secondStep.status === TRANSACTION_STATUS.SUCCESS
+    ) {
       return true
     }
 
     return status.firstStep.status === TRANSACTION_STATUS.ERROR ||
       status.secondStep.status === TRANSACTION_STATUS.ERROR
   }, [status.firstStep.status, status.secondStep.status])
+
+  const showError = useMemo(() => {
+    return status.firstStep.status === TRANSACTION_STATUS.ERROR ||
+      status.secondStep.status === TRANSACTION_STATUS.ERROR
+  }, [status.firstStep.status])
 
   if (!visible) return null
 
@@ -96,13 +111,13 @@ export const TransactionModal = observer(({
           <span className="value">{status.secondStep.message}</span>
         </div>
       )}
-      {showScan && (
-        <Button onClick={() => {
-          window.location.href = `${getProviderStore.currentNetwork.scanUrl}${transactionStore.transactionHash}`
-        }} className="button" text={t("transaction.viewOnScan", {
-          network: capitalize(getProviderStore.currentNetwork.type)
-        })}/>
-      )}
+      {/*{showScan && (*/}
+      {/*  <Button onClick={() => {*/}
+      {/*    window.location.href = `${getProviderStore.currentNetwork.scanUrl}${transactionStore.transactionHash}`*/}
+      {/*  }} className="button" text={t("transaction.viewOnScan", {*/}
+      {/*    network: capitalize(getProviderStore.currentNetwork.type)*/}
+      {/*  })}/>*/}
+      {/*)}*/}
       {showClose && (
         <CircleClose onClick={() => {
           transactionStore.transactionMessageVisible = false

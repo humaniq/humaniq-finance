@@ -1,7 +1,6 @@
 import React, {useMemo} from "react"
 import colors from "utils/colors"
 import "./LinearProgress.style.sass";
-import {formatBalance} from "utils/utils"
 
 export interface LinearProgressProps {
   progress?: number;
