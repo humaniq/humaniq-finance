@@ -31,12 +31,4 @@ export class CompoundLens {
   getUnderlyingPriceAll(cTokens: any[]) {
       return this.contract.cTokenUnderlyingPriceAll(cTokens);
   }
-
-  getCompoundBalance(ersdlToken: any) {
-    return this.contract.getCompBalance(
-      ersdlToken,
-      getProviderStore.currentNetwork.comptrollerAddress,
-      this.account
-    );
-  }
 }

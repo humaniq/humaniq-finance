@@ -16,6 +16,7 @@ import "./styles.sass";
 import {getProviderStore} from "App"
 import {PROVIDERS} from "stores/provider/providerStore"
 import {t} from "translations/translate"
+import {Puller} from "components/puller/Puller"
 
 export interface ConnectDialogProps {}
 
@@ -28,6 +29,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
       onOpen={getProviderStore.toggleConnectDialog}
       style={{ borderRadius: 16 }}
     >
+      <Puller />
       <Box
         className={"drawer-container"}
         sx={{ width: "auto", minHeight: 300 }}
@@ -41,9 +43,9 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"metamask"} src={MetamaskLogo} />
+              <img alt={"humaniq"} src={HumaniqLogo} />
             </Avatar>
-            <span>{t("metamaskName")}</span>
+            <span>{t("hmqName")}</span>
           </Paper>
           <Paper
             elevation={0}
@@ -51,9 +53,9 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"humaniq"} src={HumaniqLogo} />
+              <img alt={"metamask"} src={MetamaskLogo} />
             </Avatar>
-            <span>{t("hmqName")}</span>
+            <span>{t("metamaskName")}</span>
           </Paper>
           <Paper
             elevation={0}
@@ -82,7 +84,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             className={"btn"}
             variant={"text"}
           >
-            {t("common.later")}
+            {t("common.mayBeLater")}
           </Button>
         </div>
       </Box>

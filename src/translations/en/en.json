@@ -4,6 +4,8 @@
   "metamaskName": "Metamask",
   "noData": "No data",
   "returnToMain": "Return to main page",
+  "welcomeMessage": "Welcome to Savy",
+  "welcomeDescription": "Make your first crypto capital\nand use it as collateral",
   "common": {
     "low": "Low",
     "slow": "Slow",
@@ -15,7 +17,9 @@
     "clear": "Clear",
     "loading": "Loading",
     "cancel": "Cancel",
-    "later": "Later"
+    "later": "Later",
+    "mayBeLater": "Maybe later",
+    "error": "Error"
   },
   "home": {
     "deposit": "Deposit",
@@ -39,14 +43,25 @@
     "valueCannotExceedSupply": "Value can't exceed supplied amount",
     "borrowBalance": "Borrow balance",
     "withdraw": "Withdraw",
+    "withdrawal": "Withdrawal",
     "repay": "Repay",
+    "repayBorrow": "Repay Borrow",
+    "borrow": "Borrow",
+    "deposit": "Deposit",
+    "approval": "Approval",
+    "allowance": "Allowance",
     "transactionSubmitted": "Transaction submitted",
     "currentlySupplying": "Currently Supplying",
     "currentlyBorrowing": "Currently Borrowing",
     "borrowLimitReached": "Borrowing limit reached",
     "notEnoughLiquidity": "Not enough tokens available on the market",
     "insufficientCollateral": "Insufficient collateral",
-    "wait": "Please wait for the transaction..."
+    "wait": "Please wait for the transaction steps:",
+    "modal": {
+      "approval": "Approval",
+      "step": "{{step}} step:"
+    },
+    "viewOnScan": "View on {{network}}Scan"
   },
   "hints": {
     "borrowLimit": "Borrow limit is the maximum sum you can borrow. It is calculated as 80% of your deposited funds.\n\nIf you deposit 100$ you won’t be able to borrow more than 80$ which is 80% of 100$.",
@@ -58,14 +73,14 @@
   "transactionMessage": {
     "pending": "Transaction is pending",
     "success": "Success",
-    "error": "Error transaction",
+    "error": "Transaction error",
     "denied": "User denied transaction"
   },
   "wallet": {
     "notConnected": "Not connected",
     "disconnect": "Disconnect",
     "connect": "Connect",
-    "connectDescription": "Connect your wallet to proceed",
+    "connectDescription": "Connect wallet to proceed",
     "connectWallet": "Connect your Wallet",
     "notFound": "Not Found",
     "connectWalletDialog": "Connect wallet",
@@ -73,5 +88,8 @@
     "disconnectWalletDialog": "Disconnect wallet",
     "chooseDisconnection": "Are you sure, that you want to disconnect wallet?",
     "walletConnectName": "WalletConnect"
+  },
+  "connection": {
+    "notSupported": "Connection not supported"
   }
 }

@@ -14,11 +14,10 @@ export interface LinearProgressProps {
  * @param amount
  * @constructor
  */
-export const LinearProgress: React.FC<LinearProgressProps> = ({
+export const  LinearProgress: React.FC<LinearProgressProps> = ({
   progress = 0,
   amount,
 }) => {
-
   const progressColor = useMemo(() => {
     if (progress > 0 && progress < 30) {
       return colors.purpleHeart
@@ -30,13 +29,18 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
     return ""
   }, [progress])
 
-  const handleProgress = useMemo(() => progress === 0 ? 0 : Math.min(progress, 100).toFixed(2), [progress])
+  const handleProgress = useMemo(() => progress === 0 ? 0 : Math.min(progress, 100), [progress])
+  const handleProgressPercentage = useMemo(() => progress === 0 ? 0 : handleProgress, [progress, handleProgress])
 
   return (
     <div className="progress-container">
-      <div className="progress" style={{ marginLeft: progress > 0 ? 0 : 10 }}>
-        <div className="progress-child" style={{ width: `${handleProgress}%`, backgroundColor: progressColor }}>
-          <span className="progress-text">{`${handleProgress}%`}</span>
+      <div className="progress">
+        <div className="child" style={{
+          width: `${handleProgressPercentage.toFixed(handleProgressPercentage === 0 ? 0 : 2)}%`,
+          backgroundColor: progressColor,
+          justifyContent: progress > 1 ? 'flex-end' : 'flex-start',
+        }}>
+          <span className="text">{`${handleProgress.toFixed(handleProgress === 0 ? 0 : 2)}%`}</span>
         </div>
       </div>
       <span className="amount">{amount}</span>

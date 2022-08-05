@@ -4,9 +4,9 @@ import {Divider} from "../../ui/divider/Divider"
 import {Button} from "../../ui/button/Button"
 import {BorrowSupplyItem} from "models/types"
 import Big from "big.js"
-import "./BorrowItem.style.sass"
 import {icons} from "utils/icons"
 import {t} from "translations/translate"
+import "./BorrowItem.style.sass"
 
 export interface BorrowItemProps {
   onBorrowClick?: () => void;
@@ -14,23 +14,28 @@ export interface BorrowItemProps {
   disabled?: boolean;
   item: BorrowSupplyItem;
   isRepay?: boolean
+  borrowLimit: number
+  totalBorrow: number
 }
 
-export const BorrowItem: React.FC<BorrowItemProps> = ({
-                                                        onBorrowClick,
-                                                        className,
-                                                        disabled,
-                                                        item,
-                                                        isRepay = false,
-                                                        ...rest
-                                                      }) => {
+export const BorrowItem = ({
+                             onBorrowClick,
+                             className,
+                             disabled,
+                             item,
+                             isRepay = false,
+                             borrowLimit,
+                             totalBorrow,
+                             ...rest
+                           }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
-    return disabled || !isRepay && item.supply > 0
-  }, [disabled])
+    return disabled || (!isRepay && item.supply > 0)
+  }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {
-    return Big(isRepay ? item.borrow : item.balance).toFixed(2)
-  }, [item, isRepay])
+    const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0
+    return Big(isRepay ? item.borrow : Big(maxBorrow).div(item.tokenUsdValue)).toFixed(2)
+  }, [item, isRepay, borrowLimit, totalBorrow])
 
   const title = useMemo(() => {
     let text
@@ -38,11 +43,12 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
     if (isRepay) {
       text = Big(item.tokenUsdValue).mul(item.borrow).toFixed(2)
     } else {
-      text = item.tokenUsdValue.toFixed(2)
+      const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0
+      text = maxBorrow.toFixed(2)
     }
 
     return `$${text}`
-  }, [item, isRepay])
+  }, [item, isRepay, borrowLimit, totalBorrow])
 
   const buttonTitle = useMemo(() => {
     let text
@@ -50,22 +56,22 @@ export const BorrowItem: React.FC<BorrowItemProps> = ({
     if (isRepay) {
       text = t("transaction.repay")
     } else {
-      text = t("home.borrow")
+      text = `${t("home.borrow")} ${item.borrowApy}%`
     }
 
-    return `${text} ${item.borrowApy}%`
+    return text
   }, [isRepay, t])
 
   return (
     <div className={`borrow-item ${className}`} {...rest}>
-      <div className="borrow-item--content">
+      <div className="inner">
         <img
           src={icons[item.symbol]}
           alt="logo"
-          className="borrow-item--avatar"
+          className="avatar"
         />
-        <div className="borrow-item--content--right">
-          <div className="borrow-item--content--row">
+        <div className="right">
+          <div className="row">
             <Text className="title" text={item.name}/>
             <Text
               className="title"

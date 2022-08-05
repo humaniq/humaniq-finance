@@ -1,6 +1,6 @@
-import {makeAutoObservable, runInAction} from "mobx"
+import {makeAutoObservable} from "mobx"
 import {Logger} from "utils/logger"
-import {ConnectInfo, ProviderMessage} from "models/contracts/types"
+import {ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import {ethers, Signer} from "ethers"
 import {EVM_NETWORKS, EVM_NETWORKS_NAMES, rpc} from "constants/network"
@@ -10,19 +10,22 @@ export enum PROVIDERS {
   WC = "WC",
 }
 
+export const WALLET_TYPE_CONNECTED = "wallet_connected_type_savy"
+
 export class ProviderStore {
   initialized = false
   currentAccount?: string | null = null
   hasProvider = false
-  chainId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID
-  networkId: number = EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].networkID
+  chainId: number
+  networkId: number
   signer: Signer
-  currentProvider: any // ethers.providers.Web3Provider | WalletConnectProvider
+  currentProvider: any
   connectDialog = false
   disconnectDialog = false
   connectedProvider: PROVIDERS
   currentNetworkName = EVM_NETWORKS_NAMES.BSC
   isConnecting = false
+  notSupportedNetwork = false
 
   constructor() {
     makeAutoObservable(this, undefined, {autoBind: true})
@@ -37,8 +40,8 @@ export class ProviderStore {
   }
 
   get isConnectionSupported() {
-    return (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID && this.networkId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].networkID)
-      || (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID && this.networkId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].networkID)
+    return (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID)
+      || (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID)
   }
 
   setProvider = async (type: PROVIDERS) => {
@@ -47,9 +50,7 @@ export class ProviderStore {
         case PROVIDERS.WC:
           const provider = new WalletConnectProvider({rpc})
           const result = await provider.enable()
-          runInAction(() => {
-            this.currentAccount = result[0]
-          })
+          this.currentAccount = result[0]
           this.currentProvider = new ethers.providers.Web3Provider(provider)
           this.initProvider()
           break
@@ -62,10 +63,8 @@ export class ProviderStore {
           await this.connect()
       }
       this.connectedProvider = type
-      localStorage.setItem("connected", type)
-      runInAction(() => {
-        this.connectDialog = false
-      })
+      localStorage.setItem(WALLET_TYPE_CONNECTED, type)
+      this.connectDialog = false
     } catch (e) {
       Logger.error("ERROR", e)
     }
@@ -73,7 +72,7 @@ export class ProviderStore {
 
   init = async () => {
     this.initialized = true
-    const provider = localStorage.getItem("connected")
+    const provider = localStorage.getItem(WALLET_TYPE_CONNECTED)
     if (provider) {
       await this.setProvider(provider as PROVIDERS)
     }
@@ -88,7 +87,6 @@ export class ProviderStore {
     ethereum.on("disconnect", this.handleDisconnect)
     ethereum.on("message", this.handleMessage)
     ethereum.on("chainChanged", this.handleChainChange)
-    ethereum.on("connect", this.handleChainChange)
 
     this.signer = this.currentProvider.getSigner()
   }
@@ -105,13 +103,12 @@ export class ProviderStore {
     ethereum.removeListener("disconnect", this.handleDisconnect)
     ethereum.removeListener("message", this.handleMessage)
     ethereum.removeListener("chainChanged", this.handleChainChange)
-    ethereum.removeListener("connect", this.handleChainChange)
   }
 
-  handleAccountsChange = (accounts: string[]) => {
-    if (this.currentAccount && accounts[0] !== this.currentAccount) {
-      this.currentAccount = accounts[0]
-    }
+  handleAccountsChange = async (accounts: string[]) => {
+    this.currentAccount = accounts[0]
+    this.isConnecting = true
+    setTimeout(() => this.isConnecting = false, 0)
   }
 
   handleDisconnect = () => {
@@ -120,16 +117,32 @@ export class ProviderStore {
 
   handleMessage = (message: ProviderMessage) => {
     // handle message
-    console.info("message", message);
   }
 
-  handleChainChange = async (chainId: string) => {
-    if (parseInt(chainId, 16) === this.currentNetwork.chainID) return;
-    this.chainId = parseInt(chainId, 16);
-    await this.init();
-  }
+  handleChainChange = async (info: any) => {
+    let chainId: any
+    if (typeof info === 'object') {
+      chainId = parseInt(info.chainId, 16)
+    } else {
+      chainId = parseInt(info, 16)
+    }
 
-  handleConnect = (connectInfo: ConnectInfo) => {
+    if (chainId === this.chainId) return
+
+    const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === chainId)
+
+    if (chain) {
+      this.notSupportedNetwork = false
+      this.chainId = chain.chainID
+      this.networkId = chain.networkID
+      this.currentNetworkName = chain.name
+      await this.init()
+    } else {
+      // not supported chain
+      this.chainId = chainId
+      this.notSupportedNetwork = true
+      this.initialized = false
+    }
   }
 
   personalMessageRequest = (message: any): any => {
@@ -145,30 +158,36 @@ export class ProviderStore {
   }
 
   connect = async () => {
+    if (!this.currentProvider || this.currentProvider?.provider.currentAccount)
+      return
+
     try {
       this.isConnecting = true
 
-      const [chainId, networkId] = await Promise.all<string>([
-        await window.ethereum.request({
-          method: "eth_chainId"
-        }),
-        await window.ethereum.request({
-          method: "net_version"
-        })
-      ])
-
-      this.chainId = +chainId
-      this.networkId = +networkId
-
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      }) as string[]
-
-      runInAction(() => {
-        if (accounts) {
-          this.currentAccount = accounts[0]
-        }
+      const chainId = await window.ethereum.request({
+        method: "eth_chainId"
       })
+
+      const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === +chainId)
+
+      if (chain) {
+        this.notSupportedNetwork = false
+
+        this.chainId = chain.chainID
+        this.networkId = chain.networkID
+        this.currentNetworkName = chain.name
+
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts"
+        }) as string[]
+
+        this.currentAccount = accounts[0]
+      } else {
+        // not supported
+        this.chainId = chainId
+        this.notSupportedNetwork = true
+        this.initialized = false
+      }
     } catch (e) {
       Logger.info("ERROR", e)
     } finally {
@@ -176,11 +195,11 @@ export class ProviderStore {
     }
   }
 
-  disconnect = () => {
+  disconnect = async () => {
     this.currentAccount = null
     this.disconnectDialog = false
     try {
-      localStorage.removeItem("connected")
+      localStorage.removeItem(WALLET_TYPE_CONNECTED)
       localStorage.removeItem("walletconnect")
     } catch (e) {
       Logger.error("ERROR", e)
@@ -196,4 +215,4 @@ export class ProviderStore {
   }
 }
 
-export const ETHProvider = new ProviderStore()
+export const EVMProvider = new ProviderStore()

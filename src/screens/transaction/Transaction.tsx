@@ -19,7 +19,8 @@ import AutosizeInput from 'react-input-autosize'
 import "./Transaction.style.sass"
 import {TransactionLinearProgress} from "components/ui/progress/transaction/TransactionLinearProgress"
 import {TRANSACTION_TYPE} from "models/contracts/types"
-import {FullScreenLoader} from "components/fullscreen-loader/FullScreenLoader"
+import colors from "utils/colors"
+import {getProviderStore} from "App"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -51,14 +52,18 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
     })()
   }, [view, data, setData])
 
-  if (!data) return (
-    <div className="no-data">
-      <span className="no-data-title">{t("noData")}</span>
-      <a onClick={view.navigateBack} className="no-data-description">{t("returnToMain")}</a>
-    </div>
-  )
+  useEffect(() => {
+    if (getProviderStore.isConnecting) {
+      navigate(-1)
+    }
+  }, [getProviderStore.isConnecting])
 
-  if (view.isRefreshing) return <Loader/>
+  if (!data) return null
+
+  if (view.isRefreshing || getProviderStore.isConnecting) return <Loader visible={view.isRefreshing || getProviderStore.isConnecting} color={
+    (data as TransactionState).transactionType === TRANSACTION_TYPE.REPAY ||
+    (data as TransactionState).transactionType === TRANSACTION_TYPE.BORROW ? colors.purpleHeart : colors.primary
+  }/>
 
   return (
     <>
@@ -78,12 +83,12 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                   <Text className="v-supply-content--row-title" text={view.item.name}/>
                   <Text
                     className="v-supply-content--row-title"
-                    text={view.getTokenUsdValue}
+                    text={view.tokenFiatDisplay}
                   />
                 </div>
                 <div className="v-supply-content-row-second">
                   <Text className="v-supply-content-row-second-title" text={view.getTokenSymbol}/>
-                  <Text className="v-supply-content-row-second-title" text={view.getTokenBalance}/>
+                  <Text className="v-supply-content-row-second-title" text={view.tokenBalanceDisplay}/>
                 </div>
               </div>
             </div>
@@ -122,48 +127,41 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
               <span className="v-form-row-title">{view.getApyTitle}</span>
               <span className="v-form-row-value">{view.getApyValue}</span>
             </div>
-
-            <div className="v-form-row">
-              <span className="v-form-row-title">{view.getBorrowLimitTitle}</span>
-              <div className="v-form-arrow-row">
-                <span className="v-form-row-value">{view.getBorrowLimitValue}</span>
-                {
-                  view.newBorrowLimit !== 0 && <>
-                    <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
-                    <span className="v-form-row-value">{view.getNewBorrowLimit}</span>
-                  </>
-                }
+            <div className="borrow-section">
+              <div className="row">
+                <span className="title">{view.getBorrowLimitTitle}</span>
+                <div className="right">
+                  <span className="value">{view.getBorrowLimitValue}</span>
+                  {
+                    view.newBorrowLimit !== 0 && <>
+                      <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
+                      <span className="value">{view.getNewBorrowLimit}</span>
+                    </>
+                  }
+                </div>
               </div>
-            </div>
-
-            <div className="valuation-borrow-limit">
-              <div className="valuation-borrow-limit-row">
-                <span className="valuation-borrow-limit-row-title">{t("home.borrowLimitUsed")}</span>
-                <div className="v-form-arrow-row">
-                  <span className="valuation-borrow-limit-row-value">{view.getBorrowLimitUsedValue}</span>
+              <div className="row">
+                <span className="title">{t("home.borrowLimitUsed")}</span>
+                <div className="row">
+                  <span className="value">{view.getBorrowLimitUsedValue}</span>
                   {
                     view.getNewBorrowLimitUsed !== 0 && <>
                       <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
-                      <span className="valuation-borrow-limit-row-value">{view.getNewBorrowLimitUsedFormatted}</span>
+                      <span className="value">{view.getNewBorrowLimitUsedFormatted}</span>
                     </>
                   }
                 </div>
               </div>
               <TransactionLinearProgress progress={view.maxBorrowLimitUsed}/>
             </div>
-            <Button
-              className={`v-form-btn ${view.buttonColor}`}
-              onClick={view.handleTransaction}
-              disabled={view.isButtonDisabled}
-              text={view.getDepositButtonText}/>
-            <div className="v-wallet-balance">
-              <span className="v-wallet-balance-title">{view.balanceTitle}</span>
-              <span className="v-wallet-balance-value">{`${view.getFormattedBalance}(${view.bottomBalanceFiatPrice})`}</span>
-            </div>
           </div>
         </div>
+        <Button
+          className={`pay-button ${view.buttonColor}`}
+          onClick={view.handleTransaction}
+          disabled={view.isButtonDisabled}
+          text={view.getDepositButtonText}/>
       </div>
-      <FullScreenLoader isVisible={view.transactionInProgress}/>
     </>
   )
 }

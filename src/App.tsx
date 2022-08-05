@@ -1,7 +1,7 @@
 import React, {useEffect} from "react"
 import {HashRouter as Router, Route, Routes} from "react-router-dom"
 import routes from "./utils/routes"
-import {ETHProvider} from "stores/provider/providerStore"
+import {EVMProvider} from "stores/provider/providerStore"
 import b from "buffer"
 import {Home} from "screens/main/Home"
 import {Transaction} from "screens/transaction/Transaction"
@@ -13,14 +13,13 @@ import "./App.style.sass"
 import MuiAlert from "@mui/material/Alert"
 import {ConnectDialog} from "components/dialogs/ConnectDialog"
 import {DisconnectDialog} from "components/dialogs/DisconnectDialog"
-import {ConnectWallet} from "components/modals/ConnectWallet"
-import {Loader} from "components/loader/Loader"
-import {TransactionMessage} from "components/transaction-message/TransactionMessage"
+import {TransactionModal} from "components/transaction-modal/TransactionModal"
 import {transactionStore} from "stores/app/transactionStore"
+import {ConnectionNotSupportedModal} from "components/connection-support/ConnectionNotSupportedModal"
 
 window.Buffer = b.Buffer
 
-export const getProviderStore = ETHProvider
+export const getProviderStore = EVMProvider
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -46,13 +45,11 @@ export const App = observer(() => {
     return () => getProviderStore.removeListeners()
   }, [])
 
-  if (getProviderStore.isConnecting) return <Loader />
-
   return (
     <>
       <SharedDataProvider>
         <div className="App">
-          {getProviderStore.currentAccount ? (
+          {getProviderStore.initialized ? (
             <Router>
               <Routes>
                 <Route path={routes.home.path} element={<Home/>}/>
@@ -62,7 +59,7 @@ export const App = observer(() => {
                 />
               </Routes>
             </Router>
-          ) : <ConnectWallet/>}
+          ) : null}
           <Snackbar
             open={app.alert.displayAlert}
             autoHideDuration={6000}
@@ -78,14 +75,16 @@ export const App = observer(() => {
             </Alert>
           </Snackbar>
         </div>
-        <TransactionMessage
-          isOpen={transactionStore.transactionMessageVisible}
-          status={transactionStore.transactionMessageStatus}
-          message={transactionStore.transactionMessage}
-        />
+       <TransactionModal
+         status={transactionStore.transactionMessageStatus}
+         visible={transactionStore.transactionMessageVisible}
+       />
       </SharedDataProvider>
       <ConnectDialog />
       <DisconnectDialog />
+      <ConnectionNotSupportedModal
+        isVisible={getProviderStore.notSupportedNetwork}
+      />
     </>
   )
 })
