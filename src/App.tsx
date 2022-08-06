@@ -45,7 +45,6 @@ export const App = observer(() => {
     return () => getProviderStore.removeListeners()
   }, [])
 
-
   return (
     <>
       <SharedDataProvider>
@@ -60,6 +59,10 @@ export const App = observer(() => {
                 <Route
                   path={routes.transaction.path}
                   element={<Transaction/>}
+                />
+                <Route
+                  path="*"
+                  element={<Home/>}
                 />
               </Routes>
             </Router>

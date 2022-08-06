@@ -1,7 +1,9 @@
 @import "../../../styles/colors"
 
 .liquidity-tkn-container
-  margin-bottom: 4px
+  border-bottom: solid 1px $grey-divider
+  &:last-child
+    border-bottom: none
   .liquidity-tkn-content
     display: flex
     flex-direction: row
@@ -16,11 +18,10 @@
       justify-content: space-between
       margin-left: 16px
       margin-right: 10px
-      border-bottom: solid 1px $grey-divider
       .title
         font-style: normal
         font-weight: 500
-        font-size: 17px
+        font-size: 15px
         letter-spacing: 0.5px
         color: $textBlack
   .avatar
