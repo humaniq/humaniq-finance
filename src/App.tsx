@@ -45,6 +45,7 @@ export const App = observer(() => {
     return () => getProviderStore.removeListeners()
   }, [])
 
+
   return (
     <>
       <SharedDataProvider>
@@ -52,7 +53,10 @@ export const App = observer(() => {
           {getProviderStore.initialized ? (
             <Router>
               <Routes>
-                <Route path={routes.home.path} element={<Home/>}/>
+                <Route
+                  path={routes.home.path}
+                  element={<Home/>}
+                />
                 <Route
                   path={routes.transaction.path}
                   element={<Transaction/>}
@@ -75,13 +79,13 @@ export const App = observer(() => {
             </Alert>
           </Snackbar>
         </div>
-       <TransactionModal
-         status={transactionStore.transactionMessageStatus}
-         visible={transactionStore.transactionMessageVisible}
-       />
+        <TransactionModal
+          status={transactionStore.transactionMessageStatus}
+          visible={transactionStore.transactionMessageVisible}
+        />
       </SharedDataProvider>
-      <ConnectDialog />
-      <DisconnectDialog />
+      <ConnectDialog/>
+      <DisconnectDialog/>
       <ConnectionNotSupportedModal
         isVisible={getProviderStore.notSupportedNetwork}
       />

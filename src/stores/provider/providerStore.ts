@@ -40,8 +40,9 @@ export class ProviderStore {
   }
 
   get isConnectionSupported() {
-    return (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC_TESTNET].chainID)
-      || (this.chainId === EVM_NETWORKS[EVM_NETWORKS_NAMES.BSC].chainID)
+    return Boolean(
+      Object.values(EVM_NETWORKS).find(item => item.chainID === this.chainId)
+    )
   }
 
   setProvider = async (type: PROVIDERS) => {
@@ -81,12 +82,12 @@ export class ProviderStore {
   initProvider = () => {
     if (!this.currentProvider) return
 
-    const {provider: ethereum} = this.currentProvider
+    const {provider} = this.currentProvider
 
-    ethereum.on("accountsChanged", this.handleAccountsChange)
-    ethereum.on("disconnect", this.handleDisconnect)
-    ethereum.on("message", this.handleMessage)
-    ethereum.on("chainChanged", this.handleChainChange)
+    provider.on("accountsChanged", this.handleAccountsChange)
+    provider.on("disconnect", this.handleDisconnect)
+    provider.on("message", this.handleMessage)
+    provider.on("chainChanged", this.handleChainChange)
 
     this.signer = this.currentProvider.getSigner()
   }
@@ -94,15 +95,9 @@ export class ProviderStore {
   removeListeners = () => {
     if (!this.currentProvider) return
 
-    const {provider: ethereum} = this.currentProvider
+    const {provider} = this.currentProvider
 
-    ethereum.removeListener(
-      "accountsChanged",
-      this.handleAccountsChange
-    )
-    ethereum.removeListener("disconnect", this.handleDisconnect)
-    ethereum.removeListener("message", this.handleMessage)
-    ethereum.removeListener("chainChanged", this.handleChainChange)
+    provider.removeListeners()
   }
 
   handleAccountsChange = async (accounts: string[]) => {
@@ -145,26 +140,14 @@ export class ProviderStore {
     }
   }
 
-  personalMessageRequest = (message: any): any => {
-    if (!this.currentProvider) return null
-
-    return this.currentProvider.request({
-      method: "personal_sign",
-      params: [
-        `0x${Buffer.from(message, "utf-8").toString("hex")}`,
-        this.currentAccount
-      ]
-    })
-  }
-
   connect = async () => {
     if (!this.currentProvider || this.currentProvider?.provider.currentAccount)
       return
 
-    try {
-      this.isConnecting = true
+    this.isConnecting = true
 
-      const chainId = await window.ethereum.request({
+    try {
+      const chainId = await this.currentProvider.provider.request({
         method: "eth_chainId"
       })
 
@@ -177,7 +160,7 @@ export class ProviderStore {
         this.networkId = chain.networkID
         this.currentNetworkName = chain.name
 
-        const accounts = await window.ethereum.request({
+        const accounts = await this.currentProvider.provider.request({
           method: "eth_requestAccounts"
         }) as string[]
 
