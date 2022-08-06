@@ -7,7 +7,7 @@ export interface HeaderProps {
   onClose?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ title, onClose }) => {
+export const Header = ({ title, onClose }: HeaderProps) => {
   return (
     <div className="header-container">
       <CloseIcon width={15} height={15} onClick={onClose} />

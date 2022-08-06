@@ -1,9 +1,9 @@
-import React from "react";
-import { BottomSheet } from "react-spring-bottom-sheet";
-import { Text } from "../ui/text/Text";
-import colors from "../../utils/colors";
-import { LiquidityTokenItem } from "../main/liquidity/LiquidityTokenItem";
-import "./LiquidityBottomSheet.style.sass";
+import React from "react"
+import {BottomSheet} from "react-spring-bottom-sheet"
+import {Text} from "../ui/text/Text"
+import colors from "../../utils/colors"
+import {LiquidityTokenItem} from "../main/liquidity/LiquidityTokenItem"
+import "./LiquidityBottomSheet.style.sass"
 import {t} from "translations/translate"
 
 export interface LiquidityBottomSheetProps {
@@ -12,11 +12,11 @@ export interface LiquidityBottomSheetProps {
   onDismiss: () => void;
 }
 
-export const LiquidityBottomSheet: React.FC<LiquidityBottomSheetProps> = ({
-  list = [],
-  visible,
-                                                                            onDismiss,
-}) => {
+export const LiquidityBottomSheet = ({
+                                       list = [],
+                                       visible,
+                                       onDismiss
+                                     }: LiquidityBottomSheetProps) => {
   return (
     <BottomSheet
       open={visible}
@@ -40,5 +40,5 @@ export const LiquidityBottomSheet: React.FC<LiquidityBottomSheetProps> = ({
         </div>
       </div>
     </BottomSheet>
-  );
-};
+  )
+}

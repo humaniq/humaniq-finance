@@ -736,7 +736,7 @@ export class TransactionViewModel {
     this.setInputValue(
       isInvalidValue
         ? String(maxValue).substring(0, 16)
-        : maxValue || "0"
+        : String(maxValue) || "0"
     )
     this.inputRef?.focus()
   }

@@ -17,7 +17,6 @@ export class ProviderStore {
   currentAccount?: string | null = null
   hasProvider = false
   chainId: number
-  networkId: number
   signer: Signer
   currentProvider: any
   connectDialog = false
@@ -115,9 +114,9 @@ export class ProviderStore {
   handleChainChange = async (info: any) => {
     let chainId: any
     if (typeof info === 'object') {
-      chainId = parseInt(info.chainId, 16)
+      chainId = +info.chainId
     } else {
-      chainId = parseInt(info, 16)
+      chainId = +info
     }
 
     if (chainId === this.chainId) return
@@ -127,7 +126,6 @@ export class ProviderStore {
     if (chain) {
       this.notSupportedNetwork = false
       this.chainId = chain.chainID
-      this.networkId = chain.networkID
       this.currentNetworkName = chain.name
       await this.init()
     } else {
@@ -155,7 +153,6 @@ export class ProviderStore {
         this.notSupportedNetwork = false
 
         this.chainId = chain.chainID
-        this.networkId = chain.networkID
         this.currentNetworkName = chain.name
 
         const accounts = await this.currentProvider.provider.request({
