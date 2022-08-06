@@ -44,19 +44,16 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         await view.mounted(data as TransactionState)
         view.setInputRef(inputRef.current)
         view.setNavigation(navigate)
-      }
-      return () => {
-        setData(null)
-        view.unMounted()
+      } else {
+        navigate(-1)
       }
     })()
-  }, [view, data, setData])
 
-  useEffect(() => {
-    if (getProviderStore.isConnecting) {
-      navigate(-1)
+    return () => {
+      setData(null)
+      view.unMounted()
     }
-  }, [getProviderStore.isConnecting])
+  }, [view, data, setData])
 
   if (!data) return null
 
