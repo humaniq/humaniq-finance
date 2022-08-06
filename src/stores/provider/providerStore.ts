@@ -102,8 +102,6 @@ export class ProviderStore {
 
   handleAccountsChange = async (accounts: string[]) => {
     this.currentAccount = accounts[0]
-    this.isConnecting = true
-    setTimeout(() => this.isConnecting = false, 0)
   }
 
   handleDisconnect = () => {
