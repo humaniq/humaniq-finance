@@ -44,6 +44,10 @@ export class ProviderStore {
     )
   }
 
+  hideSupportedNetworkDialog = () => {
+    this.notSupportedNetwork = false
+  }
+
   setProvider = async (type: PROVIDERS) => {
     try {
       switch (type) {
@@ -100,6 +104,7 @@ export class ProviderStore {
   }
 
   handleAccountsChange = async (accounts: string[]) => {
+    if (this.currentAccount === accounts[0]) return
     this.currentAccount = accounts[0]
   }
 
@@ -121,6 +126,8 @@ export class ProviderStore {
 
     if (chainId === this.chainId) return
 
+    if (this.isConnecting) return
+
     const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === chainId)
 
     if (chain) {
@@ -139,6 +146,8 @@ export class ProviderStore {
   connect = async () => {
     if (!this.currentProvider || this.currentProvider?.provider.currentAccount)
       return
+
+    if (this.isConnecting) return
 
     this.isConnecting = true
 
