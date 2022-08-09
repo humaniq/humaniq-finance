@@ -3,10 +3,7 @@ import ConnectIllustration from "../../assets/images/connect-illustration.svg"
 import React, {useMemo} from "react"
 import {t} from "translations/translate"
 import {LoaderIcon} from "components/transaction-modal/icon/LoaderIcon"
-import {Button} from "components/ui/button/Button"
 import {observer} from "mobx-react"
-import {getProviderStore} from "App"
-import {capitalize} from "utils/textUtils"
 import {ReactComponent as CircleClose} from "assets/icons/ic_circle_close.svg"
 import {TRANSACTION_STATUS, TRANSACTION_STEP, transactionStore} from "stores/app/transactionStore"
 
@@ -60,7 +57,11 @@ export const TransactionModal = observer(({
   return <div className="transaction-modal">
     <div className="modal">
       <img alt="connect-illustration" className="image" src={ConnectIllustration}/>
-      <span className="title">{t("transaction.wait")}</span>
+      <span className="title">{
+        showError ? t("common.went_wrong") : t("transaction.wait", {
+          p: t(status.secondStep.visible ? "transaction.step_multi" : "transaction.step_single")
+        })
+      }</span>
       <div className="steps">
         <LoaderIcon
           isLoading={
