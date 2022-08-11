@@ -1,12 +1,15 @@
 import {getProviderStore} from "App"
 import {svWBGLDelegatorContract} from "models/contracts/svWBGLDelegatorContract"
 import {svBUSDDelegatorContract} from "models/contracts/svBUSDDelegatorContract"
+import {WBGL} from "models/WBGL"
+import {BUSD} from "models/BUSD"
 
 export class Ctoken {
   cToken: any
   account: any
   isWBGL: boolean
   contract: any
+  token: WBGL | BUSD
 
   constructor(cToken: any, account: any, isWBGL: boolean) {
     this.cToken = cToken
@@ -14,6 +17,9 @@ export class Ctoken {
     this.contract = isWBGL ?
       svWBGLDelegatorContract(cToken, getProviderStore.currentProvider) :
       svBUSDDelegatorContract(cToken, getProviderStore.currentProvider)
+    this.token = isWBGL ?
+      new WBGL(getProviderStore.currentProvider, getProviderStore.currentAccount) :
+      new BUSD(getProviderStore.currentProvider, getProviderStore.currentAccount)
   }
 
   supply = async (value: any) => {
@@ -98,5 +104,9 @@ export class Ctoken {
 
   estimateGas = (recipientAddress: any, amount: any) => {
     return this.contract.estimateGas.transfer(recipientAddress, amount)
+  }
+
+  getTokenBalance = () => {
+    return this.token.balanceOf()
   }
 }
