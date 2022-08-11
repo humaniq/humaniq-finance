@@ -39,7 +39,7 @@ export class HomeViewModel {
   }
 
   get getBorrowLimitPercentage() {
-    if (this.borrowLimit === 0 || this.totalBorrow === 0) return 0
+    if (this.totalBorrow === 0 || this.borrowLimit === 0) return 0
 
     return (this.totalBorrow / this.borrowLimit) * 100
   }
@@ -78,11 +78,11 @@ export class HomeViewModel {
 
   toggleDialogOrDisconnectWallet = () => {
     if (!getProviderStore.currentAccount) {
-      getProviderStore.connectDialog = !getProviderStore.connectDialog;
+      getProviderStore.connectDialog = !getProviderStore.connectDialog
     } else {
-      getProviderStore.toggleDisconnectDialog();
+      getProviderStore.toggleDisconnectDialog()
     }
-  };
+  }
 
   calculateAPY = (ratePerBlock: any) => {
     // todo: ethMantissa for everything or not
@@ -144,32 +144,51 @@ export class HomeViewModel {
     return metadata.map(async (data: any) => {
       const price = prices.find((p: any) => p.cToken === data.cToken)
       const balance = balances.find((b: any) => b.cToken === data.cToken)
-      const cTokenContract = new Ctoken(data.cToken, getProviderStore.currentAccount, data.symbol === getProviderStore.currentNetwork.WBGLSymbol)
       const cTokenData = Object.assign({}, data)
 
       let token: any
 
       cTokenData.token = data.underlyingAssetAddress
       token = new Token(cTokenData.token)
-      cTokenData.symbol = await token.getSymbol()
-      cTokenData.name = await token.getName()
 
-      cTokenData.cName = await cTokenContract.getName()
-      cTokenData.totalBorrows = await cTokenContract.getTotalBorrows()
-      cTokenData.totalSupply = await cTokenContract.getTotalSupply()
-      cTokenData.exchangeRateStored =
-        await cTokenContract.getExchangeRateStored()
-      cTokenData.liquidity = await cTokenContract.getCash()
+      const [symbol, name] = await Promise.all([
+        token.getSymbol(),
+        token.getName(),
+      ])
 
-      cTokenData.isEnteredTheMarket = await this.comptroller.checkMembership(
-        data.cToken
-      )
-      cTokenData.supplyAllowed = !(await this.comptroller.mintGuardianPaused(
-        data.cToken
-      ));
-      cTokenData.borrowAllowed = !(await this.comptroller.borrowGuardianPaused(
-        data.cToken
-      ));
+      const cTokenContract = new Ctoken(data.cToken, getProviderStore.currentAccount, symbol === getProviderStore.currentNetwork.WBGLSymbol)
+
+      const [
+        cName,
+        totalBorrows,
+        totalSupply,
+        exchangeRate,
+        cash,
+        checkMembership,
+        mintGuardian,
+        borrowGuardian
+      ] = await Promise.all([
+        cTokenContract.getName(),
+        cTokenContract.getTotalBorrows(),
+        cTokenContract.getTotalSupply(),
+        cTokenContract.getExchangeRateStored(),
+        cTokenContract.getCash(),
+        cTokenContract.getCash(),
+        this.comptroller.checkMembership(data.cToken),
+        this.comptroller.mintGuardianPaused(data.cToken),
+        this.comptroller.borrowGuardianPaused(data.cToken)
+      ])
+
+      cTokenData.symbol = symbol
+      cTokenData.name = name
+      cTokenData.cName = cName
+      cTokenData.totalBorrows = totalBorrows
+      cTokenData.totalSupply = totalSupply
+      cTokenData.exchangeRateStored = exchangeRate
+      cTokenData.liquidity = cash
+      cTokenData.isEnteredTheMarket = checkMembership
+      cTokenData.supplyAllowed = !mintGuardian
+      cTokenData.borrowAllowed = !borrowGuardian
       cTokenData.underlyingPrice = price.underlyingPrice
       cTokenData.tokenBalance = balance.tokenBalance
       cTokenData.tokenAllowance = balance.tokenAllowance
@@ -193,7 +212,6 @@ export class HomeViewModel {
     item.balance = this.convertFrom(item.tokenBalance, decimalValue)
     item.supply = this.convertFrom(item.supplyBalance, decimalValue)
     item.borrow = this.convertFrom(item.borrowBalance, decimalValue)
-
     item.supplyApy = this.calculateAPY(item.supplyRatePerBlock)
     item.borrowApy = this.calculateAPY(item.borrowRatePerBlock)
 

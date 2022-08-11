@@ -12,6 +12,10 @@ export class BUSD {
     this.contract = BUSDTestContract(this.provider)
   }
 
+  balanceOf = async () => {
+    return this.contract.balanceOf(this.account)
+  }
+
   allowance = async (cToken: any) => {
     return this.contract.allowance(this.account, cToken, {from: this.account})
   }

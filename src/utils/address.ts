@@ -1,4 +1,4 @@
-import { toChecksumAddress } from "ethereumjs-util";
+import {toChecksumAddress} from "ethereumjs-util"
 
 /**
  * Returns short address format
@@ -9,12 +9,11 @@ import { toChecksumAddress } from "ethereumjs-util";
  * @returns {String} - String corresponding to short address format
  */
 export function renderShortAddress(address?: string | null, chars = 4) {
-  if (!address) return address;
-  const checksummedAddress = toChecksumAddress(address);
-  // return `${checksummedAddress.substr(0, chars + 2)}...${checksummedAddress.substr(-chars)}`;
+  if (!address) return address
+  const checksummedAddress = toChecksumAddress(address)
   return checksummedAddress
     ? `${checksummedAddress.slice(0, 4)}...${checksummedAddress.substring(
-        checksummedAddress.length - 4
-      )}`
-    : "";
+      checksummedAddress.length - 4
+    )}`
+    : ""
 }
