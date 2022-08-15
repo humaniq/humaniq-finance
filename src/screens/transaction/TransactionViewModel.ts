@@ -18,15 +18,16 @@ import {BUSD} from "models/BUSD"
 import {TRANSACTION_STATUS, transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
 import {REG} from "models/constants/constants"
+import AutosizeInput from "react-input-autosize"
 
 export class TransactionViewModel {
-  item: BorrowSupplyItem = {} as any
+  item = {} as BorrowSupplyItem
   isRefreshing = true
   transactionType = TRANSACTION_TYPE.DEPOSIT
   borrowLimit = 0
   totalBorrow = 0
   inputValue = ""
-  comptroller: any
+  comptroller: Comptroller
   cTokenContract: Ctoken
   gasEstimating = false
 
@@ -48,7 +49,7 @@ export class TransactionViewModel {
     to: "",
     from: ""
   }
-  inputRef?: any
+  inputRef?: HTMLInputElement & AutosizeInput | null
   selectedToken: WBGL | BUSD
   nav?: NavigateFunction
 
@@ -496,7 +497,7 @@ export class TransactionViewModel {
     return this.isBorrow || this.isRepay ? "borrow" : ""
   }
 
-  setInputRef = (ref: any) => {
+  setInputRef = (ref: HTMLInputElement & AutosizeInput | null) => {
     this.inputRef = ref
   }
 
@@ -553,7 +554,6 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
-            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
@@ -579,7 +579,6 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
-            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
@@ -608,7 +607,6 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
-            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }
@@ -651,7 +649,6 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
-            transactionStore.transactionHash = hash
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           }

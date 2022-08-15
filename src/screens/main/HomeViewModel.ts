@@ -5,10 +5,10 @@ import {Ctoken} from "models/CToken"
 import {Token} from "models/Token"
 import Big from "big.js"
 import {getProviderStore} from "App"
-import {renderShortAddress} from "utils/address"
 import {t} from "i18next"
 import {BorrowSupplyItem} from "models/types"
 import {formatValue} from "utils/utils"
+import {renderShortAddress} from "utils/textUtils"
 
 export class HomeViewModel {
   userSuppliedMarket: BorrowSupplyItem[] = []
@@ -138,8 +138,7 @@ export class HomeViewModel {
   mergeTokenData = async (
     balances: any,
     prices: any,
-    metadata: any,
-    totalEarned: any
+    metadata: any
   ) => {
     return metadata.map(async (data: any) => {
       const price = prices.find((p: any) => p.cToken === data.cToken)
@@ -153,7 +152,7 @@ export class HomeViewModel {
 
       const [symbol, name] = await Promise.all([
         token.getSymbol(),
-        token.getName(),
+        token.getName()
       ])
 
       const cTokenContract = new Ctoken(data.cToken, getProviderStore.currentAccount, symbol === getProviderStore.currentNetwork.WBGLSymbol)
@@ -162,21 +161,18 @@ export class HomeViewModel {
         cName,
         totalBorrows,
         totalSupply,
-        exchangeRate,
         cash,
         checkMembership,
         mintGuardian,
-        borrowGuardian
+        borrowGuardian,
       ] = await Promise.all([
         cTokenContract.getName(),
         cTokenContract.getTotalBorrows(),
         cTokenContract.getTotalSupply(),
-        cTokenContract.getExchangeRateStored(),
-        cTokenContract.getCash(),
         cTokenContract.getCash(),
         this.comptroller.checkMembership(data.cToken),
         this.comptroller.mintGuardianPaused(data.cToken),
-        this.comptroller.borrowGuardianPaused(data.cToken)
+        this.comptroller.borrowGuardianPaused(data.cToken),
       ])
 
       cTokenData.symbol = symbol
@@ -184,7 +180,6 @@ export class HomeViewModel {
       cTokenData.cName = cName
       cTokenData.totalBorrows = totalBorrows
       cTokenData.totalSupply = totalSupply
-      cTokenData.exchangeRateStored = exchangeRate
       cTokenData.liquidity = cash
       cTokenData.isEnteredTheMarket = checkMembership
       cTokenData.supplyAllowed = !mintGuardian
@@ -195,8 +190,6 @@ export class HomeViewModel {
       cTokenData.borrowBalance = balance.borrowBalanceCurrent
       cTokenData.supplyBalance = balance.balanceOfUnderlying
       cTokenData.balanceOf = balance.balanceOf
-      cTokenData.earnedUsd = totalEarned?.usd[data.cToken] || balance.tokenBalance // TODO 0 default, totalEarned should come from server??
-      cTokenData.earnedUnderlying = totalEarned?.underlying[data.cToken] || balance.tokenBalance // TODO 0 default, totalEarned should come from server??
 
       return cTokenData
     })
@@ -279,15 +272,13 @@ export class HomeViewModel {
     const underlyingPrices = await this.cl.getUnderlyingPriceAll(
       this.cTokenAddressList
     )
-    // const totalEarned = await getTotalEarned(this.ethAccount) // TODO error from backend
     const cTokensDataTasks = this.cTokenAddressList.map(this.getTokenData)
     const cTokensDataResults = await Promise.all(cTokensDataTasks)
 
     let market = await this.mergeTokenData(
       cTokensBalances,
       underlyingPrices,
-      cTokensDataResults,
-      null
+      cTokensDataResults
     )
 
     market = await Promise.all(market)
