@@ -703,11 +703,11 @@ export class TransactionViewModel {
       if (!this.borrowLimit) {
         maxValue = 0
       } else {
-        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow) / this.item.tokenUsdValue; // tokens
         maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
 
-        if (!this.inputFiat) {
-          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
+        if (this.inputFiat) {
+          maxValue = Big(maxValue).mul(this.item.tokenUsdValue)
         }
       }
     }
