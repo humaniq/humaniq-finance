@@ -1,4 +1,4 @@
-@import "../../styles/colors"
+@import "../../styles/vars"
 
 .liquidity-sheet-container
   --rsbs-backdrop-bg: rgba(0, 0, 0, 0.6)
@@ -7,6 +7,12 @@
     background-color: #F5FAFF
   [data-rsbs-overlay]
     background-color: transparent
+    left: calc(50% - 300px) !important
+    right: calc(50% - 300px) !important
+    @include mq($until: tablet)
+      width: 100%
+      left: 0 !important
+      right: 0 !important
   [data-rsbs-header]:before
     width: 50px
     background-color: #ffffff

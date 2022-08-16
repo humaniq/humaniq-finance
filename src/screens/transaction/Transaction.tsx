@@ -36,7 +36,7 @@ export interface TransactionProps {
 const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
   const navigate = useNavigate()
   const {data, setData} = useSharedData()
-  const inputRef = useRef<any>(null)
+  const inputRef = useRef<HTMLInputElement & AutosizeInput | null>(null)
 
   useEffect(() => {
     ;(async () => {
@@ -53,7 +53,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
       setData(null)
       view.unMounted()
     }
-  }, [view, data, setData])
+  }, [view, data, setData, navigate])
 
   if (!data) return null
 

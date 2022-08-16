@@ -22,7 +22,6 @@ export type TRANSACTION_STEP = {
 }
 
 export class TransactionStore {
-  transactionHash: string = ""
   transactionMessageVisible = false
   transactionMessageStatus: TRANSACTION_STEP = {
     firstStep: {
@@ -38,7 +37,6 @@ export class TransactionStore {
   }
 
   clear = () => {
-    this.transactionHash = ""
     this.transactionMessageStatus = {
       firstStep: {
         visible: true
