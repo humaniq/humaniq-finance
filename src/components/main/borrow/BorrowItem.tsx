@@ -33,8 +33,7 @@ export const BorrowItem = ({
   }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {
-    const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0
-    return Big(isRepay ? item.borrow : Big(maxBorrow).div(item.tokenUsdValue)).toFixed(2)
+    return Big(isRepay ? item.borrow : item.liquidity / item.tokenUsdValue).toFixed(2)
   }, [item, isRepay, borrowLimit, totalBorrow])
 
   const title = useMemo(() => {
@@ -43,8 +42,7 @@ export const BorrowItem = ({
     if (isRepay) {
       text = Big(item.tokenUsdValue).mul(item.borrow).toFixed(2)
     } else {
-      const maxBorrow = ((borrowLimit * 0.8) - totalBorrow) || 0
-      text = maxBorrow.toFixed(2)
+      text = item.liquidity.toFixed(2)
     }
 
     return `$${text}`
