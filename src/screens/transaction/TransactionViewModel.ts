@@ -159,20 +159,7 @@ export class TransactionViewModel {
     }
 
     if (this.isBorrow) {
-      let maxValue
-
-      if (!this.borrowLimit) {
-        maxValue = 0
-      } else {
-        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
-        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
-
-        if (!this.inputFiat) {
-          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
-        }
-      }
-
-      return maxValue
+      return Big(this.item.liquidity).div(this.item.tokenUsdValue)
     }
 
     if (this.isRepay) {
@@ -235,16 +222,7 @@ export class TransactionViewModel {
     }
 
     if (this.isBorrow) {
-      let maxValue
-
-      if (!this.borrowLimit) {
-        maxValue = 0
-      } else {
-        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
-        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
-      }
-
-      return `${formatValue(maxValue)}`
+      return `${formatValue(this.item.liquidity)}`
     }
 
     if (this.isRepay) {
