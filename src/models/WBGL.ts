@@ -1,5 +1,5 @@
 import {WBGLTestContract} from "models/contracts/WBGLTestContract"
-import {MAX_UINT_256} from "models/constants/constants"
+import {MAX_UINT_256} from "utils/common"
 
 export class WBGL {
   account?: string | null
