@@ -28,7 +28,7 @@ export const cutString = (str?: string | null | undefined) => {
   return str.substring(0, 16)
 }
 
-export const convertValue = (value: any, tokenDecimals = 18) => {
+export const convertValue = (value?: string | null | undefined, tokenDecimals = 18) => {
   if (value === undefined || value === null) return '0'
 
   return Big(value)
