@@ -60,6 +60,9 @@ describe("common", () => {
       NUMBER.test("0.001")
     ).toBe(true)
     expect(
+      NUMBER.test("110.001234")
+    ).toBe(true)
+    expect(
       NUMBER.test("10.001")
     ).toBe(true)
     expect(
@@ -113,6 +116,17 @@ describe("common", () => {
     expect(cutString('0.1122101010101456789')).toBe('0.11221010101014')
     expect(cutString('1.1122101010101456789')).toBe('1.11221010101014')
     expect(cutString('11.1122101010101456789')).toBe('11.1122101010101')
+    expect(cutString('1024.10')).toBe('1024.10')
+    expect(cutString('10000')).toBe('10000')
+    expect(cutString('10240')).toBe('10240')
+    expect(cutString('10244')).toBe('10244')
+    expect(cutString('50')).toBe('50')
+    expect(cutString('40')).toBe('40')
+    expect(cutString('30')).toBe('30')
+    expect(cutString('20')).toBe('20')
+    expect(cutString('10')).toBe('10')
+    expect(cutString('10.56')).toBe('10.56')
+    expect(cutString('110.156')).toBe('110.156')
   })
 
   it('conver value function should convert values with token decimals', function () {
