@@ -1,6 +1,6 @@
 import { CErc20Contract } from "models/contracts/CErc20Contract";
-import { MAX_UINT_256 } from "models/constants/constants";
 import { getProviderStore } from "App";
+import {MAX_UINT_256} from "utils/common"
 
 export class Token {
   token: any;
