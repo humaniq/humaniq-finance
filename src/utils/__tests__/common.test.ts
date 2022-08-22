@@ -133,6 +133,7 @@ describe("common", () => {
     expect(convertValue(undefined)).toBe('0')
     expect(convertValue(null)).toBe('0')
     expect(convertValue("10.000001")).toBe("10000001000000000000")
+    expect(convertValue("1240.000001")).toBe("1240000001000000000000")
     expect(convertValue("0.000001")).toBe("1000000000000")
     expect(convertValue("0.000012456")).toBe("12456000000000")
     expect(convertValue("1.00001245623131")).toBe("1000012456231310000")
