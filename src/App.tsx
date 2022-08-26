@@ -91,7 +91,6 @@ export const App = observer(() => {
       <DisconnectDialog/>
       <ConnectionNotSupportedModal
         isVisible={getProviderStore.notSupportedNetwork}
-        handleClearClick={getProviderStore.hideSupportedNetworkDialog}
       />
     </>
   )
