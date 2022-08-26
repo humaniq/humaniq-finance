@@ -36,12 +36,10 @@ export const  LinearProgress: React.FC<LinearProgressProps> = ({
     <div className="progress-container">
       <div className="progress">
         <div className="child" style={{
-          width: `${handleProgressPercentage.toFixed(handleProgressPercentage === 0 ? 0 : 2)}%`,
+          width: `${handleProgressPercentage}%`,
           backgroundColor: progressColor,
-          justifyContent: progress > 1 ? 'flex-end' : 'flex-start',
-        }}>
-          <span className="text">{`${handleProgress.toFixed(handleProgress === 0 ? 0 : 2)}%`}</span>
-        </div>
+        }}/>
+        <span className="text">{`${handleProgress.toFixed(handleProgress === 0 ? 0 : 2)}%`}</span>
       </div>
       <span className="amount">{amount}</span>
     </div>
