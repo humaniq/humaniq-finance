@@ -1,5 +1,5 @@
 import {BUSDTestContract} from "models/contracts/BUSDTestContract"
-import {MAX_UINT_256} from "models/constants/constants"
+import {MAX_UINT_256} from "utils/common"
 
 export class BUSD {
   account?: string | null

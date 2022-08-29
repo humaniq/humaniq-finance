@@ -6,7 +6,7 @@ import {ReactComponent as Error} from "assets/icons/ic_error.svg"
 import {TailSpin} from "react-loader-spinner"
 import colors from "utils/colors"
 
-interface LoaderIcon {
+interface LoaderIconProps {
   size?: number
   successIconSize?: number
   errorIconSize?: number
@@ -26,7 +26,7 @@ export const LoaderIcon = ({
                              successIconSize = 15,
                              visible = true,
                              errorIconSize = 20
-                           }: LoaderIcon) => {
+                           }: LoaderIconProps) => {
 
   const getIcon = useMemo(() => {
     if (isSuccess) return (
@@ -41,10 +41,14 @@ export const LoaderIcon = ({
       </div>
     )
 
-    return (
-      <Watch width={size} height={size} className="icon"/>
-    )
-  }, [isSuccess, isError])
+    if (isLoading) {
+      return (
+        <Watch width={size} height={size} className="icon"/>
+      )
+    }
+
+    return null
+  }, [isSuccess, isError, isLoading])
 
   if (!visible) return null
 

@@ -17,8 +17,8 @@ import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
 import {TRANSACTION_STATUS, transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
-import {REG} from "models/constants/constants"
 import AutosizeInput from "react-input-autosize"
+import {convertValue, cutString, DIGITS_INPUT, NUMBER} from "utils/common"
 
 export class TransactionViewModel {
   item = {} as BorrowSupplyItem
@@ -159,20 +159,7 @@ export class TransactionViewModel {
     }
 
     if (this.isBorrow) {
-      let maxValue
-
-      if (!this.borrowLimit) {
-        maxValue = 0
-      } else {
-        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
-        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
-
-        if (!this.inputFiat) {
-          maxValue = Big(maxValue).div(this.item.tokenUsdValue)
-        }
-      }
-
-      return maxValue
+      return Big(this.item.liquidity).div(this.item.tokenUsdValue)
     }
 
     if (this.isRepay) {
@@ -235,16 +222,7 @@ export class TransactionViewModel {
     }
 
     if (this.isBorrow) {
-      let maxValue
-
-      if (!this.borrowLimit) {
-        maxValue = 0
-      } else {
-        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow); // in USD
-        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
-      }
-
-      return `${formatValue(maxValue)}`
+      return `${formatValue(this.item.liquidity)}`
     }
 
     if (this.isRepay) {
@@ -501,20 +479,11 @@ export class TransactionViewModel {
     this.inputRef = ref
   }
 
-  getValue = (value: string) => {
-    const tokenDecimals = 18
-    const decimals = Big(10).pow(+tokenDecimals);
-
-    return Big(value)
-      .times(decimals)
-      .toFixed();
-  }
-
   handleTransaction = async () => {
     transactionStore.clear()
 
     const input = this.inputFiat ? this.inputValueToken.toString() : this.inputValue
-    let inputValue = this.getValue(input)
+    let inputValue = convertValue(input)
 
     try {
       if (this.isDeposit) {
@@ -556,6 +525,8 @@ export class TransactionViewModel {
             await this.comptroller.waitForTransaction(hash)
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
+          } else {
+            transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e) {
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
@@ -581,6 +552,8 @@ export class TransactionViewModel {
             await this.comptroller.waitForTransaction(hash)
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
+          } else {
+            transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e) {
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
@@ -609,6 +582,8 @@ export class TransactionViewModel {
             await this.comptroller.waitForTransaction(hash)
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
+          } else {
+            transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e) {
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
@@ -651,6 +626,8 @@ export class TransactionViewModel {
             await this.comptroller.waitForTransaction(hash)
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
+          } else {
+            transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e) {
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
@@ -667,7 +644,7 @@ export class TransactionViewModel {
   }
 
   setInputValue = (value: string) => {
-    if (!REG.DIGITS_INPUT.test(value)) {
+    if (!DIGITS_INPUT.test(value)) {
       return
     }
 
@@ -728,11 +705,11 @@ export class TransactionViewModel {
       }
     }
 
-    const isInvalidValue = !new RegExp(REG.NUMBER).test(maxValue);
+    const isInvalidValue = !new RegExp(NUMBER).test(maxValue);
 
     this.setInputValue(
       isInvalidValue
-        ? String(maxValue).substring(0, 16)
+        ? cutString(String(maxValue))
         : String(maxValue) || "0"
     )
     this.inputRef?.focus()
