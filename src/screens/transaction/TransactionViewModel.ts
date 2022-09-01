@@ -477,14 +477,18 @@ export class TransactionViewModel {
   }
 
   get isMaxValueSet() {
+    let input = this.inputValueTOKEN.toString()
+
     if (this.isDeposit) {
-      let input = this.inputValueTOKEN.toString()
       return input === cutString(this.item.balance.toString())
     }
 
     if (this.isWithdraw) {
-      let input = this.inputValueTOKEN.toString()
-      return input === cutString(this.item.supplyBalance.toString())
+      return input === cutString(this.item.supply.toString())
+    }
+
+    if (this.isRepay) {
+      return input === cutString(this.item.borrow.toString())
     }
 
     return false
