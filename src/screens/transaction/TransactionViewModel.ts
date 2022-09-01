@@ -373,6 +373,7 @@ export class TransactionViewModel {
 
   get withdrawText() {
     if (Big(this.item.supply).lt(this.inputValueTOKEN)) return t('transaction.valueCannotExceedSupply')
+    if (this.hypotheticalBorrowLimitUsedForDeposit >= 100) return t('transaction.insufficientLiquidity')
     return `${t("transaction.withdraw")} ${formatToCurrency(this.inputValueUSD)}`
   }
 
@@ -455,8 +456,8 @@ export class TransactionViewModel {
       return (
         !this.isSupplyDisabled ||
         !Boolean(this.inputValueTOKEN) ||
-        Big(this.item.supply).lt(this.inputValueTOKEN)
-        // this.hypotheticalBorrowLimitUsedForDeposit >= 100
+        Big(this.item.supply).lt(this.inputValueTOKEN) ||
+        this.hypotheticalBorrowLimitUsedForDeposit >= 100
       )
     }
 
@@ -473,6 +474,20 @@ export class TransactionViewModel {
 
   get buttonColor() {
     return this.isBorrow || this.isRepay ? "borrow" : ""
+  }
+
+  get isMaxValueSet() {
+    if (this.isDeposit) {
+      let input = this.inputValueTOKEN.toString()
+      return input === cutString(this.item.balance.toString())
+    }
+
+    if (this.isWithdraw) {
+      let input = this.inputValueTOKEN.toString()
+      return input === cutString(this.item.supplyBalance.toString())
+    }
+
+    return false
   }
 
   setInputRef = (ref: HTMLInputElement & AutosizeInput | null) => {
@@ -498,8 +513,10 @@ export class TransactionViewModel {
           this.item.cToken
         )
 
+        let valueToSend = this.isMaxValueSet ? this.item.tokenBalance : inputValue
+
         // check if supply is allowed, otherwise it should be approved
-        if (+allowanceAmount < +inputValue) {
+        if (Big(allowanceAmount).lt(valueToSend)) {
           // can proceed with supply
           // need to approve
           try {
@@ -519,7 +536,7 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-          const {hash} = await this.cTokenContract.supply(inputValue)
+          const {hash} = await this.cTokenContract.supply(valueToSend)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
@@ -576,7 +593,8 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-          const {hash} = await this.cTokenContract.withdraw(inputValue)
+          let valueToSend = this.isMaxValueSet ? this.item.supplyBalance : inputValue
+          const {hash} = await this.cTokenContract.withdraw(valueToSend)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
@@ -601,7 +619,10 @@ export class TransactionViewModel {
         )
 
         // check if spending token is allowed, otherwise it should be approved
-        if (+allowanceAmount < +inputValue) {
+
+        let valueToSend = this.isMaxValueSet ? this.item.borrowBalance : inputValue
+
+        if (Big(allowanceAmount).lt(valueToSend)) {
           // need to approve
           try {
             approvedResult = await this.selectedToken.approve(
@@ -620,7 +641,7 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-          const {hash} = await this.cTokenContract.repayBorrow(inputValue)
+          const {hash} = await this.cTokenContract.repayBorrow(valueToSend)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
