@@ -454,7 +454,7 @@ export class TransactionViewModel {
       if (!this.item.isEnteredTheMarket) return true
 
       return (
-        !this.isSupplyDisabled ||
+        this.isSupplyDisabled ||
         !Boolean(this.inputValueTOKEN) ||
         Big(this.item.supply).lt(this.inputValueTOKEN) ||
         this.hypotheticalBorrowLimitUsedForDeposit >= 100
@@ -465,7 +465,7 @@ export class TransactionViewModel {
   }
 
   get isSupplyDisabled() {
-    return Big(this.item.tokenAllowance).gt(0)
+    return !Big(this.item.tokenAllowance).gt(0)
   }
 
   get supplyTitle() {
