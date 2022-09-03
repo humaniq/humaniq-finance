@@ -112,7 +112,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 placeholder="0"
                 value={view.getInputValue}
                 onChange={(e) => view.setInputValue(e.target.value)}/>
-              <div onClick={view.onSwap} className="v-form-icon-container">
+              <div aria-label="swap-button" onClick={view.onSwap} className="v-form-icon-container">
                 <ChangeIcon width={22} height={22} className="v-form-icon-container-icon"/>
               </div>
             </div>

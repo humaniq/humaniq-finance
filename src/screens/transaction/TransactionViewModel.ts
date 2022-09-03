@@ -468,10 +468,6 @@ export class TransactionViewModel {
     return !Big(this.item.tokenAllowance).gt(0)
   }
 
-  get supplyTitle() {
-    return this.isEnoughBalance ? "home.deposit" : "transaction.insufficientWalletBalance"
-  }
-
   get buttonColor() {
     return this.isBorrow || this.isRepay ? "borrow" : ""
   }
@@ -498,10 +494,14 @@ export class TransactionViewModel {
     this.inputRef = ref
   }
 
+  get getInputValueForTransaction () {
+    return this.inputFiat ? this.inputValueToken.toString() : this.inputValue
+  }
+
   handleTransaction = async () => {
     transactionStore.clear()
 
-    const input = this.inputFiat ? this.inputValueToken.toString() : this.inputValue
+    const input = this.getInputValueForTransaction
     let inputValue = convertValue(input)
 
     try {
@@ -623,7 +623,6 @@ export class TransactionViewModel {
         )
 
         // check if spending token is allowed, otherwise it should be approved
-
         let valueToSend = this.isMaxValueSet ? this.item.borrowBalance : inputValue
 
         if (Big(allowanceAmount).lt(valueToSend)) {
