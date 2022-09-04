@@ -1,7 +1,7 @@
 @import "../../styles/vars.sass"
 
 .transaction-modal
-  position: absolute
+  position: fixed
   flex: 1
   top: 0
   left: 0
@@ -16,6 +16,7 @@
   height: 100%
   background-color: rgba(0, 0, 0, 0.7)
   padding: 16px
+  z-index: 100
   .modal
     position: relative
     display: flex
