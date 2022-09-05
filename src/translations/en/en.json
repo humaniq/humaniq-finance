@@ -57,6 +57,7 @@
     "borrowLimitReached": "Borrowing limit reached",
     "notEnoughLiquidity": "Not enough tokens available on the market",
     "insufficientCollateral": "Insufficient collateral",
+    "insufficientLiquidity": "Insufficient liquidity",
     "wait": "Please wait for the transaction {{p}}:",
     "step_single": "step",
     "step_multi": "steps",

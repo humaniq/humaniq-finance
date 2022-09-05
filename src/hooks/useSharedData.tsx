@@ -2,8 +2,7 @@ import {createContext, useContext, useState} from "react"
 
 const SharedDataContext = createContext({
   data: null,
-  setData: (_: any) => {
-  }
+  setData: (_: any) => {}
 })
 
 const SharedDataProvider = ({children}: {children: any}) => {

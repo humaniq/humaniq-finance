@@ -29,7 +29,7 @@ export const BorrowItem = ({
                              ...rest
                            }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
-    return disabled || (!isRepay && item.supply > 0)
+    return disabled || (!isRepay && item.supply > 0.1)
   }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {

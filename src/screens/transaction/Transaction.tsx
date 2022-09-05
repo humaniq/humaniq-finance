@@ -97,10 +97,11 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
           <div className="v-form">
             <span className="v-form-title">{view.getTokenOrFiat}</span>
             <div className="v-form-middle-row">
-              <div onClick={view.setMaxValue} className="v-form-icon-container">
+              <div aria-label="max-button" onClick={view.setMaxValue} className="v-form-icon-container">
                 <MaxIcon width={30} height={30} className="v-form-icon-container-icon"/>
               </div>
               <AutosizeInput
+                aria-label="cost-input"
                 ref={inputRef}
                 inputMode="decimal"
                 inputStyle={{
@@ -111,7 +112,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 placeholder="0"
                 value={view.getInputValue}
                 onChange={(e) => view.setInputValue(e.target.value)}/>
-              <div onClick={view.onSwap} className="v-form-icon-container">
+              <div aria-label="swap-button" onClick={view.onSwap} className="v-form-icon-container">
                 <ChangeIcon width={22} height={22} className="v-form-icon-container-icon"/>
               </div>
             </div>
