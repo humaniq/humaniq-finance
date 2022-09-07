@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Transaction screen with not defined data should navigate back if data is not defined 1`] = `null`;
+
+exports[`Transaction screen with not defined data should navigate back if data is null 1`] = `null`;
