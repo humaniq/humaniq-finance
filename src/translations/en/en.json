@@ -94,7 +94,7 @@
     "walletConnectName": "WalletConnect"
   },
   "connection": {
-    "notSupported": "This network is not supported. Switch to BNB Smart Chain (BSC)",
+    "notSupported": "This network is not supported. Switch to BNB Smart Chain(BSC)",
     "networkChange": "Network change"
   }
 }
