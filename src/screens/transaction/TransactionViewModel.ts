@@ -253,7 +253,7 @@ export class TransactionViewModel {
   }
 
   get getBorrowLimitValue() {
-    return formatToCurrency(this.isDeposit || this.isWithdraw ? this.borrowLimit : this.totalBorrow)
+    return formatValue(this.isDeposit || this.isWithdraw ? this.borrowLimit : this.totalBorrow, 3)
   }
 
   get getBorrowLimitUsedValue() {
@@ -300,7 +300,7 @@ export class TransactionViewModel {
   }
 
   get getNewBorrowLimit() {
-    return formatToCurrency(this.newBorrowLimit)
+    return formatValue(this.newBorrowLimit, 3)
   }
 
   get newBorrowLimit() {
@@ -309,10 +309,10 @@ export class TransactionViewModel {
       if (!this.item.isEnteredTheMarket) return this.borrowLimit
 
       if (this.isWithdraw) {
-        return this.borrowLimit - this.inputValueUSD * (+this.collateralMantissa)
+        return this.borrowLimit - this.inputValueUSD * this.collateralMantissa
       }
 
-      return this.borrowLimit + this.inputValueUSD * (+this.collateralMantissa)
+      return this.borrowLimit + this.inputValueUSD * this.collateralMantissa
     }
 
     return this.borrowBalance ? this.borrowBalance : 0
@@ -410,18 +410,16 @@ export class TransactionViewModel {
     if (!this.inputValue) return 0
 
     if (this.isDeposit) {
-      return this.borrowLimit + this.inputValueUSD
+      return this.borrowLimit + this.inputValueUSD * this.collateralMantissa
     }
 
-    return this.borrowLimit - this.inputValueUSD
+    return this.borrowLimit - this.inputValueUSD * this.collateralMantissa
   }
 
   // FOR DEPOSIT
   get hypotheticalBorrowLimitUsedForDeposit() {
     if (!this.hypotheticalCollateralSupply || !this.totalBorrow) return 0
-
     if (this.hypotheticalCollateralSupply < 0) return 100
-
     if (!this.item.isEnteredTheMarket) return this.borrowLimitUsed
 
     const limit =
