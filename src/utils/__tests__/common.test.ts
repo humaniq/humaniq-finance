@@ -103,9 +103,11 @@ describe("common", () => {
   it('cut string function should handle undefined and null values', function () {
     expect(cutString(undefined)).toBe('')
     expect(cutString(null)).toBe('')
+    expect(cutString('')).toBe('')
   })
 
   it('cut string function should handle strings correctly', function () {
+    expect(cutString('0')).toBe('0')
     expect(cutString('0.1')).toBe('0.1')
     expect(cutString('0.11')).toBe('0.11')
     expect(cutString('0.1122')).toBe('0.1122')

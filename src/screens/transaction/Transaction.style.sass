@@ -7,6 +7,8 @@
   background-color: $blue-ozone
   width: 600px
   height: 100vh
+  overflow-y: scroll
+  white-space: nowrap
   .borrow-section
     background-color: $white
     border-radius: 12px
@@ -68,10 +70,11 @@
     letter-spacing: 0.5px
     padding: 14px
     border-radius: 12px
-    position: absolute
+    position: fixed
+    bottom: 10px
     left: 16px
     right: 16px
-    bottom: 8px
+    text-align: center
     &.borrow
       background-color: $purple-heart
       &:hover
@@ -87,6 +90,7 @@
     padding-left: 16px
     padding-right: 16px
     padding-bottom: 16px
+    margin-bottom: 100px
 
 .v-supply
   flex-direction: column

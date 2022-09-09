@@ -14,6 +14,7 @@ export interface BorrowItemProps {
   disabled?: boolean;
   item: BorrowSupplyItem;
   isRepay?: boolean
+  isLiquidity?: boolean
   borrowLimit: number
   totalBorrow: number
 }
@@ -26,6 +27,7 @@ export const BorrowItem = ({
                              isRepay = false,
                              borrowLimit,
                              totalBorrow,
+                             isLiquidity,
                              ...rest
                            }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
@@ -71,14 +73,18 @@ export const BorrowItem = ({
         <div className="right">
           <div className="row">
             <Text className="title" text={item.name}/>
-            <Text
-              className="title"
-              text={title}
-            />
+            {!isLiquidity && (
+              <Text
+                className="title"
+                text={title}
+              />
+            )}
           </div>
           <div className="row-2">
             <Text className="title" text={item.symbol}/>
-            <Text className="title" text={subTitle}/>
+            {!isLiquidity && (
+              <Text className="title" text={subTitle}/>
+            )}
           </div>
           <Divider marginT={10}/>
           <Button

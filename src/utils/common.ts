@@ -20,12 +20,12 @@ export const DIGITS_INPUT = /^([0-9]+)?(\.)?([0-9]+)?$/
 
 export const NUMBER = /^[1-9]\d{0,16}$|^(?=[1-9]\d*[.]\d+$).{1,16}$|^(?=0[.](\d+)?[1-9]$).{1,16}$/
 
-export const cutString = (str?: string | null | undefined) => {
-  if (typeof str !== 'string') {
+export const cutString = (str?: string | null, end: number = 16) => {
+  if (typeof str !== 'string' || !str) {
     return ''
   }
 
-  return str.substring(0, 16)
+  return str.substring(0, end)
 }
 
 export const convertValue = (value?: string | null | undefined, tokenDecimals = 18) => {
