@@ -482,12 +482,8 @@ export class TransactionViewModel {
     return this.isBorrow || this.isRepay ? "borrow" : ""
   }
 
-  get blabla() {
-    return this.inputFiat ? this.inputValueToken : this.inputValue
-  }
-
   get isMaxValueSet() {
-    let input = String(this.blabla)
+    let input = String(this.inputValueToken)
 
     if (this.isDeposit) {
       return input === this.item.balance.toString()
