@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled, and balance is lower than input 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD button should be disabled, and balance is lower than input 1`] = `
 <div>
   <div
     class="valuation"
@@ -15,7 +15,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -40,12 +40,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -54,12 +54,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -80,7 +80,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -104,12 +104,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               inputmode="decimal"
               placeholder="0"
               style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="3.456811"
+              value="17.456811"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              3.456811
+              17.456811
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -131,7 +131,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
         <span
           class="v-form-title"
         >
-          $0.0452
+          $17.4568
         </span>
         <button
           class="btn-container fee-btn"
@@ -149,7 +149,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -169,7 +169,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -179,7 +179,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               <span
                 class="value"
               >
-                $1.061
+                $25.034
               </span>
             </div>
           </div>
@@ -197,7 +197,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -207,7 +207,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
               <span
                 class="value"
               >
-                96.2%
+                0.02%
               </span>
             </div>
           </div>
@@ -219,7 +219,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -236,7 +236,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be disabled
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled, and balance is equal to input 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD button should be enabled, and balance is equal to input 1`] = `
 <div>
   <div
     class="valuation"
@@ -251,7 +251,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -276,12 +276,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -290,12 +290,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -307,7 +307,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -331,12 +331,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               inputmode="decimal"
               placeholder="0"
               style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="3.456711"
+              value="16.205892426964206221"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              3.456711
+              16.205892426964206221
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -358,7 +358,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
         <span
           class="v-form-title"
         >
-          $0.0452
+          $16.2059
         </span>
         <button
           class="btn-container fee-btn"
@@ -376,7 +376,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -396,7 +396,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -406,7 +406,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                $1.061
+                $24.033
               </span>
             </div>
           </div>
@@ -424,7 +424,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -434,7 +434,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                96.2%
+                0.03%
               </span>
             </div>
           </div>
@@ -446,7 +446,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -456,13 +456,13 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
     <button
       class="btn-container pay-button "
     >
-      home.deposit $0.0452
+      home.deposit $16.2059
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled, and balance is greater than input 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD button should be enabled, and balance is greater than input 1`] = `
 <div>
   <div
     class="valuation"
@@ -477,7 +477,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -502,12 +502,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -516,12 +516,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -533,7 +533,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -584,7 +584,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
         <span
           class="v-form-title"
         >
-          $0.0262
+          $2.0000
         </span>
         <button
           class="btn-container fee-btn"
@@ -602,7 +602,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -622,7 +622,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -632,7 +632,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                $1.046
+                $12.668
               </span>
             </div>
           </div>
@@ -650,7 +650,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -660,7 +660,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
               <span
                 class="value"
               >
-                97.6%
+                0.05%
               </span>
             </div>
           </div>
@@ -672,7 +672,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -682,13 +682,13 @@ exports[`Transaction screen with data for DEPOSIT/WBGL button should be enabled,
     <button
       class="btn-container pay-button "
     >
-      home.deposit $0.0262
+      home.deposit $2.0000
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD max is set 1`] = `
 <div>
   <div
     class="valuation"
@@ -703,7 +703,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -728,12 +728,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -742,12 +742,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -759,7 +759,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -783,12 +783,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               inputmode="decimal"
               placeholder="0"
               style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="3.456711"
+              value="16.205892426964206221"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              3.456711
+              16.205892426964206221
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -810,7 +810,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
         <span
           class="v-form-title"
         >
-          $0.0452
+          $16.2059
         </span>
         <button
           class="btn-container fee-btn"
@@ -828,7 +828,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -848,7 +848,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -858,7 +858,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               <span
                 class="value"
               >
-                $1.061
+                $24.033
               </span>
             </div>
           </div>
@@ -876,7 +876,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -886,7 +886,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
               <span
                 class="value"
               >
-                96.2%
+                0.03%
               </span>
             </div>
           </div>
@@ -898,7 +898,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -908,13 +908,13 @@ exports[`Transaction screen with data for DEPOSIT/WBGL max is set 1`] = `
     <button
       class="btn-container pay-button "
     >
-      home.deposit $0.0452
+      home.deposit $16.2059
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with input 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD set max and clear with input 1`] = `
 <div>
   <div
     class="valuation"
@@ -929,7 +929,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -954,12 +954,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -968,12 +968,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -985,7 +985,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -1009,12 +1009,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               inputmode="decimal"
               placeholder="0"
               style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="3.456711"
+              value="16.205892426964206221"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              3.456711
+              16.205892426964206221
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -1036,7 +1036,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
         <span
           class="v-form-title"
         >
-          $0.0452
+          $16.2059
         </span>
         <button
           class="btn-container fee-btn"
@@ -1054,7 +1054,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -1074,7 +1074,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -1084,7 +1084,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               <span
                 class="value"
               >
-                $1.061
+                $24.033
               </span>
             </div>
           </div>
@@ -1102,7 +1102,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -1112,7 +1112,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
               <span
                 class="value"
               >
-                96.2%
+                0.03%
               </span>
             </div>
           </div>
@@ -1124,7 +1124,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -1134,13 +1134,13 @@ exports[`Transaction screen with data for DEPOSIT/WBGL set max and clear with in
     <button
       class="btn-container pay-button "
     >
-      home.deposit $0.0452
+      home.deposit $16.2059
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should change input value from token to fiat on swap 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should change input value from token to fiat on swap 1`] = `
 <div>
   <div
     class="valuation"
@@ -1155,7 +1155,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -1180,12 +1180,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -1194,12 +1194,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -1243,13 +1243,13 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               class="v-form-middle-row-input"
               inputmode="decimal"
               placeholder="0"
-              style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="1.307828"
+              style="box-sizing: content-box; width: 2px; font-size: 32px;"
+              value="100"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              1.307828
+              100
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -1271,7 +1271,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
         <span
           class="v-form-title"
         >
-          100.0000 WBGL
+          100.0000 BUSD
         </span>
         <button
           class="btn-container fee-btn"
@@ -1289,7 +1289,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -1309,7 +1309,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -1319,7 +1319,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               <span
                 class="value"
               >
-                $2.071
+                $91.068
               </span>
             </div>
           </div>
@@ -1337,7 +1337,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -1347,7 +1347,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
               <span
                 class="value"
               >
-                49.28%
+                0.01%
               </span>
             </div>
           </div>
@@ -1359,7 +1359,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -1376,7 +1376,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change input value
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to token symbol when swap 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should change usd to token symbol when swap 1`] = `
 <div>
   <div
     class="valuation"
@@ -1391,7 +1391,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -1416,12 +1416,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -1430,12 +1430,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -1496,7 +1496,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
         <span
           class="v-form-title"
         >
-          0 WBGL
+          0 BUSD
         </span>
         <button
           class="btn-container fee-btn"
@@ -1514,7 +1514,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -1534,7 +1534,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
             </div>
           </div>
@@ -1552,7 +1552,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
             </div>
           </div>
@@ -1564,7 +1564,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -1581,7 +1581,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should change usd to toke
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap on swap 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should handle inputSwap on swap 1`] = `
 <div>
   <div
     class="valuation"
@@ -1596,7 +1596,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -1621,12 +1621,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -1635,12 +1635,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -1701,7 +1701,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
         <span
           class="v-form-title"
         >
-          0 WBGL
+          0 BUSD
         </span>
         <button
           class="btn-container fee-btn"
@@ -1719,7 +1719,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -1739,7 +1739,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
             </div>
           </div>
@@ -1757,7 +1757,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
             </div>
           </div>
@@ -1769,7 +1769,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -1786,7 +1786,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputSwap o
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueTOKEN 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should handle inputValueTOKEN 1`] = `
 <div>
   <div
     class="valuation"
@@ -1801,7 +1801,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -1826,12 +1826,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -1840,25 +1840,16 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
         </div>
-        <div
-          class="undefined"
-          style="height: 0.5px; background-color: rgb(224, 224, 224); margin-top: 0px; margin-bottom: 0px;"
-        />
-        <span
-          class="v-supply-insufficient-balance"
-        >
-          transaction.insufficientBalance
-        </span>
       </div>
       <div
         class="v-form"
@@ -1889,13 +1880,13 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               class="v-form-middle-row-input"
               inputmode="decimal"
               placeholder="0"
-              style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="0.14386108"
+              style="box-sizing: content-box; width: 2px; font-size: 32px;"
+              value="11"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              0.14386108
+              11
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -1917,7 +1908,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
         <span
           class="v-form-title"
         >
-          11.0000 WBGL
+          11.0000 BUSD
         </span>
         <button
           class="btn-container fee-btn"
@@ -1935,7 +1926,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -1955,7 +1946,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -1965,7 +1956,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               <span
                 class="value"
               >
-                $1.140
+                $19.868
               </span>
             </div>
           </div>
@@ -1983,7 +1974,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -1993,7 +1984,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
               <span
                 class="value"
               >
-                89.54%
+                0.03%
               </span>
             </div>
           </div>
@@ -2005,7 +1996,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -2014,15 +2005,14 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle inputValueT
     </div>
     <button
       class="btn-container pay-button "
-      disabled=""
     >
-      transaction.insufficientWalletBalance
+      home.deposit $11.0000
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should handle max on swap 1`] = `
 <div>
   <div
     class="valuation"
@@ -2037,7 +2027,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -2062,12 +2052,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -2076,25 +2066,16 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
         </div>
-        <div
-          class="undefined"
-          style="height: 0.5px; background-color: rgb(224, 224, 224); margin-top: 0px; margin-bottom: 0px;"
-        />
-        <span
-          class="v-supply-insufficient-balance"
-        >
-          transaction.insufficientBalance
-        </span>
       </div>
       <div
         class="v-form"
@@ -2102,7 +2083,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -2153,7 +2134,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
         <span
           class="v-form-title"
         >
-          $0.1569
+          $12.0000
         </span>
         <button
           class="btn-container fee-btn"
@@ -2171,7 +2152,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -2191,7 +2172,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -2201,7 +2182,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
               <span
                 class="value"
               >
-                $1.150
+                $20.668
               </span>
             </div>
           </div>
@@ -2219,7 +2200,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -2229,7 +2210,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
               <span
                 class="value"
               >
-                88.72%
+                0.03%
               </span>
             </div>
           </div>
@@ -2241,7 +2222,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -2250,15 +2231,14 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle max on swap
     </div>
     <button
       class="btn-container pay-button "
-      disabled=""
     >
-      transaction.insufficientWalletBalance
+      home.deposit $12.0000
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input value 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should handle safe input value 1`] = `
 <div>
   <div
     class="valuation"
@@ -2273,7 +2253,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -2298,12 +2278,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -2312,12 +2292,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -2329,7 +2309,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -2396,7 +2376,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -2416,7 +2396,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
             </div>
           </div>
@@ -2434,7 +2414,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
             </div>
           </div>
@@ -2446,7 +2426,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -2463,7 +2443,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should handle safe input 
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font size 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should lower input font size 1`] = `
 <div>
   <div
     class="valuation"
@@ -2478,7 +2458,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -2503,12 +2483,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -2517,25 +2497,16 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
         </div>
-        <div
-          class="undefined"
-          style="height: 0.5px; background-color: rgb(224, 224, 224); margin-top: 0px; margin-bottom: 0px;"
-        />
-        <span
-          class="v-supply-insufficient-balance"
-        >
-          transaction.insufficientBalance
-        </span>
       </div>
       <div
         class="v-form"
@@ -2543,7 +2514,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -2594,7 +2565,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
         <span
           class="v-form-title"
         >
-          $0.1321
+          $10.1010
         </span>
         <button
           class="btn-container fee-btn"
@@ -2612,7 +2583,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -2632,7 +2603,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -2642,7 +2613,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
               <span
                 class="value"
               >
-                $1.131
+                $19.149
               </span>
             </div>
           </div>
@@ -2660,7 +2631,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -2670,7 +2641,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
               <span
                 class="value"
               >
-                90.28%
+                0.03%
               </span>
             </div>
           </div>
@@ -2682,7 +2653,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -2691,15 +2662,14 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should lower input font s
     </div>
     <button
       class="btn-container pay-button "
-      disabled=""
     >
-      transaction.insufficientWalletBalance
+      home.deposit $10.1010
     </button>
   </div>
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should match data 1`] = `
 <div>
   <div
     class="valuation"
@@ -2714,7 +2684,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -2739,12 +2709,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -2753,12 +2723,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -2770,7 +2740,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -2837,7 +2807,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -2857,7 +2827,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
             </div>
           </div>
@@ -2875,7 +2845,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
             </div>
           </div>
@@ -2887,7 +2857,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -2904,7 +2874,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should match data 1`] = `
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should return token decimals 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should return token decimals 1`] = `
 <div>
   <div
     class="valuation"
@@ -2919,7 +2889,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -2944,12 +2914,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -2958,12 +2928,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -2975,7 +2945,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
         <span
           class="v-form-title"
         >
-          WBGL
+          BUSD
         </span>
         <div
           class="v-form-middle-row"
@@ -3042,7 +3012,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -3062,7 +3032,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
             </div>
           </div>
@@ -3080,7 +3050,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
             </div>
           </div>
@@ -3092,7 +3062,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -3109,7 +3079,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return token decim
 </div>
 `;
 
-exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max value on swap before transaction 1`] = `
+exports[`Transaction screen with data for DEPOSIT/BUSD should return tokens max value on swap before transaction 1`] = `
 <div>
   <div
     class="valuation"
@@ -3124,7 +3094,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
       <span
         class="title"
       >
-        home.deposit WBGL
+        home.deposit BUSD
       </span>
     </div>
     <div
@@ -3149,12 +3119,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                Wrapped BGL
+                BUSD Token
               </span>
               <span
                 class="txt-container v-supply-content--row-title"
               >
-                $0.0452
+                $16.2059
               </span>
             </div>
             <div
@@ -3163,12 +3133,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                WBGL
+                BUSD
               </span>
               <span
                 class="txt-container v-supply-content-row-second-title"
               >
-                3.4567
+                16.2059
               </span>
             </div>
           </div>
@@ -3204,12 +3174,12 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               inputmode="decimal"
               placeholder="0"
               style="box-sizing: content-box; width: 2px; font-size: 26px;"
-              value="0.04520783433708"
+              value="16.205892426964206221"
             />
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
             >
-              0.04520783433708
+              16.205892426964206221
             </div>
             <div
               style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
@@ -3231,7 +3201,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
         <span
           class="v-form-title"
         >
-          3.4567 WBGL
+          16.2059 BUSD
         </span>
         <button
           class="btn-container fee-btn"
@@ -3249,7 +3219,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
           <span
             class="v-form-row-value"
           >
-            48.46%
+            6.19%
           </span>
         </div>
         <div
@@ -3269,7 +3239,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               <span
                 class="value"
               >
-                $1.025
+                $11.068
               </span>
               <div
                 class="arrow-icon"
@@ -3279,7 +3249,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               <span
                 class="value"
               >
-                $1.061
+                $24.033
               </span>
             </div>
           </div>
@@ -3297,7 +3267,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               <span
                 class="value"
               >
-                99.59%
+                0.06%
               </span>
               <div
                 class="arrow-icon"
@@ -3307,7 +3277,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
               <span
                 class="value"
               >
-                96.2%
+                0.03%
               </span>
             </div>
           </div>
@@ -3319,7 +3289,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
             >
               <div
                 class="tx-progress-child"
-                style="width: 99.59%;"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
               />
             </div>
           </div>
@@ -3329,7 +3299,7 @@ exports[`Transaction screen with data for DEPOSIT/WBGL should return tokens max 
     <button
       class="btn-container pay-button "
     >
-      home.deposit $0.0452
+      home.deposit $16.2059
     </button>
   </div>
 </div>

@@ -21,49 +21,49 @@ let nativePriceMock = {
 } as FinanceCurrency
 
 let item = {
-  cToken: "0x5CFeBb423417B1424b4F27BB5aD4f3B90ff49A30",
-  exchangeRateCurrent: BigNumber.from("0xbb2579081993960d3d1d98"),
-  supplyRatePerBlock: BigNumber.from("0x2bc88b3726"),
-  borrowRatePerBlock: BigNumber.from("0x2bedf739cf"),
+  cToken: "0x24A2b865bB33A72Eec48F9Afe55002538d994766",
+  exchangeRateCurrent: BigNumber.from("0xab80ff50843ed01eea4318"),
+  supplyRatePerBlock: BigNumber.from("0x06a7f5072a"),
+  borrowRatePerBlock: BigNumber.from("0x1965885213"),
   reserveFactorMantissa: BigNumber.from("0x00"),
-  totalBorrows: BigNumber.from("0x0de121f58861e54dbab1"),
+  totalBorrows: BigNumber.from("0x36851aa2e5be8f93bc"),
   totalReserves: BigNumber.from("0x00"),
-  totalSupply: BigNumber.from("0x0108c5c24bbc66"),
-  totalCash: BigNumber.from("0x0be19bb643266855e9"),
+  totalSupply: BigNumber.from("0x10e10e85286c"),
+  totalCash: BigNumber.from("0x99ecdbfc72fda3a3f0"),
   isListed: true,
   collateralFactorMantissa: BigNumber.from("0x0b1a2bc2ec500000"),
-  underlyingAssetAddress: "0x2bA64EFB7A4Ec8983E22A49c81fa216AC33f383A",
+  underlyingAssetAddress: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
   cTokenDecimals: BigNumber.from("0x08"),
   underlyingDecimals: BigNumber.from("0x12"),
-  token: "0x2bA64EFB7A4Ec8983E22A49c81fa216AC33f383A",
-  symbol: "WBGL",
-  name: "Wrapped BGL",
-  cName: "Savy WBGL",
-  liquidity: Big(2.866379346099819),
+  token: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+  symbol: "BUSD",
+  name: "BUSD Token",
+  cName: "Savy BUSD",
+  liquidity: Big("2839.419356061224"),
   isEnteredTheMarket: true,
   supplyAllowed: true,
   borrowAllowed: true,
-  underlyingPrice: BigNumber.from("0x2e76a059ac5000"),
-  tokenBalance: BigNumber.from("0x2FF8B4570E2F7000"),
-  tokenAllowance: BigNumber.from("0xfffffffffffffffffffffffffffffffffffffffffffffffad04dceed828b4712"),
-  borrowBalance: BigNumber.from("0x00"),
-  supplyBalance: BigNumber.from("0x0529e5809ae1e04f95"),
-  balanceOf: BigNumber.from("0x6205ac763f"),
-  balance: Big(3.456711),
-  supply: Big(95.252680896472436629),
-  borrow: Big(0),
-  supplyApy: Big(48.46),
-  borrowApy: Big(48.65),
-  tokenUsdValue: Big(0.01307828),
-  fiatSupply: Big(1.2457412315147176),
-  fiatBorrow: Big(0)
+  underlyingPrice: BigNumber.from("0x0de0b6b3a7640000"),
+  tokenBalance: BigNumber.from("0xe0e6e54cc165028d"),
+  tokenAllowance: BigNumber.from("0xfffffffffffffffffffffffffffffffffffffffffffffffc2642ba8419ac12de"),
+  borrowBalance: BigNumber.from("0x15a29b446df1e2"),
+  supplyBalance: BigNumber.from("0xbfe6235048378385"),
+  balanceOf: BigNumber.from("0x0f8732f2df"),
+  balance: Big("16.205892426964206221"),
+  supply: Big("13.827778533603640197"),
+  borrow: Big("0.006089762262610402"),
+  supplyApy: Big(6.19),
+  borrowApy: Big(25.77),
+  tokenUsdValue: Big(1),
+  fiatSupply: Big("13.82777853360364"),
+  fiatBorrow: Big("0.006089762262610402")
 } as BorrowSupplyItem
 
 let mockData = {
   item,
   transactionType: TRANSACTION_TYPE.DEPOSIT,
-  borrowLimit: 1.0248881907776854,
-  totalBorrow: 1.0207271268955869
+  borrowLimit: 11.06818170609075,
+  totalBorrow: 0.006089762262610402
 }
 
 jest.mock('hooks/useSharedData', () => ({
@@ -95,7 +95,7 @@ jest.mock("utils/hoc", () => (
   }
 ))
 
-describe("Transaction screen with data for DEPOSIT/WBGL", () => {
+describe("Transaction screen with data for DEPOSIT/BUSD", () => {
   beforeEach(() => {
     transactionViewModel = new TransactionViewModel()
     transactionViewModel.nativeCoinPrice = nativePriceMock
@@ -109,14 +109,14 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
   it("should match data", () => {
     let transactionScreen = render(<Transaction/>)
 
-    expect(transactionViewModel.getTokenSymbol).toBe("WBGL")
+    expect(transactionViewModel.getTokenSymbol).toBe("BUSD")
     expect(transactionViewModel.balance.toString()).toBe(item.balance.toString())
     expect(transactionViewModel.isDeposit).toBe(true)
     expect(transactionViewModel.isRepay).toBe(false)
     expect(transactionViewModel.isWithdraw).toBe(false)
     expect(transactionViewModel.isBorrow).toBe(false)
-    expect(transactionViewModel.isWBGL).toBe(true)
-    expect(transactionViewModel.isBUSD).toBe(false)
+    expect(transactionViewModel.isWBGL).toBe(false)
+    expect(transactionViewModel.isBUSD).toBe(true)
     expect(transactionViewModel.getInputFontSize).toBe("32px")
     expect(transactionViewModel.tokenBalance.toString()).toBe(item.balance.toString())
     expect(transactionViewModel.titleBasedOnType).toBe("home.deposit")
@@ -164,7 +164,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const input = transactionScreen.getByLabelText('cost-input') as any
 
     // amount greater or equals to token balance
-    fireEvent.change(input, {target: {value: '3.456711'}})
+    fireEvent.change(input, {target: {value: '16.205892426964206221'}})
     expect(transactionViewModel.isEnoughBalance).toBe(true)
     expect(transactionViewModel.isButtonDisabled).toBe(false)
 
@@ -177,7 +177,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const input = transactionScreen.getByLabelText('cost-input') as any
 
     // amount greater than token balance
-    fireEvent.change(input, {target: {value: '3.456811'}})
+    fireEvent.change(input, {target: {value: '17.456811'}})
     expect(transactionViewModel.isEnoughBalance).toBe(false)
     expect(transactionViewModel.isButtonDisabled).toBe(true)
 
@@ -210,7 +210,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe("12")
     expect(transactionViewModel.isMaxValueSet).toBe(false)
 
-    fireEvent.change(input, {target: {value: '3.456711'}})
+    fireEvent.change(input, {target: {value: '16.205892426964206221'}})
     expect(transactionViewModel.inputValue).toBe(item.balance.toString())
     expect(transactionViewModel.isMaxValueSet).toBe(true)
 
@@ -243,13 +243,13 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe('100')
     expect(transactionViewModel.getInputValueForTransaction).toBe('100')
     fireEvent.click(swap)
-    expect(transactionViewModel.inputValue).toBe('1.307828')
+    expect(transactionViewModel.inputValue).toBe('100')
     expect(transactionViewModel.getInputValueForTransaction).toBe('100')
     fireEvent.click(swap)
     expect(transactionViewModel.inputValue).toBe('100')
     expect(transactionViewModel.getInputValueForTransaction).toBe('100')
     fireEvent.click(swap)
-    expect(transactionViewModel.inputValue).toBe('1.307828')
+    expect(transactionViewModel.inputValue).toBe('100')
     expect(transactionViewModel.getInputValueForTransaction).toBe('100')
 
     expect(transactionScreen.container).toMatchSnapshot()
@@ -260,7 +260,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const transactionScreen = render(<Transaction/>)
     const swap = transactionScreen.getByLabelText('swap-button') as any
 
-    expect(transactionViewModel.getTokenOrFiat).toBe("WBGL")
+    expect(transactionViewModel.getTokenOrFiat).toBe("BUSD")
     fireEvent.click(swap)
     expect(transactionViewModel.getTokenOrFiat).toBe("USD")
 
