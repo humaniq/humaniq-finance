@@ -6,8 +6,6 @@ import {BorrowSupplyItem, FinanceCurrency} from "models/types"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import Big from "big.js"
 import {render, fireEvent} from "@testing-library/react"
-import {ethers} from "ethers"
-import {convertValue} from "utils/common"
 
 const mockNavigate = jest.fn()
 const mockParams = jest.fn()
@@ -46,12 +44,12 @@ let item = {
   supplyAllowed: true,
   borrowAllowed: true,
   underlyingPrice: BigNumber.from("0x2e76a059ac5000"),
-  tokenBalance: BigNumber.from("0x98a7d9b8314c0000"),
+  tokenBalance: BigNumber.from("0x2FF8B4570E2F7000"),
   tokenAllowance: BigNumber.from("0xfffffffffffffffffffffffffffffffffffffffffffffffad04dceed828b4712"),
   borrowBalance: BigNumber.from("0x00"),
   supplyBalance: BigNumber.from("0x0529e5809ae1e04f95"),
   balanceOf: BigNumber.from("0x6205ac763f"),
-  balance: Big(11),
+  balance: Big(3.456711),
   supply: Big(95.252680896472436629),
   borrow: Big(0),
   supplyApy: Big(48.46),
@@ -132,8 +130,6 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isMaxValueSet).toBe(false)
     expect(transactionViewModel.isEnoughBalance).toBe(true)
 
-    console.log("axaxa", convertValue("11"))
-
     expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
@@ -155,7 +151,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const input = transactionScreen.getByLabelText('cost-input') as any
 
     // amount lower than token balance
-    fireEvent.change(input, {target: {value: '10'}})
+    fireEvent.change(input, {target: {value: '2'}})
     expect(transactionViewModel.isEnoughBalance).toBe(true)
     expect(transactionViewModel.isButtonDisabled).toBe(false)
 
@@ -167,8 +163,8 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const transactionScreen = render(<Transaction/>)
     const input = transactionScreen.getByLabelText('cost-input') as any
 
-    // amount greater equals to token balance
-    fireEvent.change(input, {target: {value: '11'}})
+    // amount greater or equals to token balance
+    fireEvent.change(input, {target: {value: '3.456711'}})
     expect(transactionViewModel.isEnoughBalance).toBe(true)
     expect(transactionViewModel.isButtonDisabled).toBe(false)
 
@@ -181,7 +177,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const input = transactionScreen.getByLabelText('cost-input') as any
 
     // amount greater than token balance
-    fireEvent.change(input, {target: {value: '12'}})
+    fireEvent.change(input, {target: {value: '3.456811'}})
     expect(transactionViewModel.isEnoughBalance).toBe(false)
     expect(transactionViewModel.isButtonDisabled).toBe(true)
 
@@ -214,7 +210,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe("12")
     expect(transactionViewModel.isMaxValueSet).toBe(false)
 
-    fireEvent.change(input, {target: {value: '11'}})
+    fireEvent.change(input, {target: {value: '3.456711'}})
     expect(transactionViewModel.inputValue).toBe(item.balance.toString())
     expect(transactionViewModel.isMaxValueSet).toBe(true)
 
@@ -289,10 +285,6 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isMaxValueSet).toBe(true)
     expect(transactionViewModel.inputValue).toBe(Big(item.balance).mul(item.tokenUsdValue).toString())
     fireEvent.change(input, {target: {value: '0.28772216'}})
-    expect(transactionViewModel.isMaxValueSet).toBe(false)
-    fireEvent.change(input, {target: {value: '0.14386108'}})
-    expect(transactionViewModel.isMaxValueSet).toBe(true)
-    fireEvent.change(input, {target: {value: '0.14386109'}})
     expect(transactionViewModel.isMaxValueSet).toBe(false)
     fireEvent.change(input, {target: {value: '0'}})
     expect(transactionViewModel.isMaxValueSet).toBe(false)
