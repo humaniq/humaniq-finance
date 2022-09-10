@@ -129,6 +129,8 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.buttonColor).toBe("")
     expect(transactionViewModel.isMaxValueSet).toBe(false)
     expect(transactionViewModel.isEnoughBalance).toBe(true)
+
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -140,6 +142,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe("10.101010")
     expect(transactionViewModel.getInputFontSize).toBe("26px")
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -152,6 +155,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isEnoughBalance).toBe(true)
     expect(transactionViewModel.isButtonDisabled).toBe(false)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -164,6 +168,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isEnoughBalance).toBe(true)
     expect(transactionViewModel.isButtonDisabled).toBe(false)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -176,6 +181,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isEnoughBalance).toBe(false)
     expect(transactionViewModel.isButtonDisabled).toBe(true)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -187,6 +193,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe("11")
     expect(transactionViewModel.isEnoughBalance).toBe(true)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -207,6 +214,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe(item.balance.toString())
     expect(transactionViewModel.isMaxValueSet).toBe(true)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -218,6 +226,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     fireEvent.click(swap)
     expect(transactionViewModel.inputFiat).toBe(true)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -243,6 +252,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValue).toBe('1.307828')
     expect(transactionViewModel.getInputValueForTransaction).toBe('100')
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -254,6 +264,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     fireEvent.click(swap)
     expect(transactionViewModel.getTokenOrFiat).toBe("USD")
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -289,6 +300,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     fireEvent.change(input, {target: {value: '12'}})
     expect(transactionViewModel.isMaxValueSet).toBe(false)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -317,6 +329,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isMaxValueSet).toBe(true)
     expect(transactionViewModel.getInputValueForTransaction).toBe(item.balance.toString())
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -325,6 +338,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
 
     expect(+transactionViewModel.item.underlyingDecimals).toBe(18)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -338,6 +352,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     fireEvent.change(input, {target: {value: ''}})
     expect(transactionViewModel.safeInputValue).toBe("0")
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 
@@ -355,6 +370,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.inputValueTOKEN.toString()).toBe("11")
     fireEvent.click(swap)
 
+    expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
 })
