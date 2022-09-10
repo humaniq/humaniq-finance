@@ -196,7 +196,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     const max = transactionScreen.getByLabelText('max-button') as any
 
     fireEvent.click(max)
-    expect(transactionViewModel.inputValue).toBe("11")
+    expect(transactionViewModel.inputValue).toBe(item.balance.toString())
     expect(transactionViewModel.isMaxValueSet).toBe(true)
 
     fireEvent.change(input, {target: {value: '12'}})
@@ -204,7 +204,7 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.isMaxValueSet).toBe(false)
 
     fireEvent.change(input, {target: {value: '11'}})
-    expect(transactionViewModel.inputValue).toBe("11")
+    expect(transactionViewModel.inputValue).toBe(item.balance.toString())
     expect(transactionViewModel.isMaxValueSet).toBe(true)
 
     transactionScreen.unmount()
@@ -253,5 +253,108 @@ describe("Transaction screen with data for DEPOSIT/WBGL", () => {
     expect(transactionViewModel.getTokenOrFiat).toBe("WBGL")
     fireEvent.click(swap)
     expect(transactionViewModel.getTokenOrFiat).toBe("USD")
+
+    transactionScreen.unmount()
+  })
+
+  it('should handle max on swap', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+    const max = transactionScreen.getByLabelText('max-button') as any
+    const swap = transactionScreen.getByLabelText('swap-button') as any
+
+    fireEvent.click(max)
+    expect(transactionViewModel.inputValue).toBe(item.balance.toString())
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    fireEvent.click(swap)
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    fireEvent.click(swap)
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    fireEvent.click(swap)
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    expect(transactionViewModel.inputValue).toBe(Big(item.balance).mul(item.tokenUsdValue).toString())
+    fireEvent.change(input, {target: {value: '0.28772216'}})
+    expect(transactionViewModel.isMaxValueSet).toBe(false)
+    fireEvent.change(input, {target: {value: '0.14386108'}})
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    fireEvent.change(input, {target: {value: '0.14386109'}})
+    expect(transactionViewModel.isMaxValueSet).toBe(false)
+    fireEvent.change(input, {target: {value: '0'}})
+    expect(transactionViewModel.isMaxValueSet).toBe(false)
+    fireEvent.click(swap)
+    expect(transactionViewModel.inputValue).toBe('0')
+    fireEvent.click(max)
+    expect(transactionViewModel.inputValue).toBe(item.balance.toString())
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    fireEvent.change(input, {target: {value: '12'}})
+    expect(transactionViewModel.isMaxValueSet).toBe(false)
+
+    transactionScreen.unmount()
+  })
+
+  it('should return tokens max value on swap before transaction', () => {
+    const transactionScreen = render(<Transaction/>)
+    const max = transactionScreen.getByLabelText('max-button') as any
+    const swap = transactionScreen.getByLabelText('swap-button') as any
+
+    fireEvent.click(max)
+    expect(transactionViewModel.inputValue).toBe(item.balance.toString())
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    expect(transactionViewModel.getInputValueForTransaction).toBe(item.balance.toString())
+
+    fireEvent.click(swap)
+    expect(transactionViewModel.inputValue).toBe(Big(item.balance).mul(item.tokenUsdValue).toString())
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    expect(transactionViewModel.getInputValueForTransaction).toBe(item.balance.toString())
+
+    fireEvent.click(swap)
+    expect(transactionViewModel.inputValue).toBe(item.balance.toString())
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    expect(transactionViewModel.getInputValueForTransaction).toBe(item.balance.toString())
+
+    fireEvent.click(swap)
+    expect(transactionViewModel.inputValue).toBe(Big(item.balance).mul(item.tokenUsdValue).toString())
+    expect(transactionViewModel.isMaxValueSet).toBe(true)
+    expect(transactionViewModel.getInputValueForTransaction).toBe(item.balance.toString())
+
+    transactionScreen.unmount()
+  })
+
+  it('should return token decimals', () => {
+    const transactionScreen = render(<Transaction/>)
+
+    expect(+transactionViewModel.item.underlyingDecimals).toBe(18)
+
+    transactionScreen.unmount()
+  })
+
+  it('should handle safe input value', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+
+    expect(transactionViewModel.safeInputValue).toBe("0")
+    fireEvent.change(input, {target: {value: '1'}})
+    expect(transactionViewModel.safeInputValue).toBe("1")
+    fireEvent.change(input, {target: {value: ''}})
+    expect(transactionViewModel.safeInputValue).toBe("0")
+
+    transactionScreen.unmount()
+  })
+
+  it('should handle inputValueTOKEN', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+    const swap = transactionScreen.getByLabelText('swap-button') as any
+
+    fireEvent.change(input, {target: {value: '1'}})
+    expect(transactionViewModel.inputValueTOKEN.toString()).toBe("1")
+    fireEvent.click(swap)
+    expect(transactionViewModel.inputValueTOKEN.toString()).toBe("1")
+    fireEvent.click(swap)
+    fireEvent.change(input, {target: {value: '11'}})
+    expect(transactionViewModel.inputValueTOKEN.toString()).toBe("11")
+    fireEvent.click(swap)
+
+    transactionScreen.unmount()
   })
 })

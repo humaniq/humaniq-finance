@@ -503,7 +503,7 @@ export class TransactionViewModel {
   }
 
   get getInputValueForTransaction () {
-    return this.inputFiat ? this.inputValueToken.toString() : this.inputValue
+    return this.inputFiat ? this.inputValueToken.toString() : this.safeInputValue
   }
 
   handleTransaction = async () => {
