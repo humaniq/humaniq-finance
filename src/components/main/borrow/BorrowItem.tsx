@@ -31,7 +31,7 @@ export const BorrowItem = ({
                              ...rest
                            }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
-    return disabled || (!isRepay && item.supply > 0.1)
+    return disabled || (!isRepay && item.supply > 0.001)
   }, [disabled, isRepay, item])
 
   const subTitle = useMemo(() => {
