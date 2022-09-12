@@ -4,15 +4,14 @@ import {t} from "translations/translate"
 import {observer} from "mobx-react"
 import {noop} from "utils/common"
 
-interface ConnectionNotSupportedModal {
+interface Props {
   isVisible?: boolean
   handleClearClick?: typeof noop
 }
 
 export const ConnectionNotSupportedModal = observer(({
                                                        isVisible = false,
-                                                       handleClearClick
-                                                     }: ConnectionNotSupportedModal) => {
+                                                     }: Props) => {
   if (!isVisible) return null
 
   return <div className="connection-not-supported">

@@ -21,6 +21,7 @@ import {TransactionLinearProgress} from "components/ui/progress/transaction/Tran
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import colors from "utils/colors"
 import {getProviderStore} from "App"
+import {isEmpty} from "utils/textUtils"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -97,10 +98,11 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
           <div className="v-form">
             <span className="v-form-title">{view.getTokenOrFiat}</span>
             <div className="v-form-middle-row">
-              <div onClick={view.setMaxValue} className="v-form-icon-container">
+              <div aria-label="max-button" onClick={view.setMaxValue} className="v-form-icon-container">
                 <MaxIcon width={30} height={30} className="v-form-icon-container-icon"/>
               </div>
               <AutosizeInput
+                aria-label="cost-input"
                 ref={inputRef}
                 inputMode="decimal"
                 inputStyle={{
@@ -111,7 +113,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 placeholder="0"
                 value={view.getInputValue}
                 onChange={(e) => view.setInputValue(e.target.value)}/>
-              <div onClick={view.onSwap} className="v-form-icon-container">
+              <div aria-label="swap-button" onClick={view.onSwap} className="v-form-icon-container">
                 <ChangeIcon width={22} height={22} className="v-form-icon-container-icon"/>
               </div>
             </div>
@@ -130,7 +132,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 <div className="right">
                   <span className="value">{view.getBorrowLimitValue}</span>
                   {
-                    view.newBorrowLimit !== 0 && <>
+                    !isEmpty(view.inputValue) && <>
                       <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
                       <span className="value">{view.getNewBorrowLimit}</span>
                     </>
@@ -142,7 +144,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 <div className="row">
                   <span className="value">{view.getBorrowLimitUsedValue}</span>
                   {
-                    view.getNewBorrowLimitUsed !== 0 && <>
+                    !isEmpty(view.inputValue) && <>
                       <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
                       <span className="value">{view.getNewBorrowLimitUsedFormatted}</span>
                     </>

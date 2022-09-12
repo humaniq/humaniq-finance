@@ -6,6 +6,7 @@ import {LoaderIcon} from "components/transaction-modal/icon/LoaderIcon"
 import {observer} from "mobx-react"
 import {ReactComponent as CircleClose} from "assets/icons/ic_circle_close.svg"
 import {TRANSACTION_STATUS, TRANSACTION_STEP, transactionStore} from "stores/app/transactionStore"
+import {useDisableBodyScroll} from "hooks/useDisableBodyScroll"
 
 interface TransactionModalProps {
   visible?: boolean
@@ -41,13 +42,15 @@ export const TransactionModal = observer(({
       status.secondStep.status === TRANSACTION_STATUS.ERROR
   }, [status.firstStep.status, status.secondStep.status])
 
+  useDisableBodyScroll(visible)
+
   if (!visible) return null
 
   return <div className="transaction-modal">
     <div className="modal">
       <img alt="connect-illustration" className="image" src={ConnectIllustration}/>
       <span className="title">{
-        showError ? t("common.went_wrong") : t("transaction.wait", {
+        showError ? status.errorMessage || t("common.went_wrong") : t("transaction.wait", {
           p: t(status.secondStep.visible ? "transaction.step_multi" : "transaction.step_single")
         })
       }</span>
