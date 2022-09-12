@@ -18,7 +18,7 @@ import {BUSD} from "models/BUSD"
 import {TRANSACTION_STATUS, transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
 import AutosizeInput from "react-input-autosize"
-import {convertValue, cutString, DIGITS_INPUT, NUMBER} from "utils/common"
+import {convertValue, DIGITS_INPUT} from "utils/common"
 
 export class TransactionViewModel {
   item = {} as BorrowSupplyItem
@@ -82,10 +82,13 @@ export class TransactionViewModel {
     }
 
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
-      this.inputValue = !val ?
-        this.inputValueToken ? this.inputValueToken.toString() : "" :
-        this.inputValueFiat ? this.inputValueFiat.toString(): ""
-      this.inputRef?.focus()
+      if (val) {
+        // input fiat
+        this.inputValue = this.inputValueFiat ? this.inputValueFiat.toString(): ""
+      } else {
+        // input token
+        this.inputValue = this.inputValueToken ? this.inputValueToken.toString() : ""
+      }
     })
 
     if (getProviderStore.currentAccount) {
@@ -132,9 +135,14 @@ export class TransactionViewModel {
     return this.item.symbol === getProviderStore.currentNetwork.BUSDSymbol
   }
 
+  get safeInputValue() {
+    if (isEmpty(this.inputValue)) return "0"
+    return this.inputValue
+  }
+
   get isEnoughBalance() {
     if (this.isDeposit) {
-      return this.inputFiat ? this.item.balance.mul(this.item.tokenUsdValue).gte(+this.inputValue) : this.item.balance.gte(+this.inputValue)
+      return this.inputFiat ? Big(this.item.balance).mul(this.item.tokenUsdValue).gte(this.safeInputValue) : Big(this.item.balance).gte(this.safeInputValue)
     }
     return true
   }
@@ -245,7 +253,7 @@ export class TransactionViewModel {
   }
 
   get getBorrowLimitValue() {
-    return formatToCurrency(this.isDeposit || this.isWithdraw ? this.borrowLimit : this.totalBorrow)
+    return formatValue(this.isDeposit || this.isWithdraw ? this.borrowLimit : this.totalBorrow, 3)
   }
 
   get getBorrowLimitUsedValue() {
@@ -288,11 +296,11 @@ export class TransactionViewModel {
   }
 
   get inputValueTOKEN() {
-    return this.inputFiat ? +this.inputValueToken : +this.inputValue
+    return Big(this.inputFiat ? this.inputValueToken : this.safeInputValue)
   }
 
   get getNewBorrowLimit() {
-    return formatToCurrency(this.newBorrowLimit)
+    return formatValue(this.newBorrowLimit, 3)
   }
 
   get newBorrowLimit() {
@@ -301,10 +309,10 @@ export class TransactionViewModel {
       if (!this.item.isEnteredTheMarket) return this.borrowLimit
 
       if (this.isWithdraw) {
-        return this.borrowLimit - this.inputValueUSD * +this.collateralMantissa
+        return this.borrowLimit - this.inputValueUSD * this.collateralMantissa
       }
 
-      return this.borrowLimit + this.inputValueUSD * +this.collateralMantissa
+      return this.borrowLimit + this.inputValueUSD * this.collateralMantissa
     }
 
     return this.borrowBalance ? this.borrowBalance : 0
@@ -398,6 +406,17 @@ export class TransactionViewModel {
   }
 
   // FOR DEPOSIT
+  get hypotheticalCollateralSupply() {
+    if (!this.inputValue) return 0
+
+    if (this.isDeposit) {
+      return this.borrowLimit + this.inputValueUSD * this.collateralMantissa
+    }
+
+    return this.borrowLimit - this.inputValueUSD * this.collateralMantissa
+  }
+
+  // FOR DEPOSIT
   get hypotheticalBorrowLimitUsedForDeposit() {
     if (!this.hypotheticalCollateralSupply || !this.totalBorrow) return 0
     if (this.hypotheticalCollateralSupply < 0) return 100
@@ -407,17 +426,6 @@ export class TransactionViewModel {
       (this.totalBorrow / this.hypotheticalCollateralSupply) * 100
 
     return limit > 100 ? 100 : parseFloat(limit.toFixed(2))
-  }
-
-  // FOR DEPOSIT
-  get hypotheticalCollateralSupply() {
-    if (!this.inputValue) return 0
-
-    if (this.isDeposit) {
-      return this.borrowLimit + this.inputValueUSD
-    }
-
-    return this.borrowLimit - this.inputValueUSD
   }
 
   get hypotheticalBorrowLimitUsed() {
@@ -473,18 +481,18 @@ export class TransactionViewModel {
   }
 
   get isMaxValueSet() {
-    let input = this.inputValueTOKEN.toString()
+    let input = String(this.inputValueTOKEN)
 
     if (this.isDeposit) {
-      return input === cutString(this.item.balance.toString())
+      return input === this.item.balance.toString()
     }
 
     if (this.isWithdraw) {
-      return input === cutString(this.item.supply.toString())
+      return input === this.item.supply.toString()
     }
 
     if (this.isRepay) {
-      return input === cutString(this.item.borrow.toString())
+      return input === this.item.borrow.toString()
     }
 
     return false
@@ -495,7 +503,7 @@ export class TransactionViewModel {
   }
 
   get getInputValueForTransaction () {
-    return this.inputFiat ? this.inputValueToken.toString() : this.inputValue
+    return this.inputFiat ? this.inputValueToken.toString() : this.safeInputValue
   }
 
   handleTransaction = async () => {
@@ -553,13 +561,6 @@ export class TransactionViewModel {
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isBorrow) {
-        const isMarketExist = await this.isMarketExist()
-
-        if (!isMarketExist) {
-          Logger.info("Market is not available!!") // TODO show toast
-          return
-        }
-
         transactionStore.transactionMessageVisible = true
         transactionStore.transactionMessageStatus.firstStep.message = t("transaction.borrow")
         transactionStore.transactionMessageStatus.secondStep.visible = false
@@ -584,7 +585,7 @@ export class TransactionViewModel {
         if (
           Big(+inputValue)
             .times(1e18)
-            .div(this.item.exchangeRateCurrent)
+            .div(this.item.exchangeRateCurrent) // TODO check
             .lt(1)
         ) {
           Logger.info("error")
@@ -598,6 +599,7 @@ export class TransactionViewModel {
 
         try {
           let valueToSend = this.isMaxValueSet ? this.item.supplyBalance : inputValue
+
           const {hash} = await this.cTokenContract.withdraw(valueToSend)
 
           if (hash) {
@@ -714,6 +716,7 @@ export class TransactionViewModel {
     }
 
     if (this.isWithdraw) {
+      // save value
       maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.item.supply) : this.item.supply
     }
 
@@ -721,7 +724,7 @@ export class TransactionViewModel {
       if (this.item.balance.eq(0)) {
         maxValue = 0
       } else {
-        maxValue = +this.item.borrow ? +this.item.borrow : 0
+        maxValue = this.item.borrow ? this.item.borrow : 0
 
         if (this.inputFiat) {
           maxValue = Big(maxValue).mul(this.item.tokenUsdValue)
@@ -729,14 +732,9 @@ export class TransactionViewModel {
       }
     }
 
-    const isInvalidValue = !new RegExp(NUMBER).test(maxValue);
-
     this.setInputValue(
-      isInvalidValue
-        ? cutString(String(maxValue))
-        : String(maxValue) || "0"
+      String(maxValue) || "0"
     )
-    this.inputRef?.focus()
   }
 
   onSwap = () => {

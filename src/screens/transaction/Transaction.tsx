@@ -21,6 +21,7 @@ import {TransactionLinearProgress} from "components/ui/progress/transaction/Tran
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import colors from "utils/colors"
 import {getProviderStore} from "App"
+import {isEmpty} from "utils/textUtils"
 
 export type TransactionState = {
   item: BorrowSupplyItem
@@ -131,7 +132,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 <div className="right">
                   <span className="value">{view.getBorrowLimitValue}</span>
                   {
-                    view.newBorrowLimit !== 0 && <>
+                    !isEmpty(view.inputValue) && <>
                       <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
                       <span className="value">{view.getNewBorrowLimit}</span>
                     </>
@@ -143,7 +144,7 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
                 <div className="row">
                   <span className="value">{view.getBorrowLimitUsedValue}</span>
                   {
-                    view.getNewBorrowLimitUsed !== 0 && <>
+                    !isEmpty(view.inputValue) && <>
                       <ArrowRightIcon width={19} height={16} className="arrow-icon"/>
                       <span className="value">{view.getNewBorrowLimitUsedFormatted}</span>
                     </>

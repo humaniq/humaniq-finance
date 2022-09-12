@@ -7,6 +7,8 @@
   background-color: $blue-ozone
   width: 600px
   height: 100vh
+  overflow-y: scroll
+  white-space: nowrap
   .borrow-section
     background-color: $white
     border-radius: 12px
@@ -62,16 +64,17 @@
   .pay-button
     background-color: $primary
     color: $white
+    position: sticky
     font-style: normal
     font-weight: 500
     font-size: 15px
     letter-spacing: 0.5px
     padding: 14px
     border-radius: 12px
-    position: absolute
-    left: 16px
-    right: 16px
-    bottom: 8px
+    margin-left: 16px
+    margin-right: 16px
+    bottom: 16px
+    text-align: center
     &.borrow
       background-color: $purple-heart
       &:hover
@@ -87,6 +90,8 @@
     padding-left: 16px
     padding-right: 16px
     padding-bottom: 16px
+    height: 100%
+    margin-bottom: 50px
 
 .v-supply
   flex-direction: column

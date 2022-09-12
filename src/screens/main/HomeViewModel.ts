@@ -85,7 +85,6 @@ export class HomeViewModel {
   }
 
   calculateAPY = (ratePerBlock: any) => {
-    // todo: ethMantissa for everything or not
     const apy =
       (Math.pow(
           (ratePerBlock / this.ethMantissa) * this.blocksPerDay + 1,

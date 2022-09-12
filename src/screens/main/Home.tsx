@@ -175,6 +175,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
                   infoButtonBackgroundColor={colors.purpleHeart}
                   hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
                   infoText={t("hints.borrowAvailable")}
+                  isLiquidity={true}
                   title={t("home.availableToBorrow")}
                   onLiquidityClick={() => view.setLiquidityModalVisibility(true)}
                   data={view.borrowMarket}

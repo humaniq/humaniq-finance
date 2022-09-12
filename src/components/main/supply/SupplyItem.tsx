@@ -33,7 +33,7 @@ export const SupplyItem = ({
                            }: TokenItemProps) => {
 
   const buttonDisabled = useMemo(() => {
-    return disabled || (!isWithdraw && +item.balance === 0) || (!isWithdraw && +item.borrow > 0.1)
+    return disabled || (!isWithdraw && +item.balance === 0)
   }, [item, disabled, isWithdraw])
 
   const title = useMemo(() => {
