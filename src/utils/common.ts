@@ -18,6 +18,8 @@ export const NUMBER_INPUT = /^0$|^[1-90]\d{0,16}$|^(?=[1-90]\d*[.]\d*$).{1,16}$|
 
 export const DIGITS_INPUT = /^([0-9]+)?(\.)?([0-9]+)?$/
 
+export const LEADING_ZERO = /^0[0-9].*$/
+
 export const NUMBER = /^[1-9]\d{0,16}$|^(?=[1-9]\d*[.]\d+$).{1,16}$|^(?=0[.](\d+)?[1-9]$).{1,16}$/
 
 export const cutString = (str?: string | null, end: number = 16) => {

@@ -1,5 +1,437 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Transaction screen with data for DEPOSIT/BUSD button should be disabled if input value is 0 1`] = `
+<div>
+  <div
+    class="valuation"
+  >
+    <div
+      class="header-container"
+    >
+      <div
+        height="15"
+        width="15"
+      />
+      <span
+        class="title"
+      >
+        home.deposit BUSD
+      </span>
+    </div>
+    <div
+      class="valuation-content"
+    >
+      <div
+        class="v-supply"
+      >
+        <div
+          class="v-supply-content"
+        >
+          <img
+            alt="logo"
+            class="v-supply--avatar"
+          />
+          <div
+            class="v-supply-content--right"
+          >
+            <div
+              class="v-supply-content--row"
+            >
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                BUSD Token
+              </span>
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                $16.2059
+              </span>
+            </div>
+            <div
+              class="v-supply-content-row-second"
+            >
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                BUSD
+              </span>
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                16.2059
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="v-form"
+      >
+        <span
+          class="v-form-title"
+        >
+          BUSD
+        </span>
+        <div
+          class="v-form-middle-row"
+        >
+          <div
+            aria-label="max-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="30"
+              width="30"
+            />
+          </div>
+          <div
+            style="display: inline-block;"
+          >
+            <input
+              aria-label="cost-input"
+              class="v-form-middle-row-input"
+              inputmode="decimal"
+              placeholder="0"
+              style="box-sizing: content-box; width: 2px; font-size: 32px;"
+              value="0"
+            />
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            >
+              0
+            </div>
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            >
+              0
+            </div>
+          </div>
+          <div
+            aria-label="swap-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="22"
+              width="22"
+            />
+          </div>
+        </div>
+        <span
+          class="v-form-title"
+        >
+          $0
+        </span>
+        <button
+          class="btn-container fee-btn"
+        >
+          common.fee $0.00
+        </button>
+        <div
+          class="v-form-row"
+        >
+          <span
+            class="v-form-row-title"
+          >
+            home.deposit home.netApy
+          </span>
+          <span
+            class="v-form-row-value"
+          >
+            6.19%
+          </span>
+        </div>
+        <div
+          class="borrow-section"
+        >
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimit
+            </span>
+            <div
+              class="right"
+            >
+              <span
+                class="value"
+              >
+                $11.068
+              </span>
+              <div
+                class="arrow-icon"
+                height="16"
+                width="19"
+              />
+              <span
+                class="value"
+              >
+                $11.068
+              </span>
+            </div>
+          </div>
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimitUsed
+            </span>
+            <div
+              class="row"
+            >
+              <span
+                class="value"
+              >
+                0.06%
+              </span>
+              <div
+                class="arrow-icon"
+                height="16"
+                width="19"
+              />
+              <span
+                class="value"
+              >
+                0.06%
+              </span>
+            </div>
+          </div>
+          <div
+            class="tx-progress-container"
+          >
+            <div
+              class="tx-progress"
+            >
+              <div
+                class="tx-progress-child"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn-container pay-button "
+      disabled=""
+    >
+      home.deposit $0
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Transaction screen with data for DEPOSIT/BUSD button should be disabled if input value starts with leading zeros like 0001 1`] = `
+<div>
+  <div
+    class="valuation"
+  >
+    <div
+      class="header-container"
+    >
+      <div
+        height="15"
+        width="15"
+      />
+      <span
+        class="title"
+      >
+        home.deposit BUSD
+      </span>
+    </div>
+    <div
+      class="valuation-content"
+    >
+      <div
+        class="v-supply"
+      >
+        <div
+          class="v-supply-content"
+        >
+          <img
+            alt="logo"
+            class="v-supply--avatar"
+          />
+          <div
+            class="v-supply-content--right"
+          >
+            <div
+              class="v-supply-content--row"
+            >
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                BUSD Token
+              </span>
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                $16.2059
+              </span>
+            </div>
+            <div
+              class="v-supply-content-row-second"
+            >
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                BUSD
+              </span>
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                16.2059
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="v-form"
+      >
+        <span
+          class="v-form-title"
+        >
+          BUSD
+        </span>
+        <div
+          class="v-form-middle-row"
+        >
+          <div
+            aria-label="max-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="30"
+              width="30"
+            />
+          </div>
+          <div
+            style="display: inline-block;"
+          >
+            <input
+              aria-label="cost-input"
+              class="v-form-middle-row-input"
+              inputmode="decimal"
+              placeholder="0"
+              style="box-sizing: content-box; width: 2px; font-size: 32px;"
+              value=""
+            />
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            />
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            >
+              0
+            </div>
+          </div>
+          <div
+            aria-label="swap-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="22"
+              width="22"
+            />
+          </div>
+        </div>
+        <span
+          class="v-form-title"
+        >
+          $0
+        </span>
+        <button
+          class="btn-container fee-btn"
+        >
+          common.fee $0.00
+        </button>
+        <div
+          class="v-form-row"
+        >
+          <span
+            class="v-form-row-title"
+          >
+            home.deposit home.netApy
+          </span>
+          <span
+            class="v-form-row-value"
+          >
+            6.19%
+          </span>
+        </div>
+        <div
+          class="borrow-section"
+        >
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimit
+            </span>
+            <div
+              class="right"
+            >
+              <span
+                class="value"
+              >
+                $11.068
+              </span>
+            </div>
+          </div>
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimitUsed
+            </span>
+            <div
+              class="row"
+            >
+              <span
+                class="value"
+              >
+                0.06%
+              </span>
+            </div>
+          </div>
+          <div
+            class="tx-progress-container"
+          >
+            <div
+              class="tx-progress"
+            >
+              <div
+                class="tx-progress-child"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn-container pay-button "
+      disabled=""
+    >
+      home.deposit $0
+    </button>
+  </div>
+</div>
+`;
+
 exports[`Transaction screen with data for DEPOSIT/BUSD button should be disabled, and balance is lower than input 1`] = `
 <div>
   <div
@@ -1497,6 +1929,438 @@ exports[`Transaction screen with data for DEPOSIT/BUSD should change usd to toke
           class="v-form-title"
         >
           0 BUSD
+        </span>
+        <button
+          class="btn-container fee-btn"
+        >
+          common.fee $0.00
+        </button>
+        <div
+          class="v-form-row"
+        >
+          <span
+            class="v-form-row-title"
+          >
+            home.deposit home.netApy
+          </span>
+          <span
+            class="v-form-row-value"
+          >
+            6.19%
+          </span>
+        </div>
+        <div
+          class="borrow-section"
+        >
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimit
+            </span>
+            <div
+              class="right"
+            >
+              <span
+                class="value"
+              >
+                $11.068
+              </span>
+            </div>
+          </div>
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimitUsed
+            </span>
+            <div
+              class="row"
+            >
+              <span
+                class="value"
+              >
+                0.06%
+              </span>
+            </div>
+          </div>
+          <div
+            class="tx-progress-container"
+          >
+            <div
+              class="tx-progress"
+            >
+              <div
+                class="tx-progress-child"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn-container pay-button "
+      disabled=""
+    >
+      home.deposit $0
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Transaction screen with data for DEPOSIT/BUSD should handle input with dot at the beginning 1`] = `
+<div>
+  <div
+    class="valuation"
+  >
+    <div
+      class="header-container"
+    >
+      <div
+        height="15"
+        width="15"
+      />
+      <span
+        class="title"
+      >
+        home.deposit BUSD
+      </span>
+    </div>
+    <div
+      class="valuation-content"
+    >
+      <div
+        class="v-supply"
+      >
+        <div
+          class="v-supply-content"
+        >
+          <img
+            alt="logo"
+            class="v-supply--avatar"
+          />
+          <div
+            class="v-supply-content--right"
+          >
+            <div
+              class="v-supply-content--row"
+            >
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                BUSD Token
+              </span>
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                $16.2059
+              </span>
+            </div>
+            <div
+              class="v-supply-content-row-second"
+            >
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                BUSD
+              </span>
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                16.2059
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="v-form"
+      >
+        <span
+          class="v-form-title"
+        >
+          BUSD
+        </span>
+        <div
+          class="v-form-middle-row"
+        >
+          <div
+            aria-label="max-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="30"
+              width="30"
+            />
+          </div>
+          <div
+            style="display: inline-block;"
+          >
+            <input
+              aria-label="cost-input"
+              class="v-form-middle-row-input"
+              inputmode="decimal"
+              placeholder="0"
+              style="box-sizing: content-box; width: 2px; font-size: 32px;"
+              value="0."
+            />
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            >
+              0.
+            </div>
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            >
+              0
+            </div>
+          </div>
+          <div
+            aria-label="swap-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="22"
+              width="22"
+            />
+          </div>
+        </div>
+        <span
+          class="v-form-title"
+        >
+          $0
+        </span>
+        <button
+          class="btn-container fee-btn"
+        >
+          common.fee $0.00
+        </button>
+        <div
+          class="v-form-row"
+        >
+          <span
+            class="v-form-row-title"
+          >
+            home.deposit home.netApy
+          </span>
+          <span
+            class="v-form-row-value"
+          >
+            6.19%
+          </span>
+        </div>
+        <div
+          class="borrow-section"
+        >
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimit
+            </span>
+            <div
+              class="right"
+            >
+              <span
+                class="value"
+              >
+                $11.068
+              </span>
+              <div
+                class="arrow-icon"
+                height="16"
+                width="19"
+              />
+              <span
+                class="value"
+              >
+                $11.068
+              </span>
+            </div>
+          </div>
+          <div
+            class="row"
+          >
+            <span
+              class="title"
+            >
+              home.borrowLimitUsed
+            </span>
+            <div
+              class="row"
+            >
+              <span
+                class="value"
+              >
+                0.06%
+              </span>
+              <div
+                class="arrow-icon"
+                height="16"
+                width="19"
+              />
+              <span
+                class="value"
+              >
+                0.06%
+              </span>
+            </div>
+          </div>
+          <div
+            class="tx-progress-container"
+          >
+            <div
+              class="tx-progress"
+            >
+              <div
+                class="tx-progress-child"
+                style="width: 0.06%; background-color: rgb(137, 94, 242);"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn-container pay-button "
+      disabled=""
+    >
+      home.deposit $0
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Transaction screen with data for DEPOSIT/BUSD should handle input with double zero 1`] = `
+<div>
+  <div
+    class="valuation"
+  >
+    <div
+      class="header-container"
+    >
+      <div
+        height="15"
+        width="15"
+      />
+      <span
+        class="title"
+      >
+        home.deposit BUSD
+      </span>
+    </div>
+    <div
+      class="valuation-content"
+    >
+      <div
+        class="v-supply"
+      >
+        <div
+          class="v-supply-content"
+        >
+          <img
+            alt="logo"
+            class="v-supply--avatar"
+          />
+          <div
+            class="v-supply-content--right"
+          >
+            <div
+              class="v-supply-content--row"
+            >
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                BUSD Token
+              </span>
+              <span
+                class="txt-container v-supply-content--row-title"
+              >
+                $16.2059
+              </span>
+            </div>
+            <div
+              class="v-supply-content-row-second"
+            >
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                BUSD
+              </span>
+              <span
+                class="txt-container v-supply-content-row-second-title"
+              >
+                16.2059
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="v-form"
+      >
+        <span
+          class="v-form-title"
+        >
+          BUSD
+        </span>
+        <div
+          class="v-form-middle-row"
+        >
+          <div
+            aria-label="max-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="30"
+              width="30"
+            />
+          </div>
+          <div
+            style="display: inline-block;"
+          >
+            <input
+              aria-label="cost-input"
+              class="v-form-middle-row-input"
+              inputmode="decimal"
+              placeholder="0"
+              style="box-sizing: content-box; width: 2px; font-size: 32px;"
+              value=""
+            />
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            />
+            <div
+              style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 32px; font-family: -webkit-small-control; letter-spacing: normal; text-transform: none;"
+            >
+              0
+            </div>
+          </div>
+          <div
+            aria-label="swap-button"
+            class="v-form-icon-container"
+          >
+            <div
+              class="v-form-icon-container-icon"
+              height="22"
+              width="22"
+            />
+          </div>
+        </div>
+        <span
+          class="v-form-title"
+        >
+          $0
         </span>
         <button
           class="btn-container fee-btn"

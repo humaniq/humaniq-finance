@@ -159,6 +159,36 @@ describe("Transaction screen with data for DEPOSIT/BUSD", () => {
     transactionScreen.unmount()
   })
 
+  it('button should be disabled if input value is 0', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+
+    fireEvent.change(input, {target: {value: '0'}})
+    expect(transactionViewModel.isButtonDisabled).toBe(true)
+
+    expect(transactionScreen.container).toMatchSnapshot()
+    transactionScreen.unmount()
+  })
+
+  it('button should be disabled if input value starts with leading zeros like 0001', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+
+    fireEvent.change(input, {target: {value: '0001'}})
+    expect(transactionViewModel.isButtonDisabled).toBe(true)
+
+    fireEvent.change(input, {target: {value: ''}})
+    fireEvent.change(input, {target: {value: '0.000000'}})
+    expect(transactionViewModel.isButtonDisabled).toBe(true)
+
+    fireEvent.change(input, {target: {value: ''}})
+    fireEvent.change(input, {target: {value: '0000.0000001'}})
+    expect(transactionViewModel.isButtonDisabled).toBe(true)
+
+    expect(transactionScreen.container).toMatchSnapshot()
+    transactionScreen.unmount()
+  })
+
   it('button should be enabled, and balance is equal to input', () => {
     const transactionScreen = render(<Transaction/>)
     const input = transactionScreen.getByLabelText('cost-input') as any
@@ -365,6 +395,41 @@ describe("Transaction screen with data for DEPOSIT/BUSD", () => {
     fireEvent.change(input, {target: {value: '11'}})
     expect(transactionViewModel.inputValueTOKEN.toString()).toBe("11")
     fireEvent.click(swap)
+
+    expect(transactionScreen.container).toMatchSnapshot()
+    transactionScreen.unmount()
+  })
+
+  it('should handle input with dot at the beginning', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+
+    fireEvent.change(input, {target: {value: '.'}})
+    expect(transactionViewModel.inputValue).toBe("0.")
+
+    expect(transactionScreen.container).toMatchSnapshot()
+    transactionScreen.unmount()
+  })
+
+  it('should handle input with double zero', () => {
+    const transactionScreen = render(<Transaction/>)
+    const input = transactionScreen.getByLabelText('cost-input') as any
+
+    fireEvent.change(input, {target: {value: '0'}})
+    expect(transactionViewModel.inputValue).toBe("0")
+
+    fireEvent.change(input, {target: {value: '00'}})
+    expect(transactionViewModel.inputValue).toBe("0")
+
+    fireEvent.change(input, {target: {value: ''}})
+    expect(transactionViewModel.inputValue).toBe("")
+
+    fireEvent.change(input, {target: {value: '.'}})
+    expect(transactionViewModel.inputValue).toBe("0.")
+
+    fireEvent.change(input, {target: {value: ''}})
+    fireEvent.change(input, {target: {value: '00.10'}})
+    expect(transactionViewModel.inputValue).toBe("")
 
     expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()

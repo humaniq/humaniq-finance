@@ -18,7 +18,7 @@ import {BUSD} from "models/BUSD"
 import {TRANSACTION_STATUS, transactionStore} from "stores/app/transactionStore"
 import {NavigateFunction} from "react-router-dom"
 import AutosizeInput from "react-input-autosize"
-import {convertValue, DIGITS_INPUT} from "utils/common"
+import {convertValue, DIGITS_INPUT, LEADING_ZERO} from "utils/common"
 
 export class TransactionViewModel {
   item = {} as BorrowSupplyItem
@@ -344,7 +344,8 @@ export class TransactionViewModel {
   }
 
   get isButtonDisabled() {
-    return isEmpty(this.getInputValue) ||
+    return isEmpty(this.inputValue) ||
+      !(Boolean(+this.inputValue)) ||
       !this.isEnoughBalance ||
       this.isRepayDisabled ||
       this.isBorrowDisabled ||
@@ -557,7 +558,10 @@ export class TransactionViewModel {
           } else {
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
           }
-        } catch (e) {
+        } catch (e: any) {
+          if (e?.code === 4001) {
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+          }
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isBorrow) {
@@ -577,7 +581,10 @@ export class TransactionViewModel {
           } else {
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
           }
-        } catch (e) {
+        } catch (e: any) {
+          if (e?.code === 4001) {
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+          }
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isWithdraw) {
@@ -609,7 +616,10 @@ export class TransactionViewModel {
           } else {
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
           }
-        } catch (e) {
+        } catch (e: any) {
+          if (e?.code === 4001) {
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+          }
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isRepay) {
@@ -655,7 +665,10 @@ export class TransactionViewModel {
           } else {
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
           }
-        } catch (e) {
+        } catch (e: any) {
+          if (e?.code === 4001) {
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+          }
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
       }
@@ -670,7 +683,7 @@ export class TransactionViewModel {
   }
 
   setInputValue = (value: string) => {
-    if (!DIGITS_INPUT.test(value)) {
+    if (!DIGITS_INPUT.test(value) || LEADING_ZERO.test(value)) {
       return
     }
 
