@@ -29,7 +29,7 @@ export class TransactionStore {
     },
     secondStep: {
       visible: true
-    }
+    },
   }
 
   constructor() {
@@ -43,7 +43,7 @@ export class TransactionStore {
       },
       secondStep: {
         visible: true
-      }
+      },
     }
   }
 }

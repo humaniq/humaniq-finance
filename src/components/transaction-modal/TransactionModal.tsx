@@ -50,7 +50,7 @@ export const TransactionModal = observer(({
     <div className="modal">
       <img alt="connect-illustration" className="image" src={ConnectIllustration}/>
       <span className="title">{
-        showError ? t("common.went_wrong") : t("transaction.wait", {
+        showError ? status.errorMessage || t("common.went_wrong") : t("transaction.wait", {
           p: t(status.secondStep.visible ? "transaction.step_multi" : "transaction.step_single")
         })
       }</span>
