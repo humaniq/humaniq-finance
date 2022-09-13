@@ -1,6 +1,5 @@
-import {makeAutoObservable} from "mobx"
+import {makeAutoObservable, runInAction} from "mobx"
 import {Logger} from "utils/logger"
-import {ProviderMessage} from "models/contracts/types"
 import WalletConnectProvider from "@walletconnect/web3-provider"
 import {ethers, Signer} from "ethers"
 import {EVM_NETWORKS, EVM_NETWORKS_NAMES, rpc} from "constants/network"
@@ -57,6 +56,7 @@ export class ProviderStore {
           this.currentAccount = result[0]
           this.currentProvider = new ethers.providers.Web3Provider(provider)
           this.initProvider()
+          await this.connectWC()
           break
         case PROVIDERS.WEB3:
         default:
@@ -89,7 +89,6 @@ export class ProviderStore {
 
     provider.on("accountsChanged", this.handleAccountsChange)
     provider.on("disconnect", this.handleDisconnect)
-    provider.on("message", this.handleMessage)
     provider.on("chainChanged", this.handleChainChange)
 
     this.signer = this.currentProvider.getSigner()
@@ -100,7 +99,7 @@ export class ProviderStore {
 
     const {provider} = this.currentProvider
 
-    provider.removeListeners()
+    provider?.removeListeners()
   }
 
   handleAccountsChange = async (accounts: string[]) => {
@@ -112,10 +111,6 @@ export class ProviderStore {
     this.currentAccount = null
   }
 
-  handleMessage = (message: ProviderMessage) => {
-    // handle message
-  }
-
   handleChainChange = async (info: any) => {
     let chainId: any
     if (typeof info === 'object') {
@@ -124,22 +119,50 @@ export class ProviderStore {
       chainId = +info
     }
 
-    if (chainId === this.chainId) return
+    if (chainId !== this.chainId) {
+      window.location.reload()
+    }
+  }
+
+  connectWC = async () => {
+    if (!this.currentProvider || this.currentProvider?.provider.currentAccount)
+      return
 
     if (this.isConnecting) return
 
-    const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === chainId)
+    this.isConnecting = true
 
-    if (chain) {
-      this.notSupportedNetwork = false
-      this.chainId = chain.chainID
-      this.currentNetworkName = chain.name
-      await this.init()
-    } else {
-      // not supported chain
-      this.chainId = chainId
-      this.notSupportedNetwork = true
-      this.initialized = false
+    try {
+      let chainId = this.chainId
+
+      if (!chainId) {
+        chainId = await this.currentProvider.provider.request({
+          method: "eth_chainId"
+        })
+      }
+
+      const chain = Object.values(EVM_NETWORKS).find(item => item.chainID === chainId)
+
+      runInAction(() => {
+        if (chain) {
+          this.notSupportedNetwork = false
+          this.chainId = chain.chainID
+          this.currentNetworkName = chain.name
+        } else {
+          // not supported
+          this.chainId = chainId
+          this.notSupportedNetwork = true
+          this.initialized = false
+          this.currentProvider.provider.onDisconnect()
+          this.currentProvider = null
+        }
+      })
+    } catch (e) {
+      Logger.info("ERROR", e)
+    } finally {
+      runInAction(() => {
+        this.isConnecting = false
+      })
     }
   }
 
@@ -168,17 +191,21 @@ export class ProviderStore {
           method: "eth_requestAccounts"
         }) as string[]
 
-        this.currentAccount = accounts[0]
+        runInAction(() => {
+          this.currentAccount = accounts[0]
+        })
       } else {
         // not supported
-        this.chainId = chainId
-        this.notSupportedNetwork = true
-        this.initialized = false
+        runInAction(() => {
+          this.chainId = chainId
+          this.notSupportedNetwork = true
+          this.initialized = false
+        })
       }
     } catch (e) {
       Logger.info("ERROR", e)
     } finally {
-      this.isConnecting = false
+      runInAction(() => this.isConnecting = false)
     }
   }
 
