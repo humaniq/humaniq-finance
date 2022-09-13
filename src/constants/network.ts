@@ -6,7 +6,6 @@ export const FINANCE_ROUTES = {
 }
 
 export const rpc = {
-  4: "https://rinkeby.infura.io/v3/c306191fe58d401b900a38911b8a43c9",
   97: "https://data-seed-prebsc-1-s1.binance.org:8545",
   56: "https://rpc.ankr.com/bsc"
 }
@@ -28,7 +27,7 @@ export enum NATIVE_COIN_SYMBOL {
 
 export enum EVM_NETWORKS_NAMES {
   BSC = 'bsc',
-  BSC_TESTNET = 'bsc Testnet',
+  BSC_TESTNET = 'bsc_Testnet',
   DEFAULT = 'bsc'
 }
 
