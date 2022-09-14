@@ -7,6 +7,9 @@ const mockNavigate = jest.fn()
 const mockParams = jest.fn()
 const mockHistory = jest.fn()
 const mockSetData = jest.fn()
+const mockLocationReplace = jest.fn()
+
+const TEST_URL = "https://some-url.com/#/details"
 
 let transactionViewModel: TransactionViewModel;
 
@@ -22,6 +25,15 @@ jest.mock('hooks/useSharedData', () => ({
 beforeAll(() => {
   transactionViewModel = new TransactionViewModel();
   jest.spyOn(React, 'useEffect').mockImplementation(React.useLayoutEffect)
+
+  window = Object.create(window);
+  Object.defineProperty(window, "location", {
+    value: {
+      replace: (url: string) => mockLocationReplace(url),
+      href: TEST_URL
+    },
+    writable: true
+  });
 })
 
 afterAll(() => {
@@ -65,7 +77,8 @@ describe("Transaction screen with not defined data", () => {
     }))
 
     const { toJSON } = renderer.create(<Transaction />);
-    expect(mockNavigate).toHaveBeenCalledWith(-1)
+    expect(mockLocationReplace).toHaveBeenCalled()
+    expect(mockLocationReplace).toHaveBeenCalledWith(TEST_URL.split("#")[0])
     expect(toJSON()).toMatchSnapshot();
   });
 
@@ -82,7 +95,8 @@ describe("Transaction screen with not defined data", () => {
     }))
 
     const { toJSON } = renderer.create(<Transaction />);
-    expect(mockNavigate).toHaveBeenCalledWith(-1)
+    expect(mockLocationReplace).toHaveBeenCalled()
+    expect(mockLocationReplace).toHaveBeenCalledWith(TEST_URL.split("#")[0])
     expect(toJSON()).toMatchSnapshot();
   });
 });
