@@ -46,7 +46,10 @@ const TransactionImpl: React.FC<TransactionProps> = ({view}) => {
         view.setInputRef(inputRef.current)
         view.setNavigation(navigate)
       } else {
-        navigate(-1)
+        // if data is null, this means url is broken, we will need to redirect to home
+        window.location.replace(
+          window.location.href.split("#")[0]
+        )
       }
     })()
 
