@@ -77,8 +77,6 @@ describe("Transaction screen with not defined data", () => {
     }))
 
     const { toJSON } = renderer.create(<Transaction />);
-    expect(mockLocationReplace).toHaveBeenCalled()
-    expect(mockLocationReplace).toHaveBeenCalledWith(TEST_URL.split("#")[0])
     expect(toJSON()).toMatchSnapshot();
   });
 
@@ -95,8 +93,6 @@ describe("Transaction screen with not defined data", () => {
     }))
 
     const { toJSON } = renderer.create(<Transaction />);
-    expect(mockLocationReplace).toHaveBeenCalled()
-    expect(mockLocationReplace).toHaveBeenCalledWith(TEST_URL.split("#")[0])
     expect(toJSON()).toMatchSnapshot();
   });
 });

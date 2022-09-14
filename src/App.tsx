@@ -38,9 +38,13 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export const App = observer(() => {
   useEffect(() => {
-    ;(async () => {
-      await getProviderStore.init()
-    })()
+    if (window.location.href.includes("#/details")) {
+      window.location.replace(window.location.href.split("#")[0])
+    } else {
+      ;(async () => {
+        await getProviderStore.init()
+      })()
+    }
 
     return () => getProviderStore.removeListeners()
   }, [])
