@@ -1,10 +1,11 @@
 import {BUSDTestContract} from "models/contracts/BUSDTestContract"
 import {MAX_UINT_256} from "utils/common"
+import {Contract} from "ethers"
 
 export class BUSD {
   account?: string | null
   provider: any
-  contract: any
+  contract: Contract
 
   constructor(provider: any, account?: string | null) {
     this.account = account

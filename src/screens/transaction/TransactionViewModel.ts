@@ -305,8 +305,8 @@ export class TransactionViewModel {
 
   get newBorrowLimit() {
     if (this.isDeposit || this.isWithdraw) {
+
       if (!this.inputValue) return 0
-      if (!this.item.isEnteredTheMarket) return this.borrowLimit
 
       if (this.isWithdraw) {
         return this.borrowLimit - this.inputValueUSD * this.collateralMantissa
@@ -421,7 +421,6 @@ export class TransactionViewModel {
   get hypotheticalBorrowLimitUsedForDeposit() {
     if (!this.hypotheticalCollateralSupply || !this.totalBorrow) return 0
     if (this.hypotheticalCollateralSupply < 0) return 100
-    if (!this.item.isEnteredTheMarket) return this.borrowLimitUsed
 
     const limit =
       (this.totalBorrow / this.hypotheticalCollateralSupply) * 100
@@ -460,8 +459,6 @@ export class TransactionViewModel {
 
   get isWithdrawDisabled() {
     if (this.isWithdraw) {
-      if (!this.item.isEnteredTheMarket) return true
-
       return (
         this.isSupplyDisabled ||
         !Boolean(this.inputValueTOKEN) ||
@@ -539,7 +536,10 @@ export class TransactionViewModel {
             this.txData.gasLimit = +approvedResult.gasLimit
             // wait for transaction to be mined in order to proceed with mint
             await approvedResult.wait()
-          } catch (e) {
+          } catch (e: any) {
+            if (e?.code === 4001 || e?.message === 'user reject request') {
+              transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+            }
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
             return
           }
@@ -559,7 +559,7 @@ export class TransactionViewModel {
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e: any) {
-          if (e?.code === 4001) {
+          if (e?.code === 4001 || e?.message === 'user reject request') {
             transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
           }
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
@@ -582,22 +582,22 @@ export class TransactionViewModel {
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e: any) {
-          if (e?.code === 4001) {
+          if (e?.code === 4001 || e?.message === 'user reject request') {
             transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
           }
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
       } else if (this.isWithdraw) {
         // check if number is too small for transaction
-        if (
-          Big(+inputValue)
-            .times(1e18)
-            .div(this.item.exchangeRateCurrent) // TODO check
-            .lt(1)
-        ) {
-          Logger.info("error")
-          return
-        }
+        // if (
+        //   Big(+inputValue)
+        //     .times(1e18)
+        //     .div(this.item.exchangeRateCurrent) // TODO check
+        //     .lt(1)
+        // ) {
+        //   Logger.info("error")
+        //   return
+        // }
 
         transactionStore.transactionMessageVisible = true
         transactionStore.transactionMessageStatus.firstStep.message = t("transaction.withdrawal")
@@ -617,7 +617,7 @@ export class TransactionViewModel {
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e: any) {
-          if (e?.code === 4001) {
+          if (e?.code === 4001 || e?.message === 'user reject request') {
             transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
           }
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
@@ -646,7 +646,10 @@ export class TransactionViewModel {
             this.txData.gasLimit = +approvedResult.gasLimit
             // wait for transaction to be mined in order to proceed with repay
             await approvedResult.wait()
-          } catch (e) {
+          } catch (e: any) {
+            if (e?.code === 4001 || e?.message === 'user reject request') {
+              transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+            }
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
             return
           }
@@ -666,7 +669,7 @@ export class TransactionViewModel {
             transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
           }
         } catch (e: any) {
-          if (e?.code === 4001) {
+          if (e?.code === 4001 || e?.message === 'user reject request') {
             transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
           }
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
@@ -781,6 +784,7 @@ export class TransactionViewModel {
           currency: fiatCurrency
         }
       })
+
       if (costResponse.isOk) {
         this.nativeCoinPrice = costResponse.data.payload[nativeSymbol][fiatCurrency] as FinanceCurrency
       }
