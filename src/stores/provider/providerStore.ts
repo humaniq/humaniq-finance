@@ -197,7 +197,7 @@ export class ProviderStore {
       } else {
         // not supported
         runInAction(() => {
-          this.chainId = chainId
+          this.chainId = +chainId
           this.notSupportedNetwork = true
           this.initialized = false
         })

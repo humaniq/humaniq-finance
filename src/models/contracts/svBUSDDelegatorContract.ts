@@ -1,4 +1,4 @@
-import {ContractInterface, ethers, providers, Signer} from "ethers"
+import {ContractInterface, Contract, providers, Signer} from "ethers"
 import {getProviderStore} from "App"
 
 const abi: ContractInterface = [{
@@ -569,4 +569,4 @@ const abi: ContractInterface = [{
 }]
 
 export const svBUSDDelegatorContract = (address: string = getProviderStore.currentNetwork.svBUSDAddress, provider: Signer | providers.Provider) =>
-  new ethers.Contract(address, abi, provider)
+  new Contract(address, abi, provider)

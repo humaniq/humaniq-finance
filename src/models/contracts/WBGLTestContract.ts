@@ -1,4 +1,4 @@
-import {ethers, providers, Signer} from "ethers"
+import {Contract, providers, Signer} from "ethers"
 import {getProviderStore} from "App"
 
 const abi = [{
@@ -136,4 +136,4 @@ const abi = [{
 }]
 
 export const WBGLTestContract = (provider: Signer | providers.Provider) =>
-  new ethers.Contract(getProviderStore.currentNetwork.wBGLAddress, abi, provider)
+  new Contract(getProviderStore.currentNetwork.wBGLAddress, abi, provider)
