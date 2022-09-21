@@ -1,4 +1,4 @@
-import {ethers, providers, Signer} from "ethers"
+import {Contract, providers, Signer} from "ethers"
 import {getProviderStore} from "App"
 
 const abi = [{
@@ -136,4 +136,4 @@ const abi = [{
 }]
 
 export const BUSDTestContract = (provider: Signer | providers.Provider) =>
-  new ethers.Contract(getProviderStore.currentNetwork.bUSDAddress, abi, provider)
+  new Contract(getProviderStore.currentNetwork.bUSDAddress, abi, provider)
