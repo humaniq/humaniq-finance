@@ -434,4 +434,48 @@ describe("Transaction screen with data for DEPOSIT/BUSD", () => {
     expect(transactionScreen.container).toMatchSnapshot()
     transactionScreen.unmount()
   })
+
+  it('should handle set input correctly', () => {
+    const transactionScreen = render(<Transaction/>)
+
+    transactionViewModel.setInputValue("123")
+    expect(transactionViewModel.inputValue).toBe("123")
+
+    transactionViewModel.setInputValue("123.45")
+    expect(transactionViewModel.inputValue).toBe("123.45")
+
+    transactionViewModel.setInputValue("0.12345")
+    expect(transactionViewModel.inputValue).toBe("0.12345")
+
+    expect(transactionScreen.container).toMatchSnapshot()
+    transactionScreen.unmount()
+  })
+
+  it('should handle set input with incorrect input data', () => {
+    const transactionScreen = render(<Transaction/>)
+
+    transactionViewModel.setInputValue("")
+    expect(transactionViewModel.inputValue).toBe("")
+
+    transactionViewModel.setInputValue("undefined")
+    expect(transactionViewModel.inputValue).toBe("")
+
+    transactionViewModel.setInputValue("null")
+    expect(transactionViewModel.inputValue).toBe("")
+
+    transactionViewModel.setInputValue("123testabcdef")
+    expect(transactionViewModel.inputValue).toBe("")
+
+    transactionViewModel.setInputValue("00.123")
+    expect(transactionViewModel.inputValue).toBe("")
+
+    transactionViewModel.setInputValue("00.123.123")
+    expect(transactionViewModel.inputValue).toBe("")
+
+    transactionViewModel.setInputValue(".")
+    expect(transactionViewModel.inputValue).toBe("0.")
+
+    expect(transactionScreen.container).toMatchSnapshot()
+    transactionScreen.unmount()
+  })
 })
