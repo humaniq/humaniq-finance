@@ -69,7 +69,7 @@ export class HomeViewModel {
   }
 
   get getBorrowLimit() {
-    return `${this.borrowLimit.toFixed(2)}$`
+    return `${this.borrowLimit.toFixed(this.borrowLimit === 0 ? 0 : 2)}$`
   }
 
   get hasCollateral() {

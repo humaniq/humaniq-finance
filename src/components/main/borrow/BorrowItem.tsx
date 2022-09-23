@@ -31,12 +31,12 @@ export const BorrowItem = ({
                              ...rest
                            }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
-    return disabled || (!isRepay && item.supply > 0.001)
-  }, [disabled, isRepay, item])
+    return disabled || (!isRepay && item.supply > 0.001) || totalBorrow === 0
+  }, [disabled, isRepay, item.supply, totalBorrow])
 
   const subTitle = useMemo(() => {
     return Big(isRepay ? item.borrow : item.liquidity / item.tokenUsdValue).toFixed(2)
-  }, [item, isRepay, borrowLimit, totalBorrow])
+  }, [item, isRepay])
 
   const title = useMemo(() => {
     let text
@@ -48,7 +48,7 @@ export const BorrowItem = ({
     }
 
     return `$${text}`
-  }, [item, isRepay, borrowLimit, totalBorrow])
+  }, [item, isRepay])
 
   const buttonTitle = useMemo(() => {
     let text

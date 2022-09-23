@@ -8,7 +8,7 @@ export interface LinearProgressProps {
 }
 
 /**
- * LinearProgress
+ * LinearProgress component
  *
  * @param progress
  * @param amount

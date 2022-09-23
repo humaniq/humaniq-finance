@@ -6,7 +6,6 @@ import {BorrowSupplyItem, FinanceCurrency} from "models/types"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import Big from "big.js"
 import {render, fireEvent} from "@testing-library/react"
-import {ethers} from "ethers"
 import {convertValue} from "utils/common"
 
 const mockNavigate = jest.fn()
