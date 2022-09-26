@@ -1,4 +1,7 @@
 import Big from "big.js"
+import { BorrowSupplyItem } from "../models/types";
+import { getProviderStore } from "../App";
+import { BigNumber } from "ethers";
 
 const pow = Math.pow,
   floor = Math.floor,
@@ -45,4 +48,19 @@ export const beautifyNumber = (n: number, isCurrency: boolean) => {
     : suffix
       ? rounded + suffix
       : n;
+}
+
+export function watchAsset(item: BorrowSupplyItem) {
+  getProviderStore.currentProvider.provider.request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20',
+      options: {
+        address: item.underlyingAssetAddress,
+        symbol: item.symbol,
+        decimals: BigNumber.from(item.underlyingDecimals).toNumber(),
+        image: `https://raw.githubusercontent.com/humaniq/humaniq-finance/develop/src/assets/icons/tokens/${item.symbol}.svg`,
+      },
+    },
+  })
 }

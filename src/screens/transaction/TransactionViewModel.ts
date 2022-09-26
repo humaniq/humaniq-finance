@@ -3,15 +3,15 @@ import {BorrowSupplyItem, FinanceCostResponse, FinanceCurrency} from "models/typ
 import {t} from "translations/translate"
 import {Logger} from "utils/logger"
 import Big from "big.js"
-import {formatToCurrency, formatToNumber, formatValue} from "utils/utils"
-import {utils} from "ethers"
+import { formatToCurrency, formatToNumber, formatValue, watchAsset } from "utils/utils"
+import { BigNumber, utils } from "ethers"
 import {TransactionState} from "screens/transaction/Transaction"
 import {isEmpty} from "utils/textUtils"
 import {getProviderStore} from "App"
 import {Comptroller} from "models/Comptroller"
 import {Ctoken} from "models/CToken"
 import {ApiService} from "services/apiService/apiService"
-import {API_FINANCE, FINANCE_ROUTES} from "constants/network"
+import { API_FINANCE, EVM_NETWORK, FINANCE_ROUTES } from "constants/network"
 import {TRANSACTION_TYPE} from "models/contracts/types"
 import {WBGL} from "models/WBGL"
 import {BUSD} from "models/BUSD"
@@ -549,6 +549,7 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
+
           const {hash} = await this.cTokenContract.supply(valueToSend)
 
           if (hash) {
@@ -576,6 +577,9 @@ export class TransactionViewModel {
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
+
+            watchAsset(this.item)
+
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.SUCCESS
             this.navigateBack()
           } else {
