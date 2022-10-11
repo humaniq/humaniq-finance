@@ -28,6 +28,10 @@ export class CompoundLens {
     });
   };
 
+  getUnderlyingPrice(cToken: any) {
+    return this.contract.cTokenUnderlyingPrice(cToken);
+  }
+
   getUnderlyingPriceAll(cTokens: any[]) {
       return this.contract.cTokenUnderlyingPriceAll(cTokens);
   }

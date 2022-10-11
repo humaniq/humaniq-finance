@@ -1,12 +1,13 @@
-import React, {useMemo} from "react"
-import {Text} from "../../ui/text/Text"
-import {Divider} from "../../ui/divider/Divider"
-import {Button} from "../../ui/button/Button"
-import {BorrowSupplyItem} from "models/types"
+import React, { useMemo } from "react"
+import { Text } from "../../ui/text/Text"
+import { Divider } from "../../ui/divider/Divider"
+import { Button } from "../../ui/button/Button"
+import { BorrowSupplyItem } from "models/types"
 import Big from "big.js"
-import {icons} from "utils/icons"
-import {t} from "translations/translate"
+import { icons } from "utils/icons"
+import { t } from "translations/translate"
 import "./BorrowItem.style.sass"
+import { MIN_VALUE } from "utils/common"
 
 export interface BorrowItemProps {
   onBorrowClick?: () => void;
@@ -17,6 +18,7 @@ export interface BorrowItemProps {
   isLiquidity?: boolean
   borrowLimit: number
   totalBorrow: number
+  totalSupply: number
 }
 
 export const BorrowItem = ({
@@ -27,28 +29,29 @@ export const BorrowItem = ({
                              isRepay = false,
                              borrowLimit,
                              totalBorrow,
+                             totalSupply,
                              isLiquidity,
                              ...rest
                            }: BorrowItemProps) => {
   const buttonDisabled = useMemo(() => {
-    return disabled || (!isRepay && item.supply > 0.001)
-  }, [disabled, isRepay, item])
+    return disabled || (!isRepay && totalSupply <= MIN_VALUE)
+  }, [disabled, isRepay, totalSupply])
 
   const subTitle = useMemo(() => {
     return Big(isRepay ? item.borrow : item.liquidity / item.tokenUsdValue).toFixed(2)
-  }, [item, isRepay, borrowLimit, totalBorrow])
+  }, [item, isRepay])
 
   const title = useMemo(() => {
     let text
 
     if (isRepay) {
-      text = Big(item.tokenUsdValue).mul(item.borrow).toFixed(2)
+      text = Big(item.fiatBorrow).toFixed(2)
     } else {
       text = item.liquidity.toFixed(2)
     }
 
     return `$${text}`
-  }, [item, isRepay, borrowLimit, totalBorrow])
+  }, [item, isRepay])
 
   const buttonTitle = useMemo(() => {
     let text

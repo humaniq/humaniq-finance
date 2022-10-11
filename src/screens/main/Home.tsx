@@ -1,33 +1,33 @@
-import React, {useCallback, useEffect} from "react"
-import {observer} from "mobx-react"
-import {MainInfoHeader} from "components/main/header/MainInfoHeader"
-import {View, ViewDirections} from "components/ui/view/View"
-import {Text} from "components/ui/text/Text"
-import {AddressView} from "components/main/address/AddressView"
+import React, { useCallback, useEffect } from "react"
+import { observer } from "mobx-react"
+import { MainInfoHeader } from "components/main/header/MainInfoHeader"
+import { View, ViewDirections } from "components/ui/view/View"
+import { Text } from "components/ui/text/Text"
+import { AddressView } from "components/main/address/AddressView"
 import colors from "../../utils/colors"
-import {withStore} from "utils/hoc"
-import {HomeViewModel} from "screens/main/HomeViewModel"
-import {InfoButton, PLACEMENT} from "components/info-button/InfoButton"
-import {CircularProgressbarWithChildren} from "react-circular-progressbar"
-import {ReactComponent as EllipseIcon} from "../../assets/images/ellipse.svg"
-import {LinearProgress} from "components/ui/progress/LinearProgress"
-import {Borrows} from "components/borrow/Borrows"
-import {Deposits} from "components/deposit/Deposits"
-import {getProviderStore} from "App"
-import {useNavigate} from "react-router-dom"
+import { withStore } from "utils/hoc"
+import { HomeViewModel } from "screens/main/HomeViewModel"
+import { InfoButton, PLACEMENT } from "components/info-button/InfoButton"
+import { CircularProgressbarWithChildren } from "react-circular-progressbar"
+import { ReactComponent as EllipseIcon } from "../../assets/images/ellipse.svg"
+import { LinearProgress } from "components/ui/progress/LinearProgress"
+import { Borrows } from "components/borrow/Borrows"
+import { Deposits } from "components/deposit/Deposits"
+import { getProviderStore } from "App"
+import { useNavigate } from "react-router-dom"
 import routes from "utils/routes"
-import {BorrowSupplyItem} from "models/types"
-import {useSharedData} from "hooks/useSharedData"
+import { BorrowSupplyItem } from "models/types"
+import { useSharedData } from "hooks/useSharedData"
 import "react-spring-bottom-sheet/dist/style.css"
 import "../../styles/circular.sass"
 import "./Home.style.sass"
-import {TRANSACTION_TYPE} from "models/contracts/types"
-import {t} from "translations/translate"
-import {LiquidityBottomSheet} from "components/bottom-sheet/LiquidityBottomSheet"
-import {EVM_NETWORKS_NAMES, NETWORK_TYPE} from "constants/network"
-import {ConnectWallet} from "components/modals/ConnectWallet"
-import {Loader} from "components/loader/Loader"
-import {capitalize} from "utils/textUtils"
+import { TRANSACTION_TYPE } from "models/contracts/types"
+import { t } from "translations/translate"
+import { LiquidityBottomSheet } from "components/bottom-sheet/LiquidityBottomSheet"
+import { EVM_NETWORKS_NAMES, NETWORK_TYPE } from "constants/network"
+import { ConnectWallet } from "components/modals/ConnectWallet"
+import { Loader } from "components/loader/Loader"
+import { capitalize } from "utils/textUtils"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -160,6 +160,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
                 <Borrows
                   borrowLimit={view.borrowLimit}
                   totalBorrow={view.totalBorrow}
+                  totalSupply={view.totalSupply}
                   isRepay={true}
                   infoButtonBackgroundColor={colors.purpleHeart}
                   showLiquidityButton={false}
@@ -172,6 +173,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
                 <Borrows
                   borrowLimit={view.borrowLimit}
                   totalBorrow={view.totalBorrow}
+                  totalSupply={view.totalSupply}
                   infoButtonBackgroundColor={colors.purpleHeart}
                   hintMessage={view.hasCollateral ? undefined : t("home.borrowHint")}
                   infoText={t("hints.borrowAvailable")}
@@ -189,7 +191,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
         list={view.borrowMarket}
         visible={view.liquidityModalVisible}
         onDismiss={() => view.setLiquidityModalVisibility(false)}/>
-      <Loader visible={view.isRefreshing || getProviderStore.isConnecting} />
+      <Loader visible={view.isRefreshing || getProviderStore.isConnecting}/>
     </>
   )
 }

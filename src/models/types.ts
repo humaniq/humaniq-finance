@@ -36,6 +36,7 @@ export type BorrowSupplyItem = {
   supplyApy: any;
   borrowApy: any;
   tokenUsdValue: any;
+  fiatBalance: any;
   fiatSupply: any;
   fiatBorrow: any;
   supplyDistributionApy: any;

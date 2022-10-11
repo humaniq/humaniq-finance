@@ -1,12 +1,13 @@
-import React, {useMemo} from "react"
-import {Text} from "../../ui/text/Text"
-import {Divider} from "../../ui/divider/Divider"
-import {Button} from "../../ui/button/Button"
-import {BorrowSupplyItem} from "models/types"
+import React, { useMemo } from "react"
+import { Text } from "../../ui/text/Text"
+import { Divider } from "../../ui/divider/Divider"
+import { Button } from "../../ui/button/Button"
+import { BorrowSupplyItem } from "models/types"
 import Big from "big.js"
-import {icons} from "utils/icons"
+import { icons } from "utils/icons"
 import "./SupplyItem.style.sass"
-import {t} from "translations/translate"
+import { t } from "translations/translate"
+import { MIN_VALUE } from "utils/common"
 
 export enum COLLATERAL_STATUS {
   ENTERED_MARKET,
@@ -33,7 +34,7 @@ export const SupplyItem = ({
                            }: TokenItemProps) => {
 
   const buttonDisabled = useMemo(() => {
-    return disabled || (!isWithdraw && +item.balance === 0)
+    return disabled || (!isWithdraw && Big(item.tokenUsdValue).mul(item.balance).lte(MIN_VALUE))
   }, [item, disabled, isWithdraw])
 
   const title = useMemo(() => {
