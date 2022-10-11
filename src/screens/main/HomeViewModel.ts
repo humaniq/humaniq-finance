@@ -1,14 +1,15 @@
-import {makeAutoObservable} from "mobx"
-import {Comptroller} from "models/Comptroller"
-import {CompoundLens} from "models/CompoundLens"
-import {Ctoken} from "models/CToken"
-import {Token} from "models/Token"
+import { makeAutoObservable } from "mobx"
+import { Comptroller } from "models/Comptroller"
+import { CompoundLens } from "models/CompoundLens"
+import { Ctoken } from "models/CToken"
+import { Token } from "models/Token"
 import Big from "big.js"
-import {getProviderStore} from "App"
-import {t} from "i18next"
-import {BorrowSupplyItem} from "models/types"
-import {formatValue} from "utils/utils"
-import {renderShortAddress} from "utils/textUtils"
+import { getProviderStore } from "App"
+import { t } from "i18next"
+import { BorrowSupplyItem } from "models/types"
+import { formatValue } from "utils/utils"
+import { renderShortAddress } from "utils/textUtils"
+import { MIN_VALUE } from "utils/common"
 
 export class HomeViewModel {
   userSuppliedMarket: BorrowSupplyItem[] = []
@@ -163,7 +164,7 @@ export class HomeViewModel {
         cash,
         checkMembership,
         mintGuardian,
-        borrowGuardian,
+        borrowGuardian
       ] = await Promise.all([
         cTokenContract.getName(),
         cTokenContract.getTotalBorrows(),
@@ -171,7 +172,7 @@ export class HomeViewModel {
         cTokenContract.getCash(),
         this.comptroller.checkMembership(data.cToken),
         this.comptroller.mintGuardianPaused(data.cToken),
-        this.comptroller.borrowGuardianPaused(data.cToken),
+        this.comptroller.borrowGuardianPaused(data.cToken)
       ])
 
       cTokenData.symbol = symbol
@@ -218,6 +219,15 @@ export class HomeViewModel {
       item.underlyingPrice,
       item.underlyingDecimals
     )
+
+    item.fiatBalance =
+      item.underlyingPrice === 0
+        ? 0
+        : this.convertToUSD(
+          item.balance,
+          item.underlyingPrice,
+          item.underlyingDecimals
+        )
 
     item.fiatSupply =
       item.underlyingPrice === 0
@@ -299,13 +309,13 @@ export class HomeViewModel {
     this.userBalanceMarket = market
 
     this.userSuppliedMarket = market.filter(
-      (market: any) => +market.supplyBalance > 0
+      (market: any) => Big(market.supply).mul(market.tokenUsdValue).gt(MIN_VALUE)
     )
 
     this.borrowMarket = market
 
     this.userBorrowedMarket = market.filter(
-      (market: any) => +market.borrowBalance > 0
+      (market: any) => Big(market.borrow).mul(market.tokenUsdValue).gt(MIN_VALUE)
     )
     this.setLoader(false)
   }

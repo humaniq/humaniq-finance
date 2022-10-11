@@ -10,6 +10,8 @@ export const wait = (ms: number) => new Promise((resolve, reject) => {
   }, ms)
 })
 
+export const MIN_VALUE = 0.01
+
 export const MAX_UINT_256 = BigNumber.from(
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 )
