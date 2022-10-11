@@ -18,7 +18,7 @@ import { BUSD } from "models/BUSD"
 import { TRANSACTION_STATUS, transactionStore } from "stores/app/transactionStore"
 import { NavigateFunction } from "react-router-dom"
 import AutosizeInput from "react-input-autosize"
-import { convertValue, DIGITS_INPUT, LEADING_ZERO } from "utils/common"
+import { convertValue, DIGITS_INPUT, LEADING_ZERO, MAX_UINT_256 } from "utils/common"
 
 export class TransactionViewModel {
   item = {} as BorrowSupplyItem
@@ -84,7 +84,7 @@ export class TransactionViewModel {
     this.swapReaction = reaction(() => this.inputFiat, (val) => {
       if (val) {
         // input fiat
-        this.inputValue = this.inputValueFiat ? this.inputValueFiat.toString(): ""
+        this.inputValue = this.inputValueFiat ? this.inputValueFiat.toString() : ""
       } else {
         // input token
         this.inputValue = this.inputValueToken ? this.inputValueToken.toString() : ""
@@ -500,7 +500,7 @@ export class TransactionViewModel {
     this.inputRef = ref
   }
 
-  get getInputValueForTransaction () {
+  get getInputValueForTransaction() {
     return this.inputFiat ? this.inputValueToken.toString() : this.safeInputValue
   }
 
@@ -538,7 +538,7 @@ export class TransactionViewModel {
             await approvedResult.wait()
           } catch (e: any) {
             if (e?.code === 4001 || e?.message === 'user reject request') {
-              transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+              transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
             }
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
             return
@@ -549,7 +549,6 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-
           const {hash} = await this.cTokenContract.supply(valueToSend)
 
           if (hash) {
@@ -561,7 +560,7 @@ export class TransactionViewModel {
           }
         } catch (e: any) {
           if (e?.code === 4001 || e?.message === 'user reject request') {
-            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
           }
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
@@ -587,7 +586,7 @@ export class TransactionViewModel {
           }
         } catch (e: any) {
           if (e?.code === 4001 || e?.message === 'user reject request') {
-            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
           }
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
@@ -622,7 +621,7 @@ export class TransactionViewModel {
           }
         } catch (e: any) {
           if (e?.code === 4001 || e?.message === 'user reject request') {
-            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
           }
           transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
         }
@@ -639,9 +638,7 @@ export class TransactionViewModel {
         )
 
         // check if spending token is allowed, otherwise it should be approved
-        let valueToSend = this.isMaxValueSet ? this.item.borrowBalance : inputValue
-
-        if (Big(allowanceAmount).lt(valueToSend)) {
+        if (Big(allowanceAmount).lt(inputValue)) {
           // need to approve
           try {
             approvedResult = await this.selectedToken.approve(
@@ -652,7 +649,7 @@ export class TransactionViewModel {
             await approvedResult.wait()
           } catch (e: any) {
             if (e?.code === 4001 || e?.message === 'user reject request') {
-              transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+              transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
             }
             transactionStore.transactionMessageStatus.firstStep.status = TRANSACTION_STATUS.ERROR
             return
@@ -663,7 +660,9 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-          const {hash} = await this.cTokenContract.repayBorrow(valueToSend)
+          const {hash} = await this.cTokenContract.repayBorrow(
+            this.isMaxValueSet ? MAX_UINT_256 : inputValue
+          )
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
@@ -674,7 +673,7 @@ export class TransactionViewModel {
           }
         } catch (e: any) {
           if (e?.code === 4001 || e?.message === 'user reject request') {
-            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied");
+            transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
           }
           transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.ERROR
         }
@@ -726,8 +725,8 @@ export class TransactionViewModel {
       if (!this.borrowLimit) {
         maxValue = 0
       } else {
-        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow) / this.item.tokenUsdValue; // tokens
-        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow;
+        const maxBorrow = ((this.borrowLimit * 0.8) - this.totalBorrow) / this.item.tokenUsdValue // tokens
+        maxValue = this.borrowLimitUsed >= 80 ? 0 : maxBorrow
 
         if (this.inputFiat) {
           maxValue = Big(maxValue).mul(this.item.tokenUsdValue)

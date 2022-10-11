@@ -21,6 +21,7 @@ export interface BorrowsProps {
   infoButtonBackgroundColor?: string
   borrowLimit: number
   totalBorrow: number
+  totalSupply: number
   isLiquidity?: boolean
 }
 
@@ -36,6 +37,7 @@ export const Borrows: React.FC<BorrowsProps> = ({
                                                   infoButtonBackgroundColor,
                                                   borrowLimit,
                                                   totalBorrow,
+                                                  totalSupply,
                                                   isLiquidity
                                                 }) => {
   return (
@@ -71,6 +73,7 @@ export const Borrows: React.FC<BorrowsProps> = ({
           <BorrowItem
             borrowLimit={borrowLimit}
             totalBorrow={totalBorrow}
+            totalSupply={totalSupply}
             isRepay={isRepay}
             onBorrowClick={() => onClick?.(item)}
             key={`borrow_item_${item.symbol}_${index}`}
