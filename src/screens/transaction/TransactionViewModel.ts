@@ -280,7 +280,7 @@ export class TransactionViewModel {
   }
 
   get borrowLimitUsed() {
-    if (Big(this.borrowLimit).lte(MIN_VALUE) || !this.borrowLimit) return 0
+    if (!this.borrowLimit || Big(this.borrowLimit).lte(MIN_VALUE)) return 0
 
     const limit = (this.totalBorrow / this.borrowLimit) * 100
     return parseFloat(limit.toFixed(2))
