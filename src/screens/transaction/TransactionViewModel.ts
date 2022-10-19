@@ -301,7 +301,7 @@ export class TransactionViewModel {
   get getNewBorrowLimit() {
     let newBorrowLimit = this.newBorrowLimit
 
-    if (newBorrowLimit < 0 || Big(Math.abs(newBorrowLimit)).lte(MIN_VALUE)) return formatValue(0)
+    if (newBorrowLimit <= 0 || Big(Math.abs(newBorrowLimit)).lte(MIN_VALUE)) return formatValue(0)
 
     return formatValue(newBorrowLimit, 3)
   }
