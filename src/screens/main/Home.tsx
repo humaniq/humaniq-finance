@@ -33,9 +33,9 @@ export interface MainScreenInterface {
   view: HomeViewModel;
 }
 
-const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
+const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
   const navigate = useNavigate()
-  const {setData} = useSharedData()
+  const { setData } = useSharedData()
 
   const onBorrowOrSupplyClick = useCallback((item: BorrowSupplyItem, type: string = TRANSACTION_TYPE.DEPOSIT) => {
     setData({
@@ -69,7 +69,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
               onClick={view.toggleDialogOrDisconnectWallet}
             />
           </div>
-          <View style={{marginTop: 16}}>
+          <View style={{ marginTop: 16 }}>
             <CircularProgressbarWithChildren
               styles={
                 {
@@ -89,7 +89,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
             </CircularProgressbarWithChildren>
             <View className="deposit-balance" direction={ViewDirections.COLUMN}>
               <View
-                style={{marginBottom: 8}}
+                style={{ marginBottom: 8 }}
                 direction={ViewDirections.COLUMN}
               >
                 <Text
@@ -105,7 +105,7 @@ const HomeImpl: React.FC<MainScreenInterface> = ({view}) => {
                   text={view.getSupplyBalance}
                 />
               </View>
-              <View style={{marginTop: 6}} direction={ViewDirections.COLUMN}>
+              <View style={{ marginTop: 6 }} direction={ViewDirections.COLUMN}>
                 <Text
                   size={12}
                   color={"#895EF2"}

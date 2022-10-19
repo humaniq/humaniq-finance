@@ -18,7 +18,7 @@ import { BUSD } from "models/BUSD"
 import { TRANSACTION_STATUS, transactionStore } from "stores/app/transactionStore"
 import { NavigateFunction } from "react-router-dom"
 import AutosizeInput from "react-input-autosize"
-import { convertValue, DIGITS_INPUT, LEADING_ZERO, MAX_UINT_256 } from "utils/common"
+import { convertValue, DIGITS_INPUT, LEADING_ZERO, MAX_UINT_256, MIN_VALUE } from "utils/common"
 
 export class TransactionViewModel {
   item = {} as BorrowSupplyItem
@@ -58,7 +58,7 @@ export class TransactionViewModel {
   protected readonly api: ApiService
 
   constructor() {
-    makeAutoObservable(this, undefined, {autoBind: true})
+    makeAutoObservable(this, undefined, { autoBind: true })
     this.api = new ApiService()
     this.api.init(API_FINANCE)
   }
@@ -68,7 +68,7 @@ export class TransactionViewModel {
   }
 
   mounted = async (state: TransactionState) => {
-    const {transactionType, item, borrowLimit, totalBorrow} = state
+    const { transactionType, item, borrowLimit, totalBorrow } = state
 
     this.item = item
     this.borrowLimit = borrowLimit
@@ -280,11 +280,10 @@ export class TransactionViewModel {
   }
 
   get borrowLimitUsed() {
-    if (this.borrowLimit) {
-      const limit = (this.totalBorrow / this.borrowLimit) * 100
-      return parseFloat(limit.toFixed(2))
-    }
-    return 0
+    if (!this.borrowLimit || Big(this.borrowLimit).lte(MIN_VALUE)) return 0
+
+    const limit = (this.totalBorrow / this.borrowLimit) * 100
+    return parseFloat(limit.toFixed(2))
   }
 
   get getInputValue() {
@@ -300,7 +299,11 @@ export class TransactionViewModel {
   }
 
   get getNewBorrowLimit() {
-    return formatValue(this.newBorrowLimit, 3)
+    let newBorrowLimit = this.newBorrowLimit
+
+    if (newBorrowLimit <= 0 || Big(Math.abs(newBorrowLimit)).lte(MIN_VALUE)) return formatValue(0)
+
+    return formatValue(newBorrowLimit, 3)
   }
 
   get newBorrowLimit() {
@@ -549,7 +552,7 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-          const {hash} = await this.cTokenContract.supply(valueToSend)
+          const { hash } = await this.cTokenContract.supply(valueToSend)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
@@ -572,7 +575,7 @@ export class TransactionViewModel {
 
         // for borrow
         try {
-          const {hash} = await this.cTokenContract.borrow(inputValue)
+          const { hash } = await this.cTokenContract.borrow(inputValue)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
@@ -610,7 +613,7 @@ export class TransactionViewModel {
         try {
           let valueToSend = this.isMaxValueSet ? this.item.supplyBalance : inputValue
 
-          const {hash} = await this.cTokenContract.withdraw(valueToSend)
+          const { hash } = await this.cTokenContract.withdraw(valueToSend)
 
           if (hash) {
             await this.comptroller.waitForTransaction(hash)
@@ -660,7 +663,7 @@ export class TransactionViewModel {
         transactionStore.transactionMessageStatus.secondStep.status = TRANSACTION_STATUS.PENDING
 
         try {
-          const {hash} = await this.cTokenContract.repayBorrow(
+          const { hash } = await this.cTokenContract.repayBorrow(
             this.isMaxValueSet ? MAX_UINT_256 : inputValue
           )
 
