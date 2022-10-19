@@ -32,7 +32,7 @@ export class HomeViewModel {
   liquidityModalVisible = false
 
   constructor() {
-    makeAutoObservable(this, undefined, {autoBind: true})
+    makeAutoObservable(this, undefined, { autoBind: true })
   }
 
   get getAvailableLimit() {
@@ -54,15 +54,17 @@ export class HomeViewModel {
   }
 
   get getNetApyLabel() {
-    return `${this.netApy ? Big(this.netApy).toFixed(2) : "..."}`
+    if (!this.netApy || (Big(this.totalSupply).lte(MIN_VALUE) && Big(this.totalBorrow).lte(MIN_VALUE))) return "..."
+
+    return Big(this.netApy).toFixed(2)
   }
 
   get getBorrowBalance() {
-    return `${formatValue(this.totalBorrow)}`
+    return `$${Big(this.totalBorrow).toFixed(Big(this.totalBorrow).lte(MIN_VALUE) ? 0 : 4)}`
   }
 
   get getSupplyBalance() {
-    return `${formatValue(this.totalSupply)}`
+    return `$${Big(this.totalSupply).toFixed(Big(this.totalSupply).lte(MIN_VALUE) ? 0 : 4)}`
   }
 
   get isConnectionSupported() {
@@ -70,7 +72,7 @@ export class HomeViewModel {
   }
 
   get getBorrowLimit() {
-    return `${this.borrowLimit.toFixed(this.borrowLimit === 0 ? 0 : 2)}$`
+    return `${this.borrowLimit.toFixed(Big(this.borrowLimit).lte(MIN_VALUE) ? 0 : 2)}$`
   }
 
   get hasCollateral() {
@@ -88,11 +90,8 @@ export class HomeViewModel {
   calculateAPY = (ratePerBlock: any) => {
     const apy =
       (Math.pow(
-          (ratePerBlock / this.ethMantissa) * this.blocksPerDay + 1,
-          this.daysPerYear
-        ) -
-        1) *
-      100
+        (ratePerBlock / this.ethMantissa) * this.blocksPerDay + 1,
+        this.daysPerYear) - 1) * 100
 
     return +apy.toFixed(2)
   }
@@ -297,7 +296,7 @@ export class HomeViewModel {
 
     this.calculateTotals(market)
 
-    let {1: liquidity} = await this.comptroller.getAccountLiquidity()
+    let { 1: liquidity } = await this.comptroller.getAccountLiquidity()
     liquidity = liquidity / 1e18
 
     this.borrowLimit = liquidity + this.totalBorrow
