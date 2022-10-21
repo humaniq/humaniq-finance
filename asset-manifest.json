@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "./static/css/main.e5457993.chunk.css",
-    "main.js": "./static/js/main.7d4f2436.chunk.js",
-    "main.js.map": "./static/js/main.7d4f2436.chunk.js.map",
+    "main.css": "./static/css/main.6b0be026.chunk.css",
+    "main.js": "./static/js/main.26df2bd2.chunk.js",
+    "main.js.map": "./static/js/main.26df2bd2.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.7050252f.js",
     "runtime-main.js.map": "./static/js/runtime-main.7050252f.js.map",
     "static/css/2.9c5eef5f.chunk.css": "./static/css/2.9c5eef5f.chunk.css",
-    "static/js/2.70852072.chunk.js": "./static/js/2.70852072.chunk.js",
-    "static/js/2.70852072.chunk.js.map": "./static/js/2.70852072.chunk.js.map",
+    "static/js/2.f6eeec0b.chunk.js": "./static/js/2.f6eeec0b.chunk.js",
+    "static/js/2.f6eeec0b.chunk.js.map": "./static/js/2.f6eeec0b.chunk.js.map",
     "index.html": "./index.html",
     "static/css/2.9c5eef5f.chunk.css.map": "./static/css/2.9c5eef5f.chunk.css.map",
-    "static/css/main.e5457993.chunk.css.map": "./static/css/main.e5457993.chunk.css.map",
-    "static/js/2.70852072.chunk.js.LICENSE.txt": "./static/js/2.70852072.chunk.js.LICENSE.txt",
+    "static/css/main.6b0be026.chunk.css.map": "./static/css/main.6b0be026.chunk.css.map",
+    "static/js/2.f6eeec0b.chunk.js.LICENSE.txt": "./static/js/2.f6eeec0b.chunk.js.LICENSE.txt",
     "static/media/BUSD.b6963132.svg": "./static/media/BUSD.b6963132.svg",
     "static/media/TWBGL.b3184c6f.svg": "./static/media/TWBGL.b3184c6f.svg",
     "static/media/WBGL.71f1ef6c.svg": "./static/media/WBGL.71f1ef6c.svg",
@@ -29,6 +29,7 @@
     "static/media/ic_max.b10dbb88.svg": "./static/media/ic_max.b10dbb88.svg",
     "static/media/ic_question.08f6fc42.svg": "./static/media/ic_question.08f6fc42.svg",
     "static/media/ic_watch.7e981ff8.svg": "./static/media/ic_watch.7e981ff8.svg",
+    "static/media/main_logo_light.39149a69.svg": "./static/media/main_logo_light.39149a69.svg",
     "static/media/metamask-logo.894f5d1c.svg": "./static/media/metamask-logo.894f5d1c.svg",
     "static/media/wallet-connect-logo.1b9bf0ba.svg": "./static/media/wallet-connect-logo.1b9bf0ba.svg",
     "static/media/web3-logo.76ac463b.svg": "./static/media/web3-logo.76ac463b.svg"
@@ -36,8 +37,8 @@
   "entrypoints": [
     "static/js/runtime-main.7050252f.js",
     "static/css/2.9c5eef5f.chunk.css",
-    "static/js/2.70852072.chunk.js",
-    "static/css/main.e5457993.chunk.css",
-    "static/js/main.7d4f2436.chunk.js"
+    "static/js/2.f6eeec0b.chunk.js",
+    "static/css/main.6b0be026.chunk.css",
+    "static/js/main.26df2bd2.chunk.js"
   ]
 }
