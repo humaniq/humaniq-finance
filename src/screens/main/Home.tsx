@@ -28,6 +28,7 @@ import { EVM_NETWORKS_NAMES, NETWORK_TYPE } from "constants/network"
 import { ConnectWallet } from "components/modals/ConnectWallet"
 import { Loader } from "components/loader/Loader"
 import { capitalize } from "utils/textUtils"
+import { Logo } from "components/logo/Logo"
 
 export interface MainScreenInterface {
   view: HomeViewModel;
@@ -58,12 +59,13 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
       <div className="main">
         <MainInfoHeader className="header">
           <div className={"row"}>
-            <span className={"logoText"}>
-              {`${t("appName")}`}
-              {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${capitalize(
-                EVM_NETWORKS_NAMES.BSC_TESTNET
-              )})` : ''}
-            </span>
+            <Logo>
+              <span className={"logoText"}>
+                {getProviderStore.currentNetwork.env === NETWORK_TYPE.TEST ? `(${capitalize(
+                  EVM_NETWORKS_NAMES.BSC_TESTNET
+                )})` : ''}
+              </span>
+            </Logo>
             <AddressView
               title={view.getAccount}
               onClick={view.toggleDialogOrDisconnectWallet}
