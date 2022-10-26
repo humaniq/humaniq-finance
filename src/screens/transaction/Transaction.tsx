@@ -28,6 +28,7 @@ export type TransactionState = {
   transactionType: TRANSACTION_TYPE
   borrowLimit: number
   totalBorrow: number
+  totalDeposit: number
 }
 
 export interface TransactionProps {
