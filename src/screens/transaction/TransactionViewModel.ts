@@ -293,7 +293,7 @@ export class TransactionViewModel {
   }
 
   get inputValueUSD() {
-    return this.inputFiat ? +Big(this.inputValue) : +this.inputValueFiat
+    return this.inputFiat ? +Big(this.safeInputValue) : +this.inputValueFiat
   }
 
   get inputValueTOKEN() {
