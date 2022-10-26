@@ -18,7 +18,7 @@ import { BUSD } from "models/BUSD"
 import { TRANSACTION_STATUS, transactionStore } from "stores/app/transactionStore"
 import { NavigateFunction } from "react-router-dom"
 import AutosizeInput from "react-input-autosize"
-import { convertValue, DIGITS_INPUT, LEADING_ZERO, MAX_UINT_256, MIN_VALUE } from "utils/common"
+import { convertValue, cleanDust, DIGITS_INPUT, LEADING_ZERO, MAX_UINT_256, MIN_VALUE } from "utils/common"
 
 export class TransactionViewModel {
   item = {} as BorrowSupplyItem
@@ -26,6 +26,7 @@ export class TransactionViewModel {
   transactionType = TRANSACTION_TYPE.DEPOSIT
   borrowLimit = 0
   totalBorrow = 0
+  totalSupply = 0
   inputValue = ""
   comptroller: Comptroller
   cTokenContract: Ctoken
@@ -68,12 +69,13 @@ export class TransactionViewModel {
   }
 
   mounted = async (state: TransactionState) => {
-    const { transactionType, item, borrowLimit, totalBorrow } = state
+    const { transactionType, item, borrowLimit, totalBorrow, totalDeposit } = state
 
     this.item = item
     this.borrowLimit = borrowLimit
     this.totalBorrow = totalBorrow
     this.transactionType = transactionType
+    this.totalSupply = totalDeposit
 
     if (this.isWBGL) {
       this.selectedToken = new WBGL(getProviderStore.signer, getProviderStore.currentAccount)
@@ -272,7 +274,7 @@ export class TransactionViewModel {
   }
 
   get getNewBorrowLimitUsedFormatted() {
-    return `${this.getNewBorrowLimitUsed}%`
+    return `${Math.max(0, +this.getNewBorrowLimitUsed)}%`
   }
 
   get maxBorrowLimitUsed() {
@@ -291,7 +293,7 @@ export class TransactionViewModel {
   }
 
   get inputValueUSD() {
-    return this.inputFiat ? +this.inputValue : +this.inputValueFiat
+    return this.inputFiat ? +Big(this.safeInputValue) : +this.inputValueFiat
   }
 
   get inputValueTOKEN() {
@@ -422,11 +424,13 @@ export class TransactionViewModel {
 
   // FOR DEPOSIT
   get hypotheticalBorrowLimitUsedForDeposit() {
-    if (!this.hypotheticalCollateralSupply || !this.totalBorrow) return 0
-    if (this.hypotheticalCollateralSupply < 0) return 100
+    let collateralSupply = this.hypotheticalCollateralSupply
+
+    if (!collateralSupply || !this.totalBorrow) return 0
+    if (collateralSupply < 0) return 100
 
     const limit =
-      (this.totalBorrow / this.hypotheticalCollateralSupply) * 100
+      (this.totalBorrow / collateralSupply) * 100
 
     return limit > 100 ? 100 : parseFloat(limit.toFixed(2))
   }
@@ -512,6 +516,7 @@ export class TransactionViewModel {
 
     const input = this.getInputValueForTransaction
     let inputValue = convertValue(input)
+    inputValue = cleanDust(inputValue)
 
     try {
       if (this.isDeposit) {
@@ -536,7 +541,6 @@ export class TransactionViewModel {
             approvedResult = await this.selectedToken.approve(
               this.item.cToken
             )
-            this.txData.gasLimit = +approvedResult.gasLimit
             // wait for transaction to be mined in order to proceed with mint
             await approvedResult.wait()
           } catch (e: any) {
@@ -647,7 +651,6 @@ export class TransactionViewModel {
             approvedResult = await this.selectedToken.approve(
               this.item.cToken
             )
-            this.txData.gasLimit = +approvedResult.gasLimit
             // wait for transaction to be mined in order to proceed with repay
             await approvedResult.wait()
           } catch (e: any) {
@@ -738,7 +741,6 @@ export class TransactionViewModel {
     }
 
     if (this.isWithdraw) {
-      // save value
       maxValue = this.inputFiat ? Big(this.item.tokenUsdValue).mul(this.item.supply) : this.item.supply
     }
 
@@ -771,9 +773,45 @@ export class TransactionViewModel {
     }
   }
 
-  estimateGasLimit = async (amount: any = 0) => {
+  estimateGasLimit = async () => {
     try {
-      this.txData.gasLimit = await this.cTokenContract.estimateGas(this.item.cToken, amount)
+      let amount = 0
+      let estimateGasForMethod = "transfer"
+
+      if (this.isDeposit) {
+        estimateGasForMethod = "mint"
+
+        if (Big(this.item.balance).gt(1)) {
+          amount = 1
+        }
+      } else if (this.isBorrow) {
+        estimateGasForMethod = "borrow"
+
+        if (Big(this.item.liquidity).div(this.item.tokenUsdValue).gt(1)) {
+          amount = 1
+        }
+      } else if (this.isWithdraw) {
+        estimateGasForMethod = "redeemUnderlying"
+
+        if (Big(this.item.supply).gt(1)) {
+          amount = 1
+        }
+      } else if (this.isRepay) {
+        estimateGasForMethod = "repayBorrow"
+
+        if (Big(this.item.borrow).gt(1)) {
+          amount = 1
+        }
+      }
+
+      this.txData.gasLimit = +(await this.cTokenContract.estimateGas(
+          this.item.cToken,
+          estimateGasForMethod,
+          convertValue(
+            String(amount)
+          )
+        )
+      )
     } catch (e) {
       Logger.info("Gas limit estimation error: ", e)
     }
