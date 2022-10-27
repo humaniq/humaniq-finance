@@ -1,4 +1,4 @@
-import {convertValue, cutString, DIGITS_INPUT, NUMBER} from "../common"
+import { cleanDust, convertValue, cutString, DIGITS_INPUT, NUMBER } from "../common"
 
 describe("common", () => {
   it('should not pass reg check', function () {
@@ -131,7 +131,31 @@ describe("common", () => {
     expect(cutString('110.156')).toBe('110.156')
   })
 
-  it('conver value function should convert values with token decimals', function () {
+  it('clean dust function should handle undefined and null values', function () {
+    expect(cleanDust(undefined)).toBe('')
+    expect(cleanDust(null)).toBe('')
+    expect(cleanDust('')).toBe('')
+  })
+
+  it('clean dust function should handle strings correctly', function () {
+    expect(cleanDust('0')).toBe('0')
+    expect(cleanDust('1')).toBe('1')
+    expect(cleanDust('2')).toBe('2')
+    expect(cleanDust('3')).toBe('3')
+    expect(cleanDust('10')).toBe('10')
+    expect(cleanDust('100')).toBe('100')
+    expect(cleanDust('10000000')).toBe('10000000')
+    expect(cleanDust('20000000')).toBe('20000000')
+    expect(cleanDust('30000000')).toBe('30000000')
+    expect(cleanDust('30000001')).toBe('30000001')
+    expect(cleanDust('110000001110000')).toBe('110000001110000')
+    expect(cleanDust('110000001110000.1')).toBe('110000001110000')
+    expect(cleanDust('110000001110000.11')).toBe('110000001110000')
+    expect(cleanDust('110000001110000.1121')).toBe('110000001110000')
+    expect(cleanDust('110000001110000.0011223')).toBe('110000001110000')
+  })
+
+  it('convert value function should convert values with token decimals', function () {
     expect(convertValue(undefined)).toBe('0')
     expect(convertValue(null)).toBe('0')
     expect(convertValue("10.000001")).toBe("10000001000000000000")

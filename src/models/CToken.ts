@@ -102,8 +102,8 @@ export class Ctoken {
     return this.contract.exchangeRateStored()
   }
 
-  estimateGas = (recipientAddress: any, amount: any) => {
-    return this.contract.estimateGas.transfer(recipientAddress, amount)
+  estimateGas = (recipientAddress: any, method: string, amount: any) => {
+    return this.contract.estimateGas[method](amount, {from: this.account})
   }
 
   getTokenBalance = () => {

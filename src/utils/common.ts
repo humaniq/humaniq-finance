@@ -24,6 +24,14 @@ export const LEADING_ZERO = /^0[0-9].*$/
 
 export const NUMBER = /^[1-9]\d{0,16}$|^(?=[1-9]\d*[.]\d+$).{1,16}$|^(?=0[.](\d+)?[1-9]$).{1,16}$/
 
+export const cleanDust = (str?: string | null) => {
+  if (typeof str !== 'string' || !str) {
+    return ''
+  }
+
+  return str.split(".")[0]
+}
+
 export const cutString = (str?: string | null, end: number = 16) => {
   if (typeof str !== 'string' || !str) {
     return ''

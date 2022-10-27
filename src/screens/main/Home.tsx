@@ -43,7 +43,8 @@ const HomeImpl: React.FC<MainScreenInterface> = ({ view }) => {
       item,
       transactionType: type,
       borrowLimit: view.borrowLimit,
-      totalBorrow: view.totalBorrow
+      totalBorrow: view.totalBorrow,
+      totalDeposit: view.totalSupply
     })
     navigate(routes.transaction.path)
   }, [navigate, view, setData])
