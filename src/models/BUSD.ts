@@ -24,4 +24,8 @@ export class BUSD {
   approve = async (cToken: any) => {
     return this.contract.approve(cToken, MAX_UINT_256, {from: this.account})
   }
+
+  estimateGas = (cToken: any) => {
+    return this.contract.estimateGas.approve(cToken, MAX_UINT_256, {from: this.account})
+  }
 }
