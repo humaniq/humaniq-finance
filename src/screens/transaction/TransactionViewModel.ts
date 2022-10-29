@@ -791,7 +791,9 @@ export class TransactionViewModel {
     let estimateGasForMethod = "transfer"
 
     try {
-      await this.estimateGasLimitForTokenApprove()
+      if (this.isDeposit || this.isRepay) {
+        await this.estimateGasLimitForTokenApprove()
+      }
 
       if (this.isDeposit) {
         estimateGasForMethod = "mint"
