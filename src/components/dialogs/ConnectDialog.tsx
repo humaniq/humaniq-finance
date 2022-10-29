@@ -1,24 +1,25 @@
-import React from "react";
-import { observer } from "mobx-react";
+import React from "react"
+import { observer } from "mobx-react"
 import {
   Avatar,
   Box,
   Button,
   Paper,
   Stack,
-  SwipeableDrawer,
-} from "@mui/material";
-import HumaniqLogo from "../../assets/images/humaniq-logo.svg";
-import WCLogo from "../../assets/images/wallet-connect-logo.svg";
-import Web3Logo from "../../assets/images/web3-logo.svg";
-import MetamaskLogo from "../../assets/images/metamask-logo.svg";
-import "./styles.sass";
-import {getProviderStore} from "App"
-import {PROVIDERS} from "stores/provider/providerStore"
-import {t} from "translations/translate"
-import {Puller} from "components/puller/Puller"
+  SwipeableDrawer
+} from "@mui/material"
+import HumaniqLogo from "../../assets/images/humaniq-logo.svg"
+import WCLogo from "../../assets/images/wallet-connect-logo.svg"
+import Web3Logo from "../../assets/images/web3-logo.svg"
+import MetamaskLogo from "../../assets/images/metamask-logo.svg"
+import "./styles.sass"
+import { getProviderStore } from "App"
+import { PROVIDERS } from "stores/provider/providerStore"
+import { t } from "translations/translate"
+import { Puller } from "components/puller/Puller"
 
-export interface ConnectDialogProps {}
+export interface ConnectDialogProps {
+}
 
 export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
   return (
@@ -28,8 +29,9 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
       onClose={() => (getProviderStore.connectDialog = false)}
       onOpen={getProviderStore.toggleConnectDialog}
       style={{ borderRadius: 16 }}
+      disableSwipeToOpen={true}
     >
-      <Puller />
+      <Puller/>
       <Box
         className={"drawer-container"}
         sx={{ width: "auto", minHeight: 300 }}
@@ -43,7 +45,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"humaniq"} src={HumaniqLogo} />
+              <img alt={"humaniq"} src={HumaniqLogo}/>
             </Avatar>
             <span>{t("hmqName")}</span>
           </Paper>
@@ -53,7 +55,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"metamask"} src={MetamaskLogo} />
+              <img alt={"metamask"} src={MetamaskLogo}/>
             </Avatar>
             <span>{t("metamaskName")}</span>
           </Paper>
@@ -63,7 +65,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WC)}
           >
             <Avatar className={"avatar"}>
-              <img src={WCLogo} alt={"wallet-connect"} />
+              <img src={WCLogo} alt={"wallet-connect"}/>
             </Avatar>
             <span>{t("wallet.walletConnectName")}</span>
           </Paper>
@@ -73,7 +75,7 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
             onClick={() => getProviderStore.setProvider(PROVIDERS.WEB3)}
           >
             <Avatar className={"avatar"}>
-              <img alt={"web3"} src={Web3Logo} />
+              <img alt={"web3"} src={Web3Logo}/>
             </Avatar>
             <span>{t("web3Name")}</span>
           </Paper>
@@ -89,5 +91,5 @@ export const ConnectDialog: React.FC<ConnectDialogProps> = observer(() => {
         </div>
       </Box>
     </SwipeableDrawer>
-  );
-});
+  )
+})

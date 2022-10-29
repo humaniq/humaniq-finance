@@ -1,12 +1,13 @@
-import React from "react";
-import { observer } from "mobx-react";
-import { Box, Button, SwipeableDrawer } from "@mui/material";
-import "./styles.sass";
-import {getProviderStore} from "App"
-import {t} from "translations/translate"
-import {Puller} from "components/puller/Puller"
+import React from "react"
+import { observer } from "mobx-react"
+import { Box, Button, SwipeableDrawer } from "@mui/material"
+import "./styles.sass"
+import { getProviderStore } from "App"
+import { t } from "translations/translate"
+import { Puller } from "components/puller/Puller"
 
-export interface DisconnectDialogProps {}
+export interface DisconnectDialogProps {
+}
 
 export const DisconnectDialog: React.FC<DisconnectDialogProps> = observer(
   () => {
@@ -17,6 +18,7 @@ export const DisconnectDialog: React.FC<DisconnectDialogProps> = observer(
         onClose={() => (getProviderStore.disconnectDialog = false)}
         onOpen={getProviderStore.toggleDisconnectDialog}
         style={{ borderRadius: 16 }}
+        disableSwipeToOpen={true}
       >
         <Puller/>
         <Box
@@ -43,6 +45,6 @@ export const DisconnectDialog: React.FC<DisconnectDialogProps> = observer(
           </div>
         </Box>
       </SwipeableDrawer>
-    );
+    )
   }
-);
+)

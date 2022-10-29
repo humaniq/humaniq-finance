@@ -543,6 +543,7 @@ export class TransactionViewModel {
             )
             // wait for transaction to be mined in order to proceed with mint
             await approvedResult.wait()
+            await this.estimateGasLimit()
           } catch (e: any) {
             if (e?.code === 4001 || e?.message === 'user reject request') {
               transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
@@ -653,6 +654,7 @@ export class TransactionViewModel {
             )
             // wait for transaction to be mined in order to proceed with repay
             await approvedResult.wait()
+            await this.estimateGasLimit()
           } catch (e: any) {
             if (e?.code === 4001 || e?.message === 'user reject request') {
               transactionStore.transactionMessageStatus.errorMessage = t("transactionMessage.denied")
@@ -773,10 +775,25 @@ export class TransactionViewModel {
     }
   }
 
-  estimateGasLimit = async () => {
+  estimateGasLimitForTokenApprove = async () => {
     try {
-      let amount = 0
-      let estimateGasForMethod = "transfer"
+      this.txData.gasLimit = +(await this.selectedToken.estimateGas(
+          this.item.cToken
+        )
+      )
+    } catch (e) {
+      Logger.info("Gas limit estimation for approve error: ", e)
+    }
+  }
+
+  estimateGasLimit = async () => {
+    let amount = 0
+    let estimateGasForMethod = "transfer"
+
+    try {
+      if (this.isDeposit || this.isRepay) {
+        await this.estimateGasLimitForTokenApprove()
+      }
 
       if (this.isDeposit) {
         estimateGasForMethod = "mint"
@@ -813,7 +830,7 @@ export class TransactionViewModel {
         )
       )
     } catch (e) {
-      Logger.info("Gas limit estimation error: ", e)
+      Logger.info(`Gas limit estimation for ${estimateGasForMethod} error:`, e)
     }
   }
 
